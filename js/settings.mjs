@@ -1,6 +1,6 @@
 import {ID} from './store.mjs';
 import {toggleBar} from './director.mjs';
-import {toggleMarkersPanel} from './markers.mjs';
+import {toggleMarkersPanel,renderMarkers} from './markers.mjs';
 import {refreshDirector} from './director.mjs';
 import {DEFAULT_FIGURES} from './figures-defaults.mjs';
 export function registerSettings(EditorMenu){
@@ -14,10 +14,10 @@ export function registerSettings(EditorMenu){
  S('badgePos',{scope:'client',config:false,type:Object,default:null});
  S('editorState',{scope:'client',config:false,type:Object,default:{}});
  S('tutorialOffered',{scope:'client',config:false,type:Boolean,default:false});
- S('global',{scope:'world',config:false,type:Object,default:{}});
+ S('global',{scope:'world',config:false,type:Object,default:{},onChange:()=>renderMarkers()});
  S('mix',{scope:'world',config:false,type:Object,default:{level:.3,quiet:false}});
  S('figures',{scope:'world',config:false,type:Object,default:DEFAULT_FIGURES});
- S('markerState',{scope:'world',config:false,type:Object,default:{milestones:{},clocks:{}}});
+ S('markerState',{scope:'world',config:false,type:Object,default:{milestones:{},clocks:{}},onChange:()=>renderMarkers()});
  game.settings.registerMenu(ID,'editor',{name:'MRDIR.Set.Editor',label:'MRDIR.Set.EditorLabel',hint:'MRDIR.Set.EditorHint',icon:'fa-solid fa-pen-ruler',type:EditorMenu,restricted:true});
  const K=foundry.helpers?.interaction?.KeyboardManager?.MODIFIER_KEYS?.ALT??'Alt';
  const key=(id,code,fn)=>game.keybindings.register(ID,id,{name:`MRDIR.Key.${id}`,editable:[{key:code,modifiers:[K]}],restricted:true,onDown:()=>{fn();return true;}});

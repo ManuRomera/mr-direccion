@@ -53,7 +53,6 @@ export function setupMarkers(){
  let last=milestonesState(globalSettings().markers.milestones,state().milestones);
  // Aviso a la mesa cuando se desbloquea un hito nuevo.
  Hooks.on('updateSetting',s=>{
-  if(s.key===`${ID}.global`||s.key===`${ID}.markerState`){renderMarkers();}
   if(s.key!==`${ID}.markerState`)return;
   const defs=globalSettings().markers.milestones,now=milestonesState(defs,s.value?.milestones);
   for(const d of defs)if(now[d.id]&&!last[d.id])ui.notifications.info(`${L('Unlocked')}: ${d.label}`);

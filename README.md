@@ -20,7 +20,9 @@
 
 Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la Sed* y convertida en un módulo **independiente del sistema**. No lleva contenido: **tú (o el módulo de tu aventura) le dices qué música, qué efectos, qué personajes, qué lectura y qué ayudas van en cada escena**, sin tocar un archivo. Con un editor propio, o con un paquete JSON que se importa en un clic.
 
-<p align="center"><img src="docs/img/glass.webp" alt="La barra en estilo Cristal líquido sobre la sala común, con dos figuras a escala de perspectiva" width="100%"></p>
+<p align="center"><img src="docs/img/glass.webp" alt="La barra en estilo Cristal líquido sobre el banquete de la Corte, con cinco figuras a escala de perspectiva sobre el suelo" width="100%"></p>
+
+<p align="center"><sub>Capturas reales en un mundo con <i>MR · El Trono de la Sed</i>: 29 escenas, 12 motivos y el reparto colocado por perspectiva.</sub></p>
 
 ## ✨ Qué hace
 
@@ -46,7 +48,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 <td width="50%"><img src="docs/img/preview.webp" alt="Vista previa de escena al dejar el cursor"><br><sub><b>Vista previa</b> a los 2 s sobre una escena.</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de la tormenta e hitos secretos.</sub></td>
+<td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de las siete lámparas e hitos secretos.</sub></td>
 <td width="50%"><img src="docs/img/suelo.webp" alt="Editor de suelo y horizonte"><br><sub><b>Suelo y horizonte</b>: las líneas muestran la altura de una figura en cada punto.</sub></td>
 </tr>
 <tr>
