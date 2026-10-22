@@ -15,10 +15,10 @@ def card(w, h, out):
     x = int(w * .05) + icon.width + int(w * .03)
     d.text((x, h * .30), "MR- Dirección", font=font(int(h * .17)), fill=(244, 233, 210)); d.text((x, h * .55), "La barra de dirección de escena", font=font(int(h * .075)), fill=(202, 166, 107))
     d.text((x, h * .67), "para cualquier sistema de Foundry VTT", font=font(int(h * .075)), fill=(202, 166, 107)); bg.convert("RGB").save(out, "WEBP" if out.endswith("webp") else "PNG", quality=88)
-card(1600, 640, I + "banner.webp"); card(1280, 640, I + "social.png")
+card(1600, 640, I + "banner.webp"); card(1280, 640, I + "social.png"); card(1600, 480, I + "perfil-banner.webp")
 order = ["glass", "motifs", "preview", "markers", "editor", "suelo", "classic", "nobg"]
 frames = [Image.open(I + f"shot-{n}.png").convert("RGB").resize((960, 540), Image.LANCZOS).quantize(128, dither=Image.NONE) for n in order if os.path.exists(I + f"shot-{n}.png")]
-frames[0].save(I + "recorrido.gif", save_all=True, append_images=frames[1:], duration=1800, loop=0, optimize=True)
+if frames: frames[0].save(I + "recorrido.gif", save_all=True, append_images=frames[1:], duration=1800, loop=0, optimize=True)
 for n in order:
     p = I + f"shot-{n}.png"
     if os.path.exists(p): Image.open(p).convert("RGB").save(I + f"{n}.webp", "WEBP", quality=86); os.remove(p)
