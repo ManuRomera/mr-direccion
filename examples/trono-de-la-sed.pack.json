@@ -1,0 +1,3726 @@
+{
+ "schema": 1,
+ "id": "trono-de-la-sed",
+ "title": "MR · El Trono de la Sed",
+ "version": "1.0.0",
+ "author": "Manu Romera",
+ "license": "CC BY-NC-SA",
+ "settings": {
+  "fade": 3.5,
+  "motifs": [
+   {
+    "id": "batalla",
+    "label": "Batalla",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "batalla"
+     ]
+    }
+   },
+   {
+    "id": "batalla-oscura",
+    "label": "Combate oscuro",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "batalla-oscura"
+     ]
+    }
+   },
+   {
+    "id": "persecucion",
+    "label": "Persecución",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "persecucion"
+     ]
+    }
+   },
+   {
+    "id": "sigilo",
+    "label": "Sigilo e infiltración",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "sigilo"
+     ]
+    }
+   },
+   {
+    "id": "tension",
+    "label": "Tensión",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "tension"
+     ]
+    }
+   },
+   {
+    "id": "horror",
+    "label": "Horror",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "horror"
+     ]
+    }
+   },
+   {
+    "id": "rey",
+    "label": "El rey sin nombre",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "rey"
+     ]
+    }
+   },
+   {
+    "id": "amenaza",
+    "label": "Amenaza creciente",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "amenaza"
+     ]
+    }
+   },
+   {
+    "id": "misterio",
+    "label": "Misterio",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "misterio"
+     ]
+    }
+   },
+   {
+    "id": "duelo",
+    "label": "Duelo",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "duelo"
+     ]
+    }
+   },
+   {
+    "id": "esperanza",
+    "label": "Esperanza",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "esperanza"
+     ]
+    }
+   },
+   {
+    "id": "bestia",
+    "label": "Latido del corazón",
+    "icon": "music",
+    "music": {
+     "flag": [
+      "mr-trono-de-la-sed",
+      "slug",
+      "bestia"
+     ]
+    }
+   }
+  ],
+  "effects": [],
+  "markers": {
+   "milestones": [],
+   "clocks": []
+  }
+ },
+ "scenes": [
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "funeral"
+    ]
+   },
+   "order": 0,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "libacion"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tia"
+      ]
+     },
+     "label": "Tia"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.6,
+    "anchors": [
+     [
+      0.64,
+      0.9
+     ],
+     [
+      0.78,
+      0.94
+     ],
+     [
+      0.52,
+      0.95
+     ],
+     [
+      0.88,
+      0.9
+     ],
+     [
+      0.22,
+      0.82
+     ],
+     [
+      0.3,
+      0.93
+     ],
+     [
+      0.17,
+      0.9
+     ],
+     [
+      0.68,
+      0.98
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "muhar"
+    ]
+   },
+   "order": 1,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "muhar"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "nefru"
+      ]
+     },
+     "label": "Nefru"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tia"
+      ]
+     },
+     "label": "Tia"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.6,
+      0.76
+     ],
+     [
+      0.7,
+      0.82
+     ],
+     [
+      0.55,
+      0.86
+     ],
+     [
+      0.8,
+      0.9
+     ],
+     [
+      0.45,
+      0.93
+     ],
+     [
+      0.92,
+      0.95
+     ],
+     [
+      0.65,
+      0.96
+     ],
+     [
+      0.3,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "casa-panehsy"
+    ]
+   },
+   "order": 2,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "muhar"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.38,
+    "anchors": [
+     [
+      0.8,
+      0.78
+     ],
+     [
+      0.92,
+      0.9
+     ],
+     [
+      0.78,
+      0.93
+     ],
+     [
+      0.72,
+      0.98
+     ],
+     [
+      0.45,
+      0.97
+     ],
+     [
+      0.88,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "taller-tia"
+    ]
+   },
+   "order": 3,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "tumbas"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "vasija"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "antorchas"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tia"
+      ]
+     },
+     "label": "Tia"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.48,
+    "anchors": [
+     [
+      0.62,
+      0.9
+     ],
+     [
+      0.78,
+      0.92
+     ],
+     [
+      0.52,
+      0.95
+     ],
+     [
+      0.88,
+      0.96
+     ],
+     [
+      0.7,
+      0.97
+     ],
+     [
+      0.42,
+      0.97
+     ],
+     [
+      0.56,
+      0.86
+     ],
+     [
+      0.92,
+      0.9
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "casa-nefru"
+    ]
+   },
+   "order": 4,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "nefru"
+      ]
+     },
+     "label": "Nefru"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "beset"
+      ]
+     },
+     "label": "Beset"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "henut"
+      ]
+     },
+     "label": "Henut"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.46,
+    "anchors": [
+     [
+      0.62,
+      0.82
+     ],
+     [
+      0.3,
+      0.96
+     ],
+     [
+      0.45,
+      0.97
+     ],
+     [
+      0.65,
+      0.97
+     ],
+     [
+      0.75,
+      0.9
+     ],
+     [
+      0.85,
+      0.96
+     ],
+     [
+      0.9,
+      0.88
+     ],
+     [
+      0.55,
+      0.8
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "camino-chacales"
+    ]
+   },
+   "order": 5,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "tumbas"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "planidera"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sombras de chacal"
+      ]
+     },
+     "label": "Sombras de chacal"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "borrados"
+      ]
+     },
+     "label": "Borrados"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.4,
+    "anchors": [
+     [
+      0.25,
+      0.9
+     ],
+     [
+      0.45,
+      0.78
+     ],
+     [
+      0.6,
+      0.72
+     ],
+     [
+      0.55,
+      0.62
+     ],
+     [
+      0.7,
+      0.66
+     ],
+     [
+      0.8,
+      0.6
+     ],
+     [
+      0.5,
+      0.88
+     ],
+     [
+      0.75,
+      0.8
+     ],
+     [
+      0.15,
+      0.96
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "order": 6,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "servidores sin nombre"
+      ]
+     },
+     "label": "Servidores sin nombre"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.4,
+    "anchors": [
+     [
+      0.5,
+      0.78
+     ],
+     [
+      0.62,
+      0.74
+     ],
+     [
+      0.72,
+      0.7
+     ],
+     [
+      0.55,
+      0.86
+     ],
+     [
+      0.82,
+      0.78
+     ],
+     [
+      0.38,
+      0.9
+     ],
+     [
+      0.68,
+      0.86
+     ],
+     [
+      0.3,
+      0.82
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pozo"
+    ]
+   },
+   "order": 7,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "laberinto"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "piedra"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.5,
+      0.9
+     ],
+     [
+      0.35,
+      0.93
+     ],
+     [
+      0.65,
+      0.93
+     ],
+     [
+      0.8,
+      0.9
+     ],
+     [
+      0.2,
+      0.9
+     ],
+     [
+      0.55,
+      0.97
+     ],
+     [
+      0.7,
+      0.78
+     ],
+     [
+      0.28,
+      0.78
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "laberinto"
+    ]
+   },
+   "order": 8,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "laberinto"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "piedra"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "planidera"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sombra"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sombras de chacal"
+      ]
+     },
+     "label": "Sombras de chacal"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "servidores sin nombre"
+      ]
+     },
+     "label": "Servidores sin nombre"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "borrados"
+      ]
+     },
+     "label": "Borrados"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "plañideras"
+      ]
+     },
+     "label": "Plañideras"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.5,
+      0.7
+     ],
+     [
+      0.46,
+      0.78
+     ],
+     [
+      0.58,
+      0.8
+     ],
+     [
+      0.4,
+      0.88
+     ],
+     [
+      0.66,
+      0.9
+     ],
+     [
+      0.52,
+      0.95
+     ],
+     [
+      0.78,
+      0.93
+     ],
+     [
+      0.3,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "entrada-palacio"
+    ]
+   },
+   "order": 9,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "banquete"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "piedra"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "antorchas"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sistro"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "servidores sin nombre"
+      ]
+     },
+     "label": "Servidores sin nombre"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.55,
+      0.78
+     ],
+     [
+      0.45,
+      0.84
+     ],
+     [
+      0.65,
+      0.84
+     ],
+     [
+      0.4,
+      0.92
+     ],
+     [
+      0.7,
+      0.92
+     ],
+     [
+      0.55,
+      0.97
+     ],
+     [
+      0.3,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "banquete"
+    ]
+   },
+   "order": 10,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "banquete"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "vasija"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corte"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "libacion"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "neb-sekhem"
+      ]
+     },
+     "label": "Neb-Sekhem"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "khety"
+      ]
+     },
+     "label": "Khety"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.46,
+    "anchors": [
+     [
+      0.5,
+      0.68
+     ],
+     [
+      0.2,
+      0.95
+     ],
+     [
+      0.34,
+      0.96
+     ],
+     [
+      0.5,
+      0.955
+     ],
+     [
+      0.66,
+      0.96
+     ],
+     [
+      0.8,
+      0.95
+     ],
+     [
+      0.1,
+      0.88
+     ],
+     [
+      0.9,
+      0.88
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "galeria-rostros"
+    ]
+   },
+   "order": 11,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "tumbas"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pluma"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "cincel"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.7,
+      0.68
+     ],
+     [
+      0.62,
+      0.74
+     ],
+     [
+      0.8,
+      0.76
+     ],
+     [
+      0.65,
+      0.88
+     ],
+     [
+      0.72,
+      0.86
+     ],
+     [
+      0.88,
+      0.92
+     ],
+     [
+      0.6,
+      0.97
+     ],
+     [
+      0.78,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "dormitorio-victimas"
+    ]
+   },
+   "order": 12,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "cerrojo"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "paser"
+      ]
+     },
+     "label": "Paser"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tamerit"
+      ]
+     },
+     "label": "Tamerit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "kasa"
+      ]
+     },
+     "label": "Kasa"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "beset"
+      ]
+     },
+     "label": "Beset"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "dedi"
+      ]
+     },
+     "label": "Dedi"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "borrados"
+      ]
+     },
+     "label": "Borrados"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pesadores"
+      ]
+     },
+     "label": "Pesadores"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.36,
+    "anchors": [
+     [
+      0.5,
+      0.66
+     ],
+     [
+      0.42,
+      0.74
+     ],
+     [
+      0.56,
+      0.76
+     ],
+     [
+      0.5,
+      0.86
+     ],
+     [
+      0.35,
+      0.9
+     ],
+     [
+      0.65,
+      0.9
+     ],
+     [
+      0.5,
+      0.97
+     ],
+     [
+      0.22,
+      0.97
+     ],
+     [
+      0.78,
+      0.97
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "sala-vasijas"
+    ]
+   },
+   "order": 13,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pesaje"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "vasija"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sello"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "cerrojo"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "paser"
+      ]
+     },
+     "label": "Paser"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tamerit"
+      ]
+     },
+     "label": "Tamerit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "kasa"
+      ]
+     },
+     "label": "Kasa"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "beset"
+      ]
+     },
+     "label": "Beset"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "dedi"
+      ]
+     },
+     "label": "Dedi"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pesadores"
+      ]
+     },
+     "label": "Pesadores"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.5,
+      0.97
+     ],
+     [
+      0.35,
+      0.98
+     ],
+     [
+      0.65,
+      0.98
+     ],
+     [
+      0.2,
+      0.97
+     ],
+     [
+      0.8,
+      0.97
+     ],
+     [
+      0.1,
+      0.99
+     ],
+     [
+      0.9,
+      0.99
+     ],
+     [
+      0.43,
+      0.93
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "inscripcion-merit"
+    ]
+   },
+   "order": 14,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pluma"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "antorchas"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "cincel"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "iru"
+      ]
+     },
+     "label": "Iru"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.3,
+      0.6
+     ],
+     [
+      0.2,
+      0.66
+     ],
+     [
+      0.38,
+      0.62
+     ],
+     [
+      0.12,
+      0.7
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit-eco"
+    ]
+   },
+   "order": 15,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pluma"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.2,
+      0.93
+     ],
+     [
+      0.35,
+      0.95
+     ],
+     [
+      0.1,
+      0.96
+     ],
+     [
+      0.48,
+      0.97
+     ],
+     [
+      0.25,
+      0.86
+     ],
+     [
+      0.4,
+      0.82
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pesaje"
+    ]
+   },
+   "order": 16,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pesaje"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corazon"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sello"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "lampara"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "neb-sekhem"
+      ]
+     },
+     "label": "Neb-Sekhem"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "khety"
+      ]
+     },
+     "label": "Khety"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pesadores"
+      ]
+     },
+     "label": "Pesadores"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.5,
+      0.8
+     ],
+     [
+      0.42,
+      0.86
+     ],
+     [
+      0.58,
+      0.86
+     ],
+     [
+      0.35,
+      0.93
+     ],
+     [
+      0.65,
+      0.93
+     ],
+     [
+      0.5,
+      0.97
+     ],
+     [
+      0.22,
+      0.9
+     ],
+     [
+      0.78,
+      0.9
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "neb-sekhem"
+    ]
+   },
+   "order": 17,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "banquete"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "antorchas"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corte"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "neb-sekhem"
+      ]
+     },
+     "label": "Neb-Sekhem"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.52,
+    "anchors": [
+     [
+      0.55,
+      0.72
+     ],
+     [
+      0.5,
+      0.93
+     ],
+     [
+      0.3,
+      0.95
+     ],
+     [
+      0.7,
+      0.95
+     ],
+     [
+      0.1,
+      0.96
+     ],
+     [
+      0.9,
+      0.96
+     ],
+     [
+      0.4,
+      0.98
+     ],
+     [
+      0.6,
+      0.98
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "coronacion"
+    ]
+   },
+   "order": 18,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "coronacion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sello"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corazon"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "lampara"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corte"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sistro"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "neb-sekhem"
+      ]
+     },
+     "label": "Neb-Sekhem"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "khety"
+      ]
+     },
+     "label": "Khety"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "borrados"
+      ]
+     },
+     "label": "Borrados"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "plañideras"
+      ]
+     },
+     "label": "Plañideras"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pesadores"
+      ]
+     },
+     "label": "Pesadores"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.52,
+    "anchors": [
+     [
+      0.5,
+      0.9
+     ],
+     [
+      0.3,
+      0.92
+     ],
+     [
+      0.7,
+      0.92
+     ],
+     [
+      0.15,
+      0.95
+     ],
+     [
+      0.85,
+      0.95
+     ],
+     [
+      0.42,
+      0.98
+     ],
+     [
+      0.6,
+      0.98
+     ],
+     [
+      0.5,
+      0.8
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "amanecer"
+    ]
+   },
+   "order": 19,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "amanecer"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "henut"
+      ]
+     },
+     "label": "Henut"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "nefru"
+      ]
+     },
+     "label": "Nefru"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.55,
+      0.66
+     ],
+     [
+      0.45,
+      0.74
+     ],
+     [
+      0.62,
+      0.72
+     ],
+     [
+      0.35,
+      0.84
+     ],
+     [
+      0.7,
+      0.84
+     ],
+     [
+      0.5,
+      0.92
+     ],
+     [
+      0.25,
+      0.93
+     ],
+     [
+      0.8,
+      0.93
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "corte"
+    ]
+   },
+   "order": 20,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "banquete"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "piedra"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "antorchas"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "servidores sin nombre"
+      ]
+     },
+     "label": "Servidores sin nombre"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": []
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "map-muhar"
+    ]
+   },
+   "order": 21,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "muhar"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "nefru"
+      ]
+     },
+     "label": "Nefru"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tia"
+      ]
+     },
+     "label": "Tia"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": []
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "map-pozo"
+    ]
+   },
+   "order": 22,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "laberinto"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "piedra"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": []
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-funeral"
+    ]
+   },
+   "order": 23,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "viento"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "panehsy"
+      ]
+     },
+     "label": "Panehsy"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tia"
+      ]
+     },
+     "label": "Tia"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "serekh"
+      ]
+     },
+     "label": "Serekh"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.7,
+      0.75
+     ],
+     [
+      0.82,
+      0.8
+     ],
+     [
+      0.6,
+      0.84
+     ],
+     [
+      0.9,
+      0.9
+     ],
+     [
+      0.75,
+      0.95
+     ],
+     [
+      0.5,
+      0.96
+     ],
+     [
+      0.9,
+      0.72
+     ],
+     [
+      0.4,
+      0.9
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-procesion"
+    ]
+   },
+   "order": 24,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pasos"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "servidores sin nombre"
+      ]
+     },
+     "label": "Servidores sin nombre"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.45,
+      0.88
+     ],
+     [
+      0.55,
+      0.78
+     ],
+     [
+      0.63,
+      0.68
+     ],
+     [
+      0.36,
+      0.96
+     ],
+     [
+      0.7,
+      0.58
+     ],
+     [
+      0.78,
+      0.48
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-nombres"
+    ]
+   },
+   "order": 25,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pesaje"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "vasija"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sello"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "custodios de la corte"
+      ]
+     },
+     "label": "Custodios de la corte"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "hori"
+      ]
+     },
+     "label": "Hori"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "paser"
+      ]
+     },
+     "label": "Paser"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "tamerit"
+      ]
+     },
+     "label": "Tamerit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "kasa"
+      ]
+     },
+     "label": "Kasa"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "beset"
+      ]
+     },
+     "label": "Beset"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "dedi"
+      ]
+     },
+     "label": "Dedi"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.2,
+      0.8
+     ],
+     [
+      0.8,
+      0.8
+     ],
+     [
+      0.3,
+      0.86
+     ],
+     [
+      0.7,
+      0.86
+     ],
+     [
+      0.5,
+      0.92
+     ],
+     [
+      0.12,
+      0.74
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-corazon"
+    ]
+   },
+   "order": 26,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "pesaje"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "corazon"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "sello"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "neb-sekhem"
+      ]
+     },
+     "label": "Neb-Sekhem"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "khety"
+      ]
+     },
+     "label": "Khety"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.14,
+      0.88
+     ],
+     [
+      0.3,
+      0.94
+     ],
+     [
+      0.56,
+      0.97
+     ],
+     [
+      0.72,
+      0.94
+     ],
+     [
+      0.88,
+      0.9
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-merit"
+    ]
+   },
+   "order": 27,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "merit"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "pluma"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "agua"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "merit"
+      ]
+     },
+     "label": "Merit"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.65,
+      0.84
+     ],
+     [
+      0.5,
+      0.9
+     ],
+     [
+      0.8,
+      0.9
+     ],
+     [
+      0.62,
+      0.95
+     ],
+     [
+      0.45,
+      0.97
+     ],
+     [
+      0.85,
+      0.98
+     ],
+     [
+      0.7,
+      0.8
+     ],
+     [
+      0.55,
+      0.78
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "lamina-khety"
+    ]
+   },
+   "order": 28,
+   "name": "",
+   "reading": {
+    "sceneFlag": [
+     "mr-trono-de-la-sed",
+     "direction"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-trono-de-la-sed",
+     "slug",
+     "procesion"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "campana"
+      ]
+     }
+    },
+    {
+     "label": "",
+     "icon": "wave-square",
+     "sound": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "vasija"
+      ]
+     }
+    }
+   ],
+   "ambient": null,
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-trono-de-la-sed",
+       "slug",
+       "khety"
+      ]
+     },
+     "label": "Khety"
+    }
+   ],
+   "handouts": [],
+   "notes": "",
+   "thumb": "",
+   "stage": {
+    "eye": 0.45,
+    "anchors": [
+     [
+      0.3,
+      0.9
+     ],
+     [
+      0.5,
+      0.93
+     ],
+     [
+      0.15,
+      0.95
+     ],
+     [
+      0.65,
+      0.9
+     ],
+     [
+      0.4,
+      0.97
+     ],
+     [
+      0.8,
+      0.95
+     ]
+    ]
+   }
+  }
+ ]
+}

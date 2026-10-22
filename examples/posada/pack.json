@@ -1,0 +1,331 @@
+{
+ "schema": 1,
+ "id": "posada-del-cuervo",
+ "title": "La Posada del Cuervo (ejemplo)",
+ "version": "1.0.0",
+ "author": "Manu Romera",
+ "license": "CC0 (audio sintetizado) · arte propio",
+ "settings": {
+  "fade": 3.5,
+  "motifs": [
+   {
+    "id": "tension",
+    "label": "Tensión",
+    "icon": "eye",
+    "music": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "tension"
+     ]
+    }
+   },
+   {
+    "id": "esperanza",
+    "label": "Esperanza",
+    "icon": "dove",
+    "music": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "esperanza"
+     ]
+    }
+   }
+  ],
+  "effects": [
+   {
+    "id": "campana",
+    "label": "Campana",
+    "icon": "bell",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "campana"
+     ]
+    }
+   },
+   {
+    "id": "puerta",
+    "label": "Puerta",
+    "icon": "door-open",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "puerta"
+     ]
+    }
+   },
+   {
+    "id": "trueno",
+    "label": "Trueno",
+    "icon": "cloud-bolt",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "trueno"
+     ]
+    }
+   }
+  ],
+  "markers": {
+   "milestones": [
+    {
+     "id": "trampilla",
+     "label": "Descubren la trampilla"
+    },
+    {
+     "id": "sombra",
+     "label": "Conocen a la Sombra"
+    },
+    {
+     "id": "llave",
+     "label": "Encuentran la llave"
+    }
+   ],
+   "clocks": [
+    {
+     "id": "tormenta",
+     "label": "La tormenta",
+     "segments": 6
+    }
+   ]
+  }
+ },
+ "scenes": [
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "camino"
+    ]
+   },
+   "order": 0,
+   "name": "El camino de la posada",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-camino"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "viento"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "Viento",
+     "icon": "wind",
+     "sound": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viento"
+      ]
+     }
+    }
+   ],
+   "ambient": "dim",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viajero"
+      ]
+     },
+     "label": "El viajero"
+    }
+   ],
+   "handouts": [],
+   "notes": "Los jugadores llegan al anochecer. La nevada empeora si el reloj de la tormenta avanza.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/camino-thumb.webp",
+   "stage": {
+    "eye": 0.6,
+    "anchors": [
+     [
+      0.5,
+      0.75
+     ],
+     [
+      0.45,
+      0.85
+     ],
+     [
+      0.62,
+      0.9
+     ],
+     [
+      0.35,
+      0.95
+     ],
+     [
+      0.75,
+      0.95
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "sala"
+    ]
+   },
+   "order": 1,
+   "name": "La sala común",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-sala"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "hogar"
+    ]
+   },
+   "motifs": [
+    "tension",
+    "esperanza"
+   ],
+   "cues": [],
+   "ambient": "light",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "posadera"
+      ]
+     },
+     "label": "La posadera"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viajero"
+      ]
+     },
+     "label": "El viajero"
+    }
+   ],
+   "handouts": [],
+   "notes": "La posadera sabe más de lo que cuenta.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/sala-thumb.webp",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.5,
+      0.78
+     ],
+     [
+      0.4,
+      0.85
+     ],
+     [
+      0.6,
+      0.87
+     ],
+     [
+      0.3,
+      0.93
+     ],
+     [
+      0.7,
+      0.95
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "bodega"
+    ]
+   },
+   "order": 2,
+   "name": "La bodega",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-bodega"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "sotano"
+    ]
+   },
+   "motifs": [
+    "tension"
+   ],
+   "cues": [],
+   "ambient": "dark",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "sombra"
+      ]
+     },
+     "label": "La Sombra"
+    }
+   ],
+   "handouts": [],
+   "notes": "La trampilla da a un pasadizo. La llave cuelga del farol.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/bodega-thumb.webp",
+   "stage": {
+    "eye": 0.6,
+    "anchors": [
+     [
+      0.5,
+      0.75
+     ],
+     [
+      0.4,
+      0.82
+     ],
+     [
+      0.6,
+      0.85
+     ],
+     [
+      0.3,
+      0.9
+     ],
+     [
+      0.7,
+      0.92
+     ]
+    ]
+   }
+  }
+ ]
+}

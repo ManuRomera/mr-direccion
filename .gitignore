@@ -1,0 +1,6 @@
+node_modules/
+dist/
+art/new/
+art/src/
+art/gen.log
+.DS_Store

@@ -1,0 +1,26 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Tests
+        run: node --test tests/*.test.mjs
+      - name: Versión del tag = versión del módulo
+        run: |
+          test "v$(node -p "require('./module.json').version")" = "${GITHUB_REF_NAME}"
+      - name: Empaquetar
+        run: node scripts/zip.mjs
+      - name: Publicar la release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/module.json
+            dist/mr-direccion-v*.zip
