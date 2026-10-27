@@ -8,3 +8,8 @@ export function previewPlace(item,box,view,gap=10,pad=8){
  return {x,y};
 }
 export const panelSide=(pill,view)=>pill.y>view[1]/2?'above':'below';
+/** Rotación de una ficha que mira hacia donde se mueve (misma convención que Foundry: 0 = mirando hacia abajo). null si no hay desplazamiento. */
+export function facingAngle(from,to){
+ const dx=to.x-from.x,dy=to.y-from.y;if(!(Math.hypot(dx,dy)>0))return null;
+ const deg=Math.atan2(dy,dx)*180/Math.PI-90;return ((deg%360)+360)%360;
+}

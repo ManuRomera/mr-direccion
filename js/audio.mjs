@@ -42,7 +42,7 @@ export async function playEffect(ref,scene){
  const info=soundInfo(ref,scene);if(!info)return false;
  if(!await unlocked())return false;
  const s=await ensureManaged(info,'fx');
- if(s.playing){await s.parent.stopSound(s);if(s.repeat)return true;}
+ if(s.playing){await s.parent.stopSound(s);return true;} // pulsar un efecto que suena lo apaga (interruptor)
  await s.update({[`flags.${ID}.ch`]:'fx'});await s.parent.playSound(s);return true;
 }
 /** Al activar una escena con lista de reproducción enlazada, Foundry arranca esa pista a su manera: se para para no duplicarla. */

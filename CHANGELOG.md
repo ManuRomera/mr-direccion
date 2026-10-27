@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.1.4 — 2026-10-27
+- **Figuras para todas las fichas.** Las opciones (tamaño, escala por profundidad, giro y línea de desplazamiento) valen para **todas** las fichas de una escena configurada, no solo para las del reparto.
+- **Barra de tamaño de fichas** (en el menú Figuras): deslizador en px con valor numérico y máximo editable (hasta 4000 px). Actúa en directo mientras se mueve sobre **Todos** o **Seleccionados** (el elegido se resalta y se indica cuántas fichas son). Con suelo marcado es el tamaño en primer plano; sin él, un cuadrado de esos px conservando centro y pies.
+- **Giro y línea de desplazamiento** como opciones en Figuras: «Girar en la dirección del movimiento» y «Quitar la línea de desplazamiento». El giro se aplica también tras el movimiento, aunque otro módulo (MR Token Stage) quite el giro automático.
+- Los reajustes de tamaño del módulo ya no giran la ficha ni dibujan regla.
+- **Efectos como interruptor:** pulsar un efecto que suena lo apaga (antes lo reiniciaba); los activos (y los motivos) se ven claramente: relleno rosa brillante, aro luminoso, icono de altavoz parpadeante y `aria-pressed`.
+
 ## 0.1.3 — 2026-10-27
 - **Arreglo importante:** con un paquete registrado por otro módulo (como *La Rima de la Doncella*), cualquier acción sin escena —Parar audio, Modo lectura, volumen, parar efectos y todas las opciones de figuras (tamaño, rotación…)— lanzaba «Cannot read properties of undefined (reading 'uuid')». Ahora funcionan.
 - Una referencia a un módulo que no está activo (ámbito de flags) ya no lanza un error al dibujar la barra.

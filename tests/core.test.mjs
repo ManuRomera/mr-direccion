@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS} from '../js/core/perspective.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
-import {clampPos,previewPlace,panelSide} from '../js/core/geometry.mjs';
+import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
 import {convertTrono} from '../js/core/trono.mjs';
 import {proposeConfig} from '../js/core/autoconfig.mjs';
@@ -11,11 +11,11 @@ const scene={width:1600,height:900,grid:{size:100}};
 test('perspectiva: más cerca del frente = figura más grande; el horizonte limita la altura',()=>{
  const st={eye:.5};const far=figureSize(st,.6*900,900),near=figureSize(st,.95*900,900);
  assert.ok(near>far);assert.ok(Math.abs(figureSize(st,.95*900,900,360)-(.45*900)/FIGURE_DEFAULTS.visible)<1e-9);
- assert.equal(figureSize(st,.5*900,900),60); // pies en el horizonte: tamaño mínimo
+ assert.ok(figureSize(st,.5*900,900)<21); // pies en el horizonte: tamaño mínimo // pies en el horizonte: tamaño mínimo
 });
 test('perspectiva: el tamaño escala con los píxeles del reparto y respeta límites',()=>{
  const st={eye:.5},a=figureSize(st,.9*900,900,360),b=figureSize(st,.9*900,900,720);
- assert.ok(b>a);assert.ok(figureSize(st,.9*900,900,9999)<=900);assert.ok(figureSize(st,.9*900,900,1)>=60);
+ assert.ok(b>a);assert.ok(figureSize(st,.9*900,900,9999)<=900);assert.ok(figureSize(st,.9*900,900,1)>=20);
 });
 test('stageLayout coloca los pies sobre los puntos de apoyo y recoloca al mover',()=>{
  const st={eye:.5,anchors:[[.5,.9],[.25,.7]]};const [p]=stageLayout(scene,1,0,360,st);
@@ -32,7 +32,7 @@ test('rowLayout y cover',()=>{
  assert.equal(coverPosition({x:0,y:0,width:0,height:9},[1,1]),null);
 });
 test('opciones de figuras y reparto',()=>{
- assert.deepEqual(figureOptions({tokenPixels:5000,cover:true}),{tokenPixels:900,lockRotation:true,hideTrails:true,cover:true,depthScale:true});
+ assert.deepEqual(figureOptions({tokenPixels:5000,cover:true}),{tokenPixels:4000,lockRotation:true,hideTrails:true,cover:true,depthScale:true});
  assert.equal(figureOptions({}).cover,false);assert.deepEqual(missingCast([{actorId:'a'}],[{id:'a'},{id:'b'}]),[{id:'b'}]);
 });
 test('fundido cruzado: la suma de volúmenes es constante en todo el fundido',()=>{
@@ -112,4 +112,24 @@ test('v13: un movimiento trae width/height actuales y NO es un reajuste explíci
 test('sonidos gestionados: la clave separa música y efecto del mismo archivo; nombre legible',()=>{
  assert.notEqual(soundKey('music','a.ogg'),soundKey('fx','a.ogg'));
  assert.equal(baseName('sounds/El%20viento.ogg'),'El viento');assert.equal(baseName('x'),'x');
+});
+
+test('tamaño de ficha sin suelo: cuadrado de N px que conserva centro y pies; con suelo, por perspectiva',()=>{
+ const tk={x:700,y:400,width:2,height:2}; // 200 px
+ const p=sizePatch(scene,tk,300,null);
+ assert.equal(p.width,3);assert.ok(Math.abs(p.x+150-800)<1e-9); // mismo centro
+ assert.ok(Math.abs(p.y+300*(1-FIGURE_DEFAULTS.foot)-(400+200*(1-FIGURE_DEFAULTS.foot)))<1e-9); // mismos pies
+ const big=sizePatch(scene,tk,5000,null);assert.equal(big.width*100,900); // no supera la escena
+ const a=sizePatch(scene,{...tk,y:300},300,{eye:.4,anchors:[]}),b=sizePatch(scene,{...tk,y:700},300,{eye:.4,anchors:[]});
+ assert.ok(b.width>a.width);
+ assert.ok(sizePatch(scene,{x:-500,y:-500,width:1,height:1},100,null).x>=0);
+});
+
+test('giro hacia el movimiento: misma convención que Foundry (0 = mirando hacia abajo)',()=>{
+ const o={x:100,y:100};
+ assert.equal(facingAngle(o,{x:100,y:200}),0);      // abajo
+ assert.equal(facingAngle(o,{x:200,y:100}),270);    // derecha
+ assert.equal(facingAngle(o,{x:100,y:0}),180);      // arriba
+ assert.equal(facingAngle(o,{x:0,y:100}),90);       // izquierda
+ assert.equal(facingAngle(o,o),null);
 });

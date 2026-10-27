@@ -148,3 +148,21 @@
 .mrd-picker .mrd-pick-row[hidden],.mrd-picker .mrd-pick-group[hidden]{display:none}
 .mrd-picker .mrd-pick-play{flex:0 0 28px;width:28px;height:28px;padding:0;margin:0;line-height:1}
 .mrd-picker .mrd-pick-name{flex:1;margin:0;text-align:left;height:28px;line-height:1}
+/* efectos y motivos: interruptor con estado muy visible */
+#mr-direccion-bar .mrd-btn.mrd-chip.is-on,#mr-direccion-bar .mrd-btn.mrd-motif.is-on{color:#fff;font-weight:700;border-color:#ffd9a0;background:linear-gradient(180deg,#e0577a,#a02a4c);box-shadow:0 0 0 2px rgba(255,217,160,.65),0 0 14px rgba(224,87,122,.85),inset 0 1px 0 rgba(255,255,255,.4);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+#mr-direccion-bar .mrd-btn.is-on i{color:#fff;animation:mrd-pulse 1.2s ease-in-out infinite}
+#mr-direccion-bar.is-glass .mrd-btn.is-on{background:linear-gradient(180deg,rgba(255,110,150,.8),rgba(160,42,76,.7))}
+@keyframes mrd-pulse{50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){#mr-direccion-bar .mrd-btn.is-on i{animation:none}}
+/* barra de tamaño de fichas */
+#mr-direccion-bar .mrd-size{margin:10px 0;padding:10px 0;border-top:1px solid rgba(202,166,107,.25);border-bottom:1px solid rgba(202,166,107,.25)}
+#mr-direccion-bar .mrd-seg2{display:flex;gap:0;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.35);width:100%}
+#mr-direccion-bar .mrd-segbtn{flex:1;height:28px;margin:0;padding:0 10px;border:0;border-radius:0;background:rgba(255,255,255,.06);color:var(--mrd-ivory);font-size:12px;cursor:pointer;box-shadow:none}
+#mr-direccion-bar .mrd-segbtn+.mrd-segbtn{border-left:1px solid rgba(255,255,255,.3)}
+#mr-direccion-bar .mrd-segbtn.is-on{background:linear-gradient(180deg,#e0577a,#a02a4c);color:#fff;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 12px rgba(224,87,122,.7)}
+#mr-direccion-bar .mrd-segbtn:focus-visible{outline:2px solid #f0d28f;outline-offset:-2px}
+#mr-direccion-bar .mrd-size-range{width:100%;margin:10px 0 4px}
+#mr-direccion-bar .mrd-size-nums{display:flex;gap:12px;justify-content:space-between}
+#mr-direccion-bar .mrd-size-nums label{margin:0}
+#mr-direccion-bar .mrd-size-nums input{width:74px}
+#mr-direccion-bar input[type=checkbox]{outline:1px solid rgba(255,255,255,.5);outline-offset:0;border-radius:3px}

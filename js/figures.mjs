@@ -1,15 +1,19 @@
 import {ID,sceneConfig} from './store.mjs';
 import {find} from './refs.mjs';
-import {figureOptions,stageLayout,rowLayout,depthPatch,coverPosition,missingCast} from './core/perspective.mjs';
+import {facingAngle} from './core/geometry.mjs';
+import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast} from './core/perspective.mjs';
 /** Módulos que ajustan fichas por su cuenta: se les avisa de que estas ya están colocadas para que no las reajusten. */
 const FOREIGN=['mr-trono-de-la-sed'];
 const foreignFlags=()=>Object.fromEntries(FOREIGN.filter(id=>game.modules.get(id)?.active).map(id=>[id,{placed:true}]));
 const activeGM=()=>game.user.isGM&&(!game.users.activeGM||game.users.activeGM.id===game.user.id);
 export const options=()=>figureOptions(game.settings.get(ID,'figures'));
 const stageOf=scene=>{const c=sceneConfig(scene);return c&&c.stage.anchors.length?c.stage:null;};
-const isFigure=(scene,token)=>{
- if(!sceneConfig(scene))return false;if(token.getFlag?.(ID,'placed')||token._source?.flags?.[ID]?.placed)return true;
- const c=sceneConfig(scene);return c.figures.some(f=>find(f.ref,'actor')?.id===token.actorId);
+/** Las opciones (giro, línea de desplazamiento, escala por profundidad, tamaño) valen para TODAS las fichas de una escena configurada. */
+const managed=scene=>!!sceneConfig(scene);
+/** Solo las fichas colocadas por la barra (o de actores de la lista) reciben el tamaño inicial al crearse. */
+const isCast=(scene,token)=>{
+ if(token.getFlag?.(ID,'placed')||token._source?.flags?.[ID]?.placed)return true;
+ const c=sceneConfig(scene);return !!c&&c.figures.some(f=>find(f.ref,'actor')?.id===token.actorId);
 };
 export function visibleBounds(scene){
  if(!globalThis.canvas?.ready||canvas.scene?.id!==scene.id)return undefined;
@@ -38,20 +42,26 @@ export async function resolveActors(refs){
  return out;
 }
 export const castOf=scene=>resolveActors((sceneConfig(scene)?.figures??[]).map(f=>f.ref));
-export async function resizeFigures(scene,selectedOnly=false){
- if(!activeGM())return 0;const o=options(),stage=o.depthScale?stageOf(scene):null,unit=scene.grid.size||100;
- const ids=selectedOnly?new Set((canvas.tokens?.controlled??[]).map(t=>t.id)):null;
- const ch=scene.tokens.contents.filter(t=>(!ids||ids.has(t.id))&&isFigure(scene,t)).map(t=>{
-  if(stage)return {_id:t.id,...depthPatch(scene,t,o.tokenPixels,stage,{x:t._source.x,y:t._source.y})};
-  const size=Math.min(o.tokenPixels,scene.height,scene.width);
-  return {_id:t.id,width:size/unit,height:size/unit};
- });
- if(ch.length)await scene.updateEmbeddedDocuments('Token',ch);return ch.length;
+/** Fichas sobre las que actúa la barra de tamaño: todas las de la escena o solo las seleccionadas (en la escena que se está viendo). */
+export function targetTokens(scene,target){
+ if(!scene)return [];
+ if(target!=='selected')return scene.tokens.contents;
+ if(!globalThis.canvas?.ready||canvas.scene?.id!==scene.id)return [];
+ const ids=new Set((canvas.tokens?.controlled??[]).map(t=>t.id));
+ return scene.tokens.contents.filter(t=>ids.has(t.id));
 }
+/** Pone las fichas elegidas a `pixels` (con suelo marcado y escala por profundidad, ese es el tamaño en primer plano). */
+export async function resizeTokens(scene,target,pixels){
+ if(!activeGM())return 0;const o=options(),stage=o.depthScale?stageOf(scene):null;
+ const ch=targetTokens(scene,target).map(t=>({_id:t.id,...sizePatch(scene,{x:t._source.x,y:t._source.y,width:t._source.width,height:t._source.height},pixels,stage)}));
+ if(ch.length)await scene.updateEmbeddedDocuments('Token',ch,{mrdDepth:true,animate:false});return ch.length;
+}
+export const resizeFigures=(scene,selectedOnly=false)=>resizeTokens(scene,selectedOnly?'selected':'all',options().tokenPixels);
 export async function setOption(key,value){
  if(!activeGM())return;const next=figureOptions({...options(),[key]:value});await game.settings.set(ID,'figures',next);
  if(key==='lockRotation')for(const s of game.scenes){
-  const up=s.tokens.contents.filter(t=>isFigure(s,t)&&t.lockRotation!==next.lockRotation).map(t=>({_id:t.id,lockRotation:next.lockRotation}));
+  if(!managed(s))continue;
+  const up=s.tokens.contents.filter(t=>t.lockRotation!==next.lockRotation).map(t=>({_id:t.id,lockRotation:next.lockRotation}));
   if(up.length)await s.updateEmbeddedDocuments('Token',up);
  }
 }
@@ -64,18 +74,37 @@ export function fitScreen(center=true){
  adjusting=true;try{canvas.pan(p);}finally{adjusting=false;}
 }
 export function registerFigureHooks(){
- Hooks.on('preMoveToken',(token,mv)=>{if(!isFigure(token.parent,token))return;const o=options();if(o.lockRotation)mv.autoRotate=false;if(o.hideTrails)mv.showRuler=false;});
+ // Giro y línea de desplazamiento: todas las fichas de las escenas configuradas.
+ // Otros módulos (p. ej. MR Token Stage) pueden quitar el giro automático del movimiento: el giro se aplica también aquí, tras el movimiento.
+ const facing=new Map();
+ Hooks.on('preMoveToken',(token,mv,opts)=>{
+  if(!managed(token.parent))return;const o=options();
+  // Los reajustes de tamaño del propio módulo mueven la ficha unos píxeles: ni giran ni dibujan regla.
+  if(opts?.mrdDepth){mv.autoRotate=false;mv.showRuler=false;return;}
+  mv.autoRotate=!o.lockRotation;if(o.hideTrails)mv.showRuler=false;
+  facing.delete(token.id);
+  if(o.lockRotation||token.lockRotation)return;
+  try{const a=facingAngle(token.getCenterPoint(mv.origin),token.getCenterPoint(mv.destination));if(a!==null)facing.set(token.id,a);}catch(e){console.warn(`${ID} | giro`,e);}
+ });
+ Hooks.on('updateToken',(token,ch,opts,userId)=>{
+  if(userId!==game.user.id||!facing.has(token.id)||opts?.mrdRot||(ch.x===undefined&&ch.y===undefined))return;
+  const rot=facing.get(token.id);facing.delete(token.id);
+  if(Math.abs((((token._source.rotation-rot)%360)+540)%360-180)<.5)return;
+  token.update({rotation:rot},{mrdRot:true,animate:true}).catch(e=>console.warn(`${ID} | giro`,e));
+ });
  Hooks.on('preCreateToken',token=>{
-  const scene=token.parent,stage=options().depthScale?stageOf(scene):null;if(!stage||token._source.flags?.[ID]?.placed||!isFigure(scene,token))return;
-  const unit=scene.grid.size||100,n=Math.min(options().tokenPixels,scene.height,scene.width)/unit;
-  token.updateSource(depthPatch(scene,{width:n,height:n,x:token.x,y:token.y},options().tokenPixels,stage));
+  const scene=token.parent;if(!managed(scene))return;const o=options();
+  token.updateSource({lockRotation:o.lockRotation});
+  const stage=o.depthScale?stageOf(scene):null;if(!stage||token._source.flags?.[ID]?.placed||!isCast(scene,token))return;
+  const unit=scene.grid.size||100,n=Math.min(o.tokenPixels,scene.height,scene.width)/unit;
+  token.updateSource(depthPatch(scene,{width:n,height:n,x:token.x,y:token.y},o.tokenPixels,stage));
  });
  // Al arrastrar una figura hacia el fondo se empequeñece; hacia el frente, crece. En v13 el movimiento fija width/height durante
  // la propia actualización, así que el reajuste es una segunda actualización, hecha por quien movió la ficha.
  Hooks.on('updateToken',(token,ch,opts,userId)=>{
   if(opts?.mrdDepth||userId!==game.user.id||!token.isOwner||(ch.x===undefined&&ch.y===undefined))return;
   const scene=token.parent,stage=options().depthScale?stageOf(scene):null;
-  if(!stage||!isFigure(scene,token))return;
+  if(!stage)return;
   // token.x/y puede ir por detrás (posición animada): la destino está en el cambio y en _source.
   const patch=depthPatch(scene,token,options().tokenPixels,stage,{x:ch.x??token._source.x,y:ch.y??token._source.y});
   if(Math.abs(patch.width-token._source.width)<.01)return;
