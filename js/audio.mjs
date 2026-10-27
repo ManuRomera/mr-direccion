@@ -1,13 +1,21 @@
 import {ID,globalSettings} from './store.mjs';
 import {audioVolume,fadeMs,ambientFor,crossfadePlan} from './core/crossfade.mjs';
-import {find,ensureSound} from './refs.mjs';
+import {soundInfo,ensureManaged} from './refs.mjs';
+import {L} from './ui.mjs';
 export const mix=()=>game.settings.get(ID,'mix')??{level:.3,quiet:false};
 export function fadeSeconds(){const c=Number(game.settings.get(ID,'fade'));return c>0?c:(globalSettings().fade??3.5);}
-const musicPlaying=()=>game.playlists.contents.flatMap(p=>p.sounds.contents).filter(s=>s.playing&&s.getFlag(ID,'ch')==='music');
+const channelPlaying=ch=>game.playlists.contents.flatMap(p=>p.sounds.contents).filter(s=>s.playing&&(!ch||s.getFlag(ID,'ch')===ch));
+/** Foundry bloquea el audio hasta el primer gesto: se espera a que se desbloquee (sin colgarse si no llega). */
+async function unlocked(){
+ if(!game.audio?.locked)return true;
+ await Promise.race([game.audio.unlock,new Promise(r=>setTimeout(r,2500))]);
+ if(game.audio.locked){ui.notifications.warn(L('AudioLocked'));return false;}
+ return true;
+}
 /** Fundido cruzado sin hueco: la entrante arranca sin await, las salientes paran a la vez y la entrante se rampa a mano. */
-export async function crossfadeTo(sound){
+async function crossfadeTo(sound){
  const pl=sound.parent,ms=fadeMs(fadeSeconds()),V=audioVolume(mix().level,mix().quiet);
- const leaving=[...new Set([...musicPlaying(),...pl.sounds.contents.filter(s=>s.playing)])].filter(s=>s.id!==sound.id);
+ const leaving=channelPlaying('music').filter(s=>s.id!==sound.id);
  const plan=crossfadePlan(leaving.map(s=>s.id),sound.id);
  await Promise.all(leaving.map(s=>s.update({fade:ms})));
  await sound.update({volume:V,fade:ms,[`flags.${ID}.ch`]:'music'});
@@ -20,25 +28,35 @@ export async function crossfadeTo(sound){
  }
  await Promise.all([entering,...out]);
 }
+/** Música: devuelve false si la ref no se puede resolver o el audio sigue bloqueado. */
 export async function playRef(ref,scene){
- const s=ref?.src?await ensureSound(ref,{repeat:true}):find(ref,'sound',scene);
- if(!s)return false;await crossfadeTo(s);return true;
+ const info=soundInfo(ref,scene);if(!info)return false;
+ if(!await unlocked())return false;
+ await crossfadeTo(await ensureManaged(info,'music'));return true;
 }
 export async function stopAudio(){
- for(const p of game.playlists)for(const s of p.sounds)if(s.playing&&['music','fx'].includes(s.getFlag(ID,'ch')))await p.stopSound(s);
+ for(const s of channelPlaying())if(['music','fx'].includes(s.getFlag(ID,'ch')))await s.parent.stopSound(s);
 }
-export async function stopEffects(){
- for(const p of game.playlists)for(const s of p.sounds)if(s.playing&&s.getFlag(ID,'ch')==='fx')await p.stopSound(s);
-}
+export async function stopEffects(){for(const s of channelPlaying('fx'))await s.parent.stopSound(s);}
 export async function playEffect(ref,scene){
- const s=ref?.src?await ensureSound(ref):find(ref,'sound',scene);if(!s)return false;
+ const info=soundInfo(ref,scene);if(!info)return false;
+ if(!await unlocked())return false;
+ const s=await ensureManaged(info,'fx');
  if(s.playing){await s.parent.stopSound(s);if(s.repeat)return true;}
  await s.update({[`flags.${ID}.ch`]:'fx'});await s.parent.playSound(s);return true;
 }
+/** Al activar una escena con lista de reproducción enlazada, Foundry arranca esa pista a su manera: se para para no duplicarla. */
+export async function quiesceNative(scene){
+ const pl=scene?.playlist;if(!pl)return;
+ for(const s of pl.sounds.contents)if(s.playing&&!s.getFlag(ID,'ch'))await pl.stopSound(s);
+}
 export async function applyMix(level,quiet){
  await game.settings.set(ID,'mix',{level,quiet});
- const v=audioVolume(level,quiet),up=musicPlaying().map(s=>({_id:s.id,parent:s.parent,volume:v}));
- for(const p of new Set(up.map(u=>u.parent)))await p.updateEmbeddedDocuments('PlaylistSound',up.filter(u=>u.parent===p).map(({_id,volume})=>({_id,volume})));
+ const playing=channelPlaying('music');
+ // Actualizar el volumen de un sonido que suena obliga a Foundry a crear su audio: antes hay que esperar al desbloqueo.
+ if(!playing.length||!await unlocked())return;
+ const v=audioVolume(level,quiet);
+ for(const s of playing)await s.update({volume:v});
 }
 export async function setAmbient(scene,key){
  const a=ambientFor(key);if(!a)return;

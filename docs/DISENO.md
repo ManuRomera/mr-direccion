@@ -53,6 +53,12 @@ Altura de una figura = `(pies − eye) · alto de escena / visible · (píxeles 
 ## Fundido cruzado
 La entrante se lanza **sin `await`** (`playSound` espera todo su fundido de entrada), las salientes paran a la vez y la entrante se rampa a mano con la misma duración → suma de volúmenes constante (`crossfadeGain`). Una pista que ya suena no se corta. Bucles: Ogg Opus ≤ 10 min (Foundry usa buffer: bucle sin hueco).
 
+## Sonidos gestionados
+Todo lo que suena desde la barra se reproduce con una **copia** en la lista «MR- Dirección» (modo desactivado, clave `canal|ruta`; la música se copia con bucle). Así no importa el modo de la lista de origen: en secuencial, Foundry corta los demás sonidos al reproducir uno y arranca el siguiente al acabar. Si la escena enlaza una lista nativa, esa pista se detiene al activar (`quiesceNative`). Con el audio aún bloqueado se espera a `game.audio.unlock` (máx. 2,5 s) antes de tocar un sonido.
+
+## Asignación rápida
+Lo que no tiene audio resoluble sale translúcido (`.mrd-off`) y su botón abre el selector (`picker.mjs`): música de escena, motivo (global), efecto de escena (o uno nuevo) y efecto global.
+
 ## API
 `game.modules.get('mr-direccion').api`: `registerPack(pack)`, `importPack(pack, {replace})`, `exportPack()`, `validatePack`, `dispatch(action, arg)`, `sceneConfig(scene)`, `globalSettings()`, `openEditor(sceneId)`, `startTutorial()`, `installExample()`, `converters.trono(...)`.
 Hooks: `mrDireccion.ready(api)`, `.packRegistered(pack)`, `.packImported(pack, informe)`, `.sceneChanged(scene, cfg)`, `.motif(id, scene)`, `.marker('milestone'|'clock', id, valor)`.

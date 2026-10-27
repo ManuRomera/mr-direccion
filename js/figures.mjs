@@ -1,6 +1,9 @@
 import {ID,sceneConfig} from './store.mjs';
 import {find} from './refs.mjs';
 import {figureOptions,stageLayout,rowLayout,depthPatch,coverPosition,missingCast} from './core/perspective.mjs';
+/** Módulos que ajustan fichas por su cuenta: se les avisa de que estas ya están colocadas para que no las reajusten. */
+const FOREIGN=['mr-trono-de-la-sed'];
+const foreignFlags=()=>Object.fromEntries(FOREIGN.filter(id=>game.modules.get(id)?.active).map(id=>[id,{placed:true}]));
 const activeGM=()=>game.user.isGM&&(!game.users.activeGM||game.users.activeGM.id===game.user.id);
 export const options=()=>figureOptions(game.settings.get(ID,'figures'));
 const stageOf=scene=>{const c=sceneConfig(scene);return c&&c.stage.anchors.length?c.stage:null;};
@@ -20,16 +23,26 @@ export async function placeActors(scene,actors){
  const b=visibleBounds(scene),pos=stage?stageLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,stage,b):rowLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,b);
  const docs=[];
  for(let i=0;i<pending.length;i++){
-  const t=await pending[i].getTokenDocument({...pos[i],lockRotation:o.lockRotation,flags:{[ID]:{placed:true}}});docs.push(t.toObject());
+  const t=await pending[i].getTokenDocument({...pos[i],lockRotation:o.lockRotation,flags:{...foreignFlags(),[ID]:{placed:true}}});docs.push(t.toObject());
  }
  await scene.createEmbeddedDocuments('Token',docs);return docs.length;
 }
-export const castOf=scene=>(sceneConfig(scene)?.figures??[]).map(f=>find(f.ref,'actor')).filter(Boolean);
+/** Actores de la escena como documentos completos (un uuid de compendio da solo una entrada de índice: se carga entero). */
+export async function resolveActors(refs){
+ const out=[];
+ for(const ref of refs){
+  let a=find(ref,'actor');
+  if(a&&typeof a.getTokenDocument!=='function'&&a.uuid)a=await fromUuid(a.uuid).catch(()=>null);
+  if(a&&typeof a.getTokenDocument==='function')out.push(a);
+ }
+ return out;
+}
+export const castOf=scene=>resolveActors((sceneConfig(scene)?.figures??[]).map(f=>f.ref));
 export async function resizeFigures(scene,selectedOnly=false){
  if(!activeGM())return 0;const o=options(),stage=o.depthScale?stageOf(scene):null,unit=scene.grid.size||100;
  const ids=selectedOnly?new Set((canvas.tokens?.controlled??[]).map(t=>t.id)):null;
  const ch=scene.tokens.contents.filter(t=>(!ids||ids.has(t.id))&&isFigure(scene,t)).map(t=>{
-  if(stage)return {_id:t.id,...depthPatch(scene,t,o.tokenPixels,stage)};
+  if(stage)return {_id:t.id,...depthPatch(scene,t,o.tokenPixels,stage,{x:t._source.x,y:t._source.y})};
   const size=Math.min(o.tokenPixels,scene.height,scene.width);
   return {_id:t.id,width:size/unit,height:size/unit};
  });
@@ -57,11 +70,16 @@ export function registerFigureHooks(){
   const unit=scene.grid.size||100,n=Math.min(options().tokenPixels,scene.height,scene.width)/unit;
   token.updateSource(depthPatch(scene,{width:n,height:n,x:token.x,y:token.y},options().tokenPixels,stage));
  });
- // Al arrastrar una figura hacia el fondo se empequeñece; hacia el frente, crece (una sola actualización).
- Hooks.on('preUpdateToken',(token,ch)=>{
-  const scene=token.parent,stage=options().depthScale&&game.user.isGM?stageOf(scene):null;
-  if(!stage||!isFigure(scene,token)||ch.width!==undefined||ch.height!==undefined||(ch.x===undefined&&ch.y===undefined))return;
-  Object.assign(ch,depthPatch(scene,token,options().tokenPixels,stage,{x:ch.x,y:ch.y}));
+ // Al arrastrar una figura hacia el fondo se empequeñece; hacia el frente, crece. En v13 el movimiento fija width/height durante
+ // la propia actualización, así que el reajuste es una segunda actualización, hecha por quien movió la ficha.
+ Hooks.on('updateToken',(token,ch,opts,userId)=>{
+  if(opts?.mrdDepth||userId!==game.user.id||!token.isOwner||(ch.x===undefined&&ch.y===undefined))return;
+  const scene=token.parent,stage=options().depthScale?stageOf(scene):null;
+  if(!stage||!isFigure(scene,token))return;
+  // token.x/y puede ir por detrás (posición animada): la destino está en el cambio y en _source.
+  const patch=depthPatch(scene,token,options().tokenPixels,stage,{x:ch.x??token._source.x,y:ch.y??token._source.y});
+  if(Math.abs(patch.width-token._source.width)<.01)return;
+  token.update(patch,{mrdDepth:true,animate:false}).catch(e=>console.warn(`${ID} | reajuste por profundidad`,e));
  });
  Hooks.on('canvasReady',()=>fitScreen());Hooks.on('canvasPan',()=>fitScreen(false));
 }

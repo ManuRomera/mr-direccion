@@ -1,4 +1,5 @@
 import {ID} from './store.mjs';
+import {soundKey,baseName} from './core/crossfade.mjs';
 /** Resuelve refs ({uuid}|{flag}|{name}|{src}|{sceneFlag}) a documentos. `kind`: scene|sound|actor|journal. */
 const collection={scene:()=>game.scenes.contents,actor:()=>game.actors.contents,journal:()=>game.journal.contents,sound:()=>game.playlists.contents.flatMap(p=>p.sounds.contents)};
 export function find(ref,kind,scene=null){
@@ -14,13 +15,28 @@ export function find(ref,kind,scene=null){
  if(ref.src&&kind==='sound')return all.find(d=>d.path===ref.src)??null;
  return null;
 }
-/** Para {src} se crea (una vez) un sonido en la lista gestionada «MR- Dirección». */
-export async function ensureSound(ref,{repeat=false}={}){
- const hit=find(ref,'sound');if(hit||!ref?.src)return hit;
- let pl=game.playlists.find(p=>p.getFlag(ID,'managed'));
- if(!pl)pl=await Playlist.create({name:'MR- Dirección',flags:{[ID]:{managed:true}},mode:-1,sorting:'m'});
- const name=decodeURIComponent(ref.src.split('/').pop()).replace(/\.[^.]+$/,'');
- const [snd]=await pl.createEmbeddedDocuments('PlaylistSound',[{name,path:ref.src,repeat,volume:.3,flags:{[ID]:{src:ref.src}}}]);
- return snd;
+/** Datos reproducibles de una ref de sonido (sin tocar documentos): null si no se puede resolver. */
+export function soundInfo(ref,scene=null){
+ if(!ref)return null;
+ if(ref.src)return {path:ref.src,name:baseName(ref.src),volume:.5,repeat:false};
+ const d=find(ref,'sound',scene);
+ return d?.path?{path:d.path,name:d.name,volume:d.volume??.5,repeat:!!d.repeat}:null;
 }
-export const labelOf=(ref,kind,scene)=>{const d=find(ref,kind,scene);return d?.name??(ref?.src?decodeURIComponent(ref.src.split('/').pop()):'');};
+/* ---- sonidos gestionados ----
+ * Todo lo que suena desde la barra se reproduce con una copia en la lista «MR- Dirección» (modo desactivado): así no importa
+ * el modo de la lista de origen (en secuencial, reproducir uno corta a los demás y al acabar arranca el siguiente). */
+export const managedPlaylist=()=>game.playlists.find(p=>p.getFlag(ID,'managed'))??null;
+export const managedSound=(info,channel)=>info?managedPlaylist()?.sounds.find(s=>s.getFlag(ID,'key')===soundKey(channel,info.path))??null:null;
+let chain=Promise.resolve();
+export function ensureManaged(info,channel){
+ const run=chain.catch(()=>{}).then(async()=>{
+  const hit=managedSound(info,channel);if(hit)return hit;
+  let pl=managedPlaylist();
+  if(!pl)pl=await Playlist.create({name:'MR- Dirección',flags:{[ID]:{managed:true}},mode:-1,sorting:'m'});
+  const [snd]=await pl.createEmbeddedDocuments('PlaylistSound',[{name:info.name,path:info.path,repeat:channel==='music'?true:info.repeat,volume:channel==='music'?.3:info.volume,flags:{[ID]:{key:soundKey(channel,info.path)}}}]);
+  return snd;
+ });
+ chain=run;return run;
+}
+export const isPlaying=(ref,channel,scene)=>!!managedSound(soundInfo(ref,scene),channel)?.playing;
+export const labelOf=(ref,kind,scene)=>{const d=find(ref,kind,scene);return d?.name??(ref?.src?baseName(ref.src):'');};

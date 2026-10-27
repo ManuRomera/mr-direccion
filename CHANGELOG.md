@@ -1,5 +1,16 @@
 # Cambios
 
+## 0.1.2 — 2026-10-27
+Revisión de fallos de música y figuras.
+- **Música y efectos ya no dependen del modo de la lista de origen.** Antes, con una lista en modo secuencial (el de serie), lanzar un efecto cortaba la música, y al terminar un efecto arrancaba solo la pista siguiente. Ahora todo suena desde una copia en la lista «MR- Dirección» (modo desactivado).
+- Con escenas que ya enlazan su propia lista (como las de *El Trono de la Sed*) la pista nativa se detiene para no sonar duplicada.
+- El audio bloqueado por el navegador ya no lanza excepciones: se espera al primer gesto y, si no llega, avisa. Subir el volumen o activar el modo lectura con el audio bloqueado tampoco falla.
+- **Figuras:** la escala por profundidad al arrastrar una figura no funcionaba en Foundry v13 (el movimiento fijaba el tamaño); ahora se reajusta tras el movimiento, siguiendo la línea de los pies. Convive con *El Trono de la Sed*, que antes pisaba tamaño y posición al colocar el reparto.
+- Actores y diarios de compendio ya no rompen «Colocar el reparto», «Leer escena» ni las ayudas.
+- Activar una escena configurada sin música ya no muestra un aviso, y ya no se lanza dos veces la música.
+- Los errores muestran su mensaje en vez de un aviso genérico.
+- **Nuevo: asignar audio al vuelo.** Música, motivos, efectos de escena y efectos globales sin audio salen translúcidos; al pulsarlos se abre un selector con buscador, ▶ para oír y «Archivo…». Nuevo chip «Añadir efecto» y botón «Crear motivos habituales».
+
 ## 0.1.1 — 2026-10-22
 - Arreglo: el panel de marcadores no se redibujaba al cambiar un hito o un reloj hasta recargar (ahora usa `onChange` del ajuste).
 - Página del repositorio rehecha: banner con el logo MR de la casa y capturas reales en el mundo de *El Trono de la Sed*.

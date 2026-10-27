@@ -136,5 +136,20 @@
  "MRDIR.Ed.ExampleDone": "Example installed: {n} scenes configured.",
  "MRDIR.Ed.AutoDone": "Auto-configured — music {m}, reading {r}, figures {f}. Please review.",
  "MRDIR.Ed.Imported": "Pack imported: {n} scenes. Not found: {m}.",
- "MRDIR.Ed.ImportError": "Import failed: {e}"
+ "MRDIR.Ed.ImportError": "Import failed: {e}",
+ "MRDIR.NoAudioHint": "no audio: click to assign one",
+ "MRDIR.AudioLocked": "The browser still blocks audio: click the page and try again.",
+ "MRDIR.Assigned": "Audio assigned.",
+ "MRDIR.AddEffect": "Add effect",
+ "MRDIR.AddMotifs": "Create usual motifs",
+ "MRDIR.NoMotifsYet": "No motifs yet.",
+ "MRDIR.Cancel": "Cancel",
+ "MRDIR.Pick.Search": "Search sound…",
+ "MRDIR.Pick.File": "File…",
+ "MRDIR.Pick.None": "There are no sounds in your playlists: use “File…”.",
+ "MRDIR.Pick.Title_music": "Scene music",
+ "MRDIR.Pick.Title_motif": "Music for motif “{n}”",
+ "MRDIR.Pick.Title_cue": "Effect sound",
+ "MRDIR.Pick.Title_geffect": "Global effect sound",
+ "MRDIR.NoActors": "This scene has no placeable actors: check its figures in the editor."
 }

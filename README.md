@@ -32,6 +32,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 📖 **Leer escena** | Abre la lectura inicial (diario o página) con **pistas clicables** `@Dir[…]` que lanzan música, efectos o ambiente. |
 | 📺 **Mostrar a todos** | Activa la escena para los jugadores y arranca su música y su ambiente. |
 | 🎼 **Música sin huecos** | **Fundido cruzado** (3,5 s por defecto, configurable) entre pistas, también al repetir la misma. Bucles Ogg Opus. |
+| ⚡ **Asignar audio al vuelo** | Lo que aún no tiene audio sale translúcido: púlsalo y elige un sonido (con buscador y ▶ para oírlo) sin abrir el editor. |
 | 🌩️ **Motivos y efectos** | Batalla, tensión, persecución, sigilo, horror…: lista **editable por partida**. Chips de efectos por escena y globales. |
 | 🔉 **Mezcla** | Volumen, **Modo lectura** (baja el fondo), Parar audio y **ambiente** claro/penumbra/oscuro (luz y volumen a la vez, recordado por escena). |
 | 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del horizonte y de los puntos de apoyo; se recalcula al arrastrar. |

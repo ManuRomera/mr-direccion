@@ -136,5 +136,20 @@
  "MRDIR.Ed.ExampleDone": "Ejemplo instalado: {n} escenas configuradas.",
  "MRDIR.Ed.AutoDone": "Autoconfigurado — música {m}, lectura {r}, figuras {f}. Revisa el resultado.",
  "MRDIR.Ed.Imported": "Paquete importado: {n} escenas. Sin encontrar: {m}.",
- "MRDIR.Ed.ImportError": "No se pudo importar: {e}"
+ "MRDIR.Ed.ImportError": "No se pudo importar: {e}",
+ "MRDIR.NoAudioHint": "sin audio: pulsa para asignarlo",
+ "MRDIR.AudioLocked": "El navegador aún bloquea el audio: haz clic en la página y vuelve a intentarlo.",
+ "MRDIR.Assigned": "Audio asignado.",
+ "MRDIR.AddEffect": "Añadir efecto",
+ "MRDIR.AddMotifs": "Crear motivos habituales",
+ "MRDIR.NoMotifsYet": "Aún no hay motivos.",
+ "MRDIR.Cancel": "Cancelar",
+ "MRDIR.Pick.Search": "Buscar sonido…",
+ "MRDIR.Pick.File": "Archivo…",
+ "MRDIR.Pick.None": "No hay sonidos en las listas de reproducción: usa «Archivo…».",
+ "MRDIR.Pick.Title_music": "Música de la escena",
+ "MRDIR.Pick.Title_motif": "Música del motivo «{n}»",
+ "MRDIR.Pick.Title_cue": "Sonido del efecto",
+ "MRDIR.Pick.Title_geffect": "Sonido del efecto global",
+ "MRDIR.NoActors": "Esta escena no tiene actores que se puedan colocar: revisa sus figuras en el editor."
 }

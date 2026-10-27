@@ -135,3 +135,16 @@
 .mrd-anchor{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#9a3f58;border:2px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px #000a}
 .mrd-anchor b{font-size:9px;color:#fff;pointer-events:none}
 .mrd-anchor-fig{position:absolute;left:50%;bottom:8px;width:0;border-left:3px solid rgba(255,255,255,.75);pointer-events:none;transform:translateX(-50%)}
+/* sin audio: translúcido, pero pulsable para asignarlo al momento */
+#mr-direccion-bar .mrd-btn.mrd-off{opacity:.45;border-style:dashed}
+#mr-direccion-bar .mrd-btn.mrd-off:hover{opacity:.9}
+#mr-direccion-bar .mrd-btn.mrd-add{opacity:.7}
+#mr-direccion-bar .mrd-btn.mrd-add:hover{opacity:1}
+/* selector rápido de sonido */
+.mrd-picker .mrd-pick-q{width:100%;margin-bottom:8px}
+.mrd-picker .mrd-pick-list{max-height:min(52vh,420px);overflow:auto}
+.mrd-picker h4{margin:8px 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.75;border:0}
+.mrd-picker .mrd-pick-row{display:flex;gap:6px;align-items:center;margin:2px 0}
+.mrd-picker .mrd-pick-row[hidden],.mrd-picker .mrd-pick-group[hidden]{display:none}
+.mrd-picker .mrd-pick-play{flex:0 0 28px;width:28px;height:28px;padding:0;margin:0;line-height:1}
+.mrd-picker .mrd-pick-name{flex:1;margin:0;text-align:left;height:28px;line-height:1}

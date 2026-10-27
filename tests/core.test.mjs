@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,FIGURE_DEFAULTS} from '../js/core/perspective.mjs';
-import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor} from '../js/core/crossfade.mjs';
+import {figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS} from '../js/core/perspective.mjs';
+import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
 import {convertTrono} from '../js/core/trono.mjs';
@@ -101,4 +101,15 @@ test('paquete de ejemplo válido, con textos y ficheros existentes',()=>{
 test('idiomas: es y en tienen las mismas claves; versión de module.json coherente',()=>{
  const es=json('../lang/es.json'),en=json('../lang/en.json');assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
  const m=json('../module.json');assert.match(m.version,/^\d+\.\d+\.\d+$/);assert.ok(m.download.includes(`v${m.version}`));assert.equal(m.id,'mr-direccion');
+});
+
+test('v13: un movimiento trae width/height actuales y NO es un reajuste explícito',()=>{
+ const doc={width:3.5,height:3.5};
+ assert.equal(isExplicitResize({x:10,y:20,width:3.5,height:3.5,shape:4},doc),false);
+ assert.equal(isExplicitResize({x:10},doc),false);
+ assert.equal(isExplicitResize({width:2},doc),true);assert.equal(isExplicitResize({height:5},doc),true);
+});
+test('sonidos gestionados: la clave separa música y efecto del mismo archivo; nombre legible',()=>{
+ assert.notEqual(soundKey('music','a.ogg'),soundKey('fx','a.ogg'));
+ assert.equal(baseName('sounds/El%20viento.ogg'),'El viento');assert.equal(baseName('x'),'x');
 });

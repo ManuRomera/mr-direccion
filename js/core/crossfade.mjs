@@ -8,3 +8,6 @@ export const fadeMs=(seconds,fallback=DEFAULT_FADE)=>{const n=Number(seconds);re
 export function crossfadeGain(t,V){const x=Math.min(1,Math.max(0,t));return {in:V*x,out:V*(1-x)};}
 /** Qué suena y qué debe salir: todo lo que suena y no es la pista pedida (también si se repite la misma: no hay hueco). */
 export function crossfadePlan(playing,target){return {leaving:playing.filter(s=>s!==target),starting:!playing.includes(target)};}
+/** Clave de un sonido gestionado: el mismo archivo puede existir como música (bucle) y como efecto. */
+export const soundKey=(channel,path)=>`${channel}|${path}`;
+export const baseName=p=>{try{return decodeURIComponent(String(p).split('/').pop()).replace(/\.[^.]+$/,'');}catch{return String(p);}};

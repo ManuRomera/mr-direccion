@@ -40,3 +40,8 @@ export function coverPosition(rect,screen,position={},center=false){
 }
 export const figureOptions=(v={})=>{const px=Number(v.tokenPixels);return {tokenPixels:Math.round(clamp(Number.isFinite(px)?px:360,60,900)),lockRotation:v.lockRotation!==false,hideTrails:v.hideTrails!==false,cover:v.cover===true,depthScale:v.depthScale!==false};};
 export const missingCast=(existing,actors)=>{const ids=new Set(existing.map(t=>t.actorId));return actors.filter(a=>!ids.has(a.id));};
+/** En v13 un movimiento llega con width/height/shape ya dentro del cambio (con los valores actuales): solo es un reajuste explícito si difieren. */
+export function isExplicitResize(changes,doc,eps=1e-6){
+ const diff=(k)=>changes[k]!==undefined&&Math.abs(Number(changes[k])-Number(doc[k]))>eps;
+ return diff('width')||diff('height');
+}
