@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.1.3 — 2026-10-27
+- **Arreglo importante:** con un paquete registrado por otro módulo (como *La Rima de la Doncella*), cualquier acción sin escena —Parar audio, Modo lectura, volumen, parar efectos y todas las opciones de figuras (tamaño, rotación…)— lanzaba «Cannot read properties of undefined (reading 'uuid')». Ahora funcionan.
+- Una referencia a un módulo que no está activo (ámbito de flags) ya no lanza un error al dibujar la barra.
+- La búsqueda de la configuración de cada escena usa un índice: con paquetes grandes (decenas de escenas) la barra se redibuja mucho más ligera.
+- Pruebas nuevas que cubren el enlace de escenas por paquetes registrados.
+
 ## 0.1.2 — 2026-10-27
 Revisión de fallos de música y figuras.
 - **Música y efectos ya no dependen del modo de la lista de origen.** Antes, con una lista en modo secuencial (el de serie), lanzar un efecto cortaba la música, y al terminar un efecto arrancaba solo la pista siguiente. Ahora todo suena desde una copia en la lista «MR- Dirección» (modo desactivado).

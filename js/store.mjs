@@ -5,7 +5,7 @@ const registry=new Map();
 export const packs=()=>[...registry.values()];
 export function registerPack(raw){
  const v=validatePack(raw);if(!v.ok)throw new Error(`${ID} | paquete no válido: ${v.errors.join('; ')}`);
- registry.set(v.pack.id,v.pack);Hooks.callAll('mrDireccion.packRegistered',v.pack);return v.pack;
+ registry.set(v.pack.id,v.pack);reindex();Hooks.callAll('mrDireccion.packRegistered',v.pack);return v.pack;
 }
 const byId=(a,b)=>{const m=new Map(a.map(x=>[x.id,x]));for(const x of b)m.set(x.id,x);return [...m.values()];};
 export function mergeSettings(a,b){
@@ -21,11 +21,25 @@ export async function saveGlobal(patch){
  return game.settings.set(ID,'global',normalizeSettings({...cur,...patch}));
 }
 const sceneData=s=>({uuid:s.uuid,name:s.name,flags:s.flags});
+/** Índice de las escenas de los paquetes registrados (se reconstruye al registrar): evita recorrerlos entero en cada consulta. */
+let index={uuid:new Map(),name:new Map(),flags:new Map()};
+function reindex(){
+ index={uuid:new Map(),name:new Map(),flags:new Map()};
+ for(const p of registry.values())for(const c of p.scenes){
+  const r=c.ref;
+  if(r.uuid)index.uuid.set(r.uuid,c);
+  else if(r.flag){const k=r.flag[0]+'\0'+r.flag[1];if(!index.flags.has(k))index.flags.set(k,new Map());index.flags.get(k).set(r.flag[2],c);}
+  else if(r.name)index.name.set(r.name,c);
+ }
+}
 export function sceneConfig(scene){
- const f=scene?.getFlag?.(ID,'config');
+ if(!scene)return null; // acciones sin escena (parar audio, volumen, opciones de figuras…)
+ const f=scene.getFlag?.(ID,'config');
  if(f)return normalizeSceneConfig(f);
- for(const p of registry.values())for(const c of p.scenes)if(sceneMatches(c.ref,sceneData(scene)))return c;
- return null;
+ if(!registry.size)return null;
+ const byUuid=index.uuid.get(scene.uuid);if(byUuid)return byUuid;
+ for(const [k,vals] of index.flags){const [scope,key]=k.split('\0');const hit=vals.get(String(scene.flags?.[scope]?.[key]));if(hit)return hit;}
+ return index.name.get(scene.name)??null;
 }
 export function configuredScenes(){
  return game.scenes.contents.map(s=>({scene:s,cfg:sceneConfig(s)})).filter(x=>x.cfg).sort((a,b)=>a.cfg.order-b.cfg.order||a.scene.name.localeCompare(b.scene.name));

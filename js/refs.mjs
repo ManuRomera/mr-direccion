@@ -1,16 +1,18 @@
 import {ID} from './store.mjs';
 import {soundKey,baseName} from './core/crossfade.mjs';
 /** Resuelve refs ({uuid}|{flag}|{name}|{src}|{sceneFlag}) a documentos. `kind`: scene|sound|actor|journal. */
+/** getFlag lanza si el módulo dueño del ámbito no está activo: se lee directamente. */
+const flagOf=(d,scope,key)=>d?.flags?.[scope]?.[key];
 const collection={scene:()=>game.scenes.contents,actor:()=>game.actors.contents,journal:()=>game.journal.contents,sound:()=>game.playlists.contents.flatMap(p=>p.sounds.contents)};
 export function find(ref,kind,scene=null){
  if(!ref)return null;
  if(ref.uuid){try{return fromUuidSync(ref.uuid)??null;}catch{return null;}}
  if(ref.sceneFlag&&scene){
-  const d=scene.getFlag(ref.sceneFlag[0],ref.sceneFlag[1]);const j=game.journal.get(d?.journalId);
+  const d=flagOf(scene,ref.sceneFlag[0],ref.sceneFlag[1]);const j=game.journal.get(d?.journalId);
   return j?(j.pages.get(d.pageId)??j):null;
  }
  const all=collection[kind]?.()??[];
- if(ref.flag)return all.find(d=>String(d.getFlag?.(ref.flag[0],ref.flag[1]))===ref.flag[2])??null;
+ if(ref.flag)return all.find(d=>String(flagOf(d,ref.flag[0],ref.flag[1]))===ref.flag[2])??null;
  if(ref.name)return all.find(d=>d.name===ref.name)??null;
  if(ref.src&&kind==='sound')return all.find(d=>d.path===ref.src)??null;
  return null;
