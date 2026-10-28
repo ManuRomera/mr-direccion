@@ -1,5 +1,7 @@
 # MR- Dirección · Diseño
 
+*English version: [DESIGN.md](DESIGN.md).*
+
 ## Arquitectura
 Sin paso de compilación: módulos ES nativos de Foundry v13/v14. La lógica sin Foundry vive en `js/core/` y se prueba con `node --test`.
 

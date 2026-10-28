@@ -1,0 +1,67 @@
+{
+ "title": "MR- Dirección · How to run a scene",
+ "description": "A three-minute walk through the direction bar and the editor.",
+ "display": true,
+ "canBeResumed": true,
+ "restricted": true,
+ "steps": [
+  {
+   "id": "bienvenida",
+   "title": "Your directing desk",
+   "content": "This bar helps you <b>run the game live</b>: read the scene, show it to the players, change the music without gaps, fire effects and place characters on the floor of the background.\nIt works with any system. Use the buttons below to go forward and back."
+  },
+  {
+   "id": "barra",
+   "title": "The bar",
+   "selector": "#mr-direccion-bar",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "It is GM-only. <b>Drag it with the right mouse button</b> and it remembers its place; menus close when you click outside. The chevron on the right folds it."
+  },
+  {
+   "id": "escenas",
+   "title": "Choose a scene",
+   "selector": "#mr-direccion-bar .mrd-scenes",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "Your configured scenes live here. <b>Rest the cursor on one for two seconds</b> to see its thumbnail before switching."
+  },
+  {
+   "id": "mostrar",
+   "title": "Read and show",
+   "selector": "#mr-direccion-bar .mrd-grp",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "<b>Read scene</b> opens your opening text with clickable cues. <b>Show to everyone</b> activates the scene for the players and starts its music."
+  },
+  {
+   "id": "musica",
+   "title": "Music and motifs",
+   "selector": "#mr-direccion-bar .mrd-secondary",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "Change tracks with a gapless <b>crossfade</b>. <b>Motifs</b> (battle, tension, chase…) are tracks for a moment; press the active one again to return to the scene music. <b>Reading mode</b> lowers the background while you read."
+  },
+  {
+   "id": "mezcla",
+   "title": "Mix, ambience and more",
+   "selector": "#mr-direccion-bar details[data-menu=mix]",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "Volume, scene <b>ambience</b> (light, dim, dark: lighting and volume change together), markers and the editor."
+  },
+  {
+   "id": "editor",
+   "title": "The editor",
+   "selector": "#mr-direccion-bar details[data-menu=mix]",
+   "tooltipDirection": "DOWN",
+   "restricted": true,
+   "content": "In the <b>Editor</b> you set up each scene without touching files: drag music, actors and journals from the sidebar, mark the floor and horizon for perspective, or press <b>Auto-configure</b> for a first draft. <b>Install example</b> gives you a small adventure to try."
+  },
+  {
+   "id": "fin",
+   "title": "Go direct",
+   "content": "You can export your setup as a JSON pack and share it, or ship it with your adventure through the <code>registerPack</code> API. Replay this tour any time from Settings → Tours."
+  }
+ ]
+}

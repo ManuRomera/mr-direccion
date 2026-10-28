@@ -1,5 +1,9 @@
 # Cambios
 
+## 0.1.6 (2026-10-28)
+- **English everywhere:** the guided tour and the example adventure (“The Raven Inn”) now follow Foundry’s language (English or Spanish); English README section and `docs/DESIGN.md` (design and API).
+- Tour y ejemplo en el idioma de Foundry; README y documento de diseño también en inglés.
+
 ## 0.1.5 — 2026-10-28
 - **Menú de escenas organizado por carpetas.** Si las escenas configuradas están en varias carpetas, el menú las agrupa: la carpeta raíz (p. ej. el capítulo) como encabezado y cada carpeta (ciudad, lugar) plegable con su número de escenas. Se abre sola la de la escena actual y el menú se desplaza hasta ella.
 - **Buscador de escenas** en ese menú: filtra por nombre de escena o de carpeta y abre los grupos con coincidencias.

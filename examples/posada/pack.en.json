@@ -1,0 +1,331 @@
+{
+ "schema": 1,
+ "id": "posada-del-cuervo",
+ "title": "The Raven Inn (example)",
+ "version": "1.0.0",
+ "author": "Manu Romera",
+ "license": "CC0 (audio sintetizado) · arte propio",
+ "settings": {
+  "fade": 3.5,
+  "motifs": [
+   {
+    "id": "tension",
+    "label": "Tension",
+    "icon": "eye",
+    "music": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "tension"
+     ]
+    }
+   },
+   {
+    "id": "esperanza",
+    "label": "Hope",
+    "icon": "dove",
+    "music": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "esperanza"
+     ]
+    }
+   }
+  ],
+  "effects": [
+   {
+    "id": "campana",
+    "label": "Bell",
+    "icon": "bell",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "campana"
+     ]
+    }
+   },
+   {
+    "id": "puerta",
+    "label": "Door",
+    "icon": "door-open",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "puerta"
+     ]
+    }
+   },
+   {
+    "id": "trueno",
+    "label": "Thunder",
+    "icon": "cloud-bolt",
+    "sound": {
+     "flag": [
+      "mr-direccion",
+      "example",
+      "trueno"
+     ]
+    }
+   }
+  ],
+  "markers": {
+   "milestones": [
+    {
+     "id": "trampilla",
+     "label": "They find the trapdoor"
+    },
+    {
+     "id": "sombra",
+     "label": "They meet the Shadow"
+    },
+    {
+     "id": "llave",
+     "label": "They find the key"
+    }
+   ],
+   "clocks": [
+    {
+     "id": "tormenta",
+     "label": "The storm",
+     "segments": 6
+    }
+   ]
+  }
+ },
+ "scenes": [
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "camino"
+    ]
+   },
+   "order": 0,
+   "name": "The road to the inn",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-camino"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "viento"
+    ]
+   },
+   "motifs": null,
+   "cues": [
+    {
+     "label": "Wind",
+     "icon": "wind",
+     "sound": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viento"
+      ]
+     }
+    }
+   ],
+   "ambient": "dim",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viajero"
+      ]
+     },
+     "label": "The traveler"
+    }
+   ],
+   "handouts": [],
+   "notes": "The players arrive at dusk. The snowfall worsens if the storm clock advances.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/camino-thumb.webp",
+   "stage": {
+    "eye": 0.6,
+    "anchors": [
+     [
+      0.5,
+      0.75
+     ],
+     [
+      0.45,
+      0.85
+     ],
+     [
+      0.62,
+      0.9
+     ],
+     [
+      0.35,
+      0.95
+     ],
+     [
+      0.75,
+      0.95
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "sala"
+    ]
+   },
+   "order": 1,
+   "name": "The common room",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-sala"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "hogar"
+    ]
+   },
+   "motifs": [
+    "tension",
+    "esperanza"
+   ],
+   "cues": [],
+   "ambient": "light",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "posadera"
+      ]
+     },
+     "label": "The innkeeper"
+    },
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "viajero"
+      ]
+     },
+     "label": "The traveler"
+    }
+   ],
+   "handouts": [],
+   "notes": "The innkeeper knows more than she lets on.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/sala-thumb.webp",
+   "stage": {
+    "eye": 0.5,
+    "anchors": [
+     [
+      0.5,
+      0.78
+     ],
+     [
+      0.4,
+      0.85
+     ],
+     [
+      0.6,
+      0.87
+     ],
+     [
+      0.3,
+      0.93
+     ],
+     [
+      0.7,
+      0.95
+     ]
+    ]
+   }
+  },
+  {
+   "ref": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "bodega"
+    ]
+   },
+   "order": 2,
+   "name": "The cellar",
+   "reading": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "lectura-bodega"
+    ]
+   },
+   "music": {
+    "flag": [
+     "mr-direccion",
+     "example",
+     "sotano"
+    ]
+   },
+   "motifs": [
+    "tension"
+   ],
+   "cues": [],
+   "ambient": "dark",
+   "figures": [
+    {
+     "ref": {
+      "flag": [
+       "mr-direccion",
+       "example",
+       "sombra"
+      ]
+     },
+     "label": "The Shadow"
+    }
+   ],
+   "handouts": [],
+   "notes": "The trapdoor leads to a passage. The key hangs from the lantern.",
+   "thumb": "modules/mr-direccion/examples/posada/assets/bodega-thumb.webp",
+   "stage": {
+    "eye": 0.6,
+    "anchors": [
+     [
+      0.5,
+      0.75
+     ],
+     [
+      0.4,
+      0.82
+     ],
+     [
+      0.6,
+      0.85
+     ],
+     [
+      0.3,
+      0.9
+     ],
+     [
+      0.7,
+      0.92
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -8,7 +8,7 @@ class DirTour extends foundry.nue.Tour{
  }
 }
 export async function registerTutorial(){
- try{game.tours.register(ID,KEY,await DirTour.fromJSON(`modules/${ID}/tours/direccion.json`));}
+ try{const file=game.i18n.lang?.startsWith('es')?'direccion.json':'direccion.en.json';game.tours.register(ID,KEY,await DirTour.fromJSON(`modules/${ID}/tours/${file}`));}
  catch(e){console.error(`${ID} | no se pudo registrar el tutorial`,e);}
 }
 export const startTutorial=()=>game.tours.get(`${ID}.${KEY}`)?.start();

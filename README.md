@@ -11,7 +11,7 @@
 
 <h3 align="center">Lee la escena, muéstrala, cambia la música sin un solo corte,<br>lanza el trueno y coloca a la posadera sobre el suelo de verdad.<br>Todo desde una barra de cristal que cabe en 66 píxeles.</h3>
 
-<p align="center"><a href="https://github.com/ManuRomera/mr-direccion/releases/latest/download/module.json"><b>⬇️ Manifest</b></a> · <a href="#-instalar"><b>⚡ Instalar</b></a> · <a href="#-crea-tu-paquete-en-10-minutos"><b>🧭 Tu paquete en 10 minutos</b></a> · <a href="docs/DISENO.md"><b>📐 Diseño y API</b></a></p>
+<p align="center"><a href="https://github.com/ManuRomera/mr-direccion/releases/latest/download/module.json"><b>⬇️ Manifest</b></a> · <a href="#-instalar"><b>⚡ Instalar</b></a> · <a href="#-crea-tu-paquete-en-10-minutos"><b>🧭 Tu paquete en 10 minutos</b></a> · <a href="docs/DISENO.md"><b>📐 Diseño y API</b></a> · <a href="#-english"><b>🇬🇧 English</b></a></p>
 
 ---
 
@@ -120,3 +120,40 @@ Publicación: etiqueta `vX.Y.Z` → el workflow ejecuta los tests, empaqueta y s
 
 ## 📜 Créditos y licencias
 Código: MIT. Imágenes y audio del paquete de ejemplo: obra propia, CC BY 4.0 (atribución a Manu Romera). Diseño de la barra: *MR · El Trono de la Sed*. Hecho por [Manu Romera](https://github.com/ManuRomera).
+
+---
+
+## 🇬🇧 English
+
+**MR- Dirección** is a GM-only **direction bar for any Foundry VTT system**. It ships no content: you (or your adventure module) tell it which music, effects, cast, read-aloud text and handouts belong to each scene — with its own editor, or with a JSON pack imported in one click. The whole interface, the guided tour and the example adventure are available in **English and Spanish**.
+
+| | |
+|---|---|
+| 🎞️ **Scene picker with preview** | Rest the cursor on a scene for **2 s** to see its thumbnail. |
+| 📖 **Read scene** | Opens the read-aloud journal or page, with **clickable cues** `@Dir[…]` that fire music, effects or ambience. |
+| 📺 **Show to everyone** | Activates the scene for the players and starts its music and ambience. |
+| 🎼 **Gapless music** | **Crossfade** (3.5 s by default) between tracks, even when replaying the same one. Ogg Opus loops. |
+| ⚡ **Assign audio on the fly** | Anything without audio shows translucent: press it and pick a sound (with search and ▶ preview) without opening the editor. |
+| 🌩️ **Motifs and effects** | Battle, tension, chase, stealth, horror…: an **editable list per world**. Scene and global effect chips work as toggles. |
+| 🔉 **Mix** | Volume, **Reading mode** (ducks the background), Stop audio and **ambience** light/dim/dark (lighting and volume at once, remembered per scene). |
+| 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the horizon and the floor anchors and updates while dragging. |
+| 🕯️ **Markers** | **Secret milestones** the GM unlocks (with a notice to the table) and GM-only **clocks** of N segments. |
+| ✏️ **GM editor** | Drag from the sidebar, mark floor and horizon, **Auto-configure**, copy from another scene, import and export. |
+| 🎓 **Guided tour** | Native Foundry tour, offered the first time and repeatable from Settings → Tours. |
+
+**Install:** *Add-on Modules → Install Module* and paste the manifest `https://github.com/ManuRomera/mr-direccion/releases/latest/download/module.json`. Works with **any system** (tested with Cairn, dnd5e, Legend in the Mist and Mothership on Foundry v13).
+
+**Your pack in 10 minutes:** Bar → ⚙ → **Editor** → **Install example** (“The Raven Inn”: three scenes, three figures, free audio). Then open the editor on your own scene: drag a sound into *Scene music* and a journal or page into *Read-aloud*, drag effects into *Scene effects*, add the common motifs in the **Global** tab, mark the floor and horizon, drag actors into *Figures*, add handouts, milestones and clocks, and **Export pack** to share it.
+
+**For adventure authors** — your module can ship its own direction and drop its own director:
+
+```js
+Hooks.once('mrDireccion.ready', async api => {
+  const pack = await (await fetch('modules/my-adventure/direction.json')).json();
+  api.registerPack(pack);          // in memory: nothing is written to the world
+});
+```
+
+Schema, references, hooks and `dispatch` actions are documented in [`docs/DESIGN.md`](docs/DESIGN.md). Adventures that already use it: [MR- EIDOLON](https://github.com/ManuRomera/mr-eidolon) (Mothership, EN/ES), [MR- La Rima de la Doncella](https://github.com/ManuRomera/mr-doncella-escarcha).
+
+**License:** code MIT; example images and audio CC BY 4.0 (credit Manu Romera).
