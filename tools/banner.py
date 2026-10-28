@@ -26,7 +26,9 @@ def make(spec):
     while max(width(d, t, font("CinzelDecorative-Black.ttf", size), size * .03) for t in spec["title"]) > maxw: size -= 2
     for t in spec["title"]: tracked(d, (p, y), t, font("CinzelDecorative-Black.ttf", size), BONE, size * .03); y += int(size * 1.08)
     y += int(H * .02); d.rectangle((p, y, p + int(W * .08), y + 3), fill=acc); y += int(H * .045)
-    d.text((p, y), spec["subtitle"], font=font("CinzelDecorative-Bold.ttf", int(H * .052)), fill=GOLD); y += int(H * .09)
+    for sub in ([spec["subtitle"]] if isinstance(spec["subtitle"], str) else spec["subtitle"]):   # una o varias líneas (p. ej. dos idiomas)
+        d.text((p, y), sub, font=font("CinzelDecorative-Bold.ttf", int(H * .052)), fill=GOLD); y += int(H * .075)
+    y += int(H * .015)
     for line in spec["tagline"]: d.text((p, y), line, font=font("EBGaramond-Regular.ttf", int(H * .037)), fill=(222, 212, 190)); y += int(H * .06)
     im = im.convert("RGBA")
     if spec.get("logo", True):
