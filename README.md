@@ -1,7 +1,8 @@
 <p align="center"><img src="docs/img/banner.webp" alt="MR- Dirección — la barra de dirección de escena para cualquier sistema de Foundry VTT" width="100%"></p>
 
 <p align="center">
-<a href="https://github.com/ManuRomera/mr-direccion/releases/latest"><img alt="Versión" src="https://img.shields.io/github/v/release/ManuRomera/mr-direccion?style=for-the-badge&color=8b3448&label=release"></a>
+<a href="https://github.com/ManuRomera"><img alt="Manu Romera · Digital RPG Design" src="https://raw.githubusercontent.com/ManuRomera/ManuRomera/main/badges/mr-firma.svg" height="28"></a>
+  <a href="https://github.com/ManuRomera/mr-direccion/releases/latest"><img alt="Versión" src="https://img.shields.io/github/v/release/ManuRomera/mr-direccion?style=for-the-badge&color=8b3448&label=release"></a>
 <img alt="Foundry VTT v13" src="https://img.shields.io/badge/Foundry%20VTT-v13%20%C2%B7%20v14-c2a06b?style=for-the-badge">
 <img alt="Cualquier sistema" src="https://img.shields.io/badge/Sistema-cualquiera-28394d?style=for-the-badge">
 <a href="https://github.com/ManuRomera/mr-direccion/releases"><img alt="Descargas" src="https://raw.githubusercontent.com/ManuRomera/ManuRomera/main/badges/descargas/mr-direccion.svg"></a>
