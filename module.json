@@ -1,7 +1,7 @@
 {
  "id": "mr-direccion",
  "title": "MR- Dirección",
- "description": "Barra de dirección de escena para cualquier sistema de Foundry VTT: lectura, música con fundido cruzado y motivos, efectos, figuras con perspectiva, ayudas y marcadores de partida, configurables por escena con un editor para el GM.",
+ "description": "Barra de dirección de escena para cualquier sistema de Foundry VTT: lectura, música con fundido cruzado y motivos, efectos, figuras con perspectiva, ayudas y marcadores de partida, configurables por escena con un editor para el GM. · Scene direction bar for any Foundry VTT system: read-aloud, crossfaded music and motifs, effects, figures in perspective, handouts and game markers, configured per scene with a GM editor.",
  "version": "0.1.6",
  "authors": [
   {

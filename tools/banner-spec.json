@@ -1,0 +1,53 @@
+[
+ {
+  "src": "docs/img/glass.webp",
+  "out": "docs/img/banner.webp",
+  "size": [
+   1600,
+   560
+  ],
+  "focus": 1.0,
+  "kicker": "Foundry VTT · Cualquier sistema · Any system",
+  "title": [
+   "MR-",
+   "Dirección"
+  ],
+  "subtitle": [
+   "La barra de dirección de escena",
+   "The scene direction bar"
+  ],
+  "tagline": [
+   "Música sin cortes · motivos · figuras en perspectiva",
+   "Gapless music · motifs · figures in perspective"
+  ],
+  "accent": [
+   139,
+   52,
+   72
+  ]
+ },
+ {
+  "src": "docs/img/glass.webp",
+  "out": "docs/img/social.png",
+  "size": [
+   1280,
+   640
+  ],
+  "focus": 1.0,
+  "kicker": "Foundry VTT · Cualquier sistema · Any system",
+  "title": [
+   "MR-",
+   "Dirección"
+  ],
+  "subtitle": [
+   "La barra de dirección de escena",
+   "The scene direction bar"
+  ],
+  "tagline": [],
+  "accent": [
+   139,
+   52,
+   72
+  ]
+ }
+]
