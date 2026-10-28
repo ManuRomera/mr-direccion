@@ -97,8 +97,27 @@ async function showHandout(ref,scene){
  const pop=new foundry.applications.apps.ImagePopout({src,window:{title:labelOf(ref,'journal')||src}});await pop.render({force:true});pop.shareImage?.();
 }
 export function refresh(){if(queued)return;queued=true;queueMicrotask(()=>{queued=false;render();});}
+/** Menú de escenas: si están en más de una carpeta, se agrupan por carpeta (ruta completa, plegable; abierta la de la escena actual) y aparece un buscador. */
 function sceneMenu(list,sel){
- return `<details data-menu="scenes" class="mrd-scenes"><summary class="mrd-btn mrd-scene-pick" aria-label="${E(L('ChooseScene'))}" title="${E(L('ChooseScene'))}"><span class="mrd-scene-name">${E(sel.name)}</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary><div class="mrd-menu mrd-scene-list" role="listbox">${list.map(({scene:s})=>`<button type="button" role="option" class="mrd-scene-item ${s.id===sel.id?'is-current':''}" aria-selected="${s.id===sel.id}" data-mrd-action="view" data-mrd-arg="${s.id}" data-thumb="${E(sceneConfig(s)?.thumb||s.thumb||s.background?.src||'')}">${E(s.name)}</button>`).join('')}</div></details>`;
+ const item=s=>`<button type="button" role="option" class="mrd-scene-item ${s.id===sel.id?'is-current':''}" aria-selected="${s.id===sel.id}" data-mrd-action="view" data-mrd-arg="${s.id}" data-thumb="${E(sceneConfig(s)?.thumb||s.thumb||s.background?.src||'')}">${E(s.name)}</button>`;
+ const groups=new Map();
+ for(const {scene:s} of list){const k=s.folder?.id??'';if(!groups.has(k))groups.set(k,[]);groups.get(k).push(s);}
+ // Carpeta raíz (p. ej. el capítulo) como encabezado; la carpeta propia, plegable
+ let head=null;
+ const group=([k,ss])=>{const f=game.folders.get(k),root=f?(f.ancestors?.at(-1)??f):null,top=root&&root!==f?root.name:null;
+  const h=top&&top!==head?`<p class="mrd-scene-chapter">${E(top)}</p>`:'';if(top)head=top;
+  return h+`<details class="mrd-scene-group" ${ss.some(s=>s.id===sel.id)?'open':''}><summary>${E(f?.name??L('NoFolder'))}<small>${ss.length}</small></summary>${ss.map(item).join('')}</details>`;};
+ const body=groups.size<2?list.map(x=>item(x.scene)).join(''):`<input type="search" class="mrd-scene-filter" placeholder="${E(L('FilterScenes'))}" aria-label="${E(L('FilterScenes'))}">`+[...groups].map(group).join('');
+ return `<details data-menu="scenes" class="mrd-scenes"><summary class="mrd-btn mrd-scene-pick" aria-label="${E(L('ChooseScene'))}" title="${E(L('ChooseScene'))}"><span class="mrd-scene-name">${E(sel.name)}</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary><div class="mrd-menu mrd-scene-list" role="listbox">${body}</div></details>`;
+}
+/** Buscador del menú de escenas: oculta lo que no coincide y abre los grupos con coincidencias. */
+function filterScenes(input){
+ const q=input.value.trim().toLocaleLowerCase(),list=input.closest('.mrd-scene-list');
+ for(const g of list.querySelectorAll('.mrd-scene-group')){
+  let n=0;for(const b of g.querySelectorAll('.mrd-scene-item')){const ok=!q||b.textContent.toLocaleLowerCase().includes(q)||g.firstElementChild.textContent.toLocaleLowerCase().includes(q);b.hidden=!ok;n+=ok;}
+  g.hidden=!n;if(q)g.open=n>0;
+ }
+ for(const h of list.querySelectorAll('.mrd-scene-chapter')){let x=h.nextElementSibling,any=false;while(x&&!x.matches('.mrd-scene-chapter')){any||=!x.hidden;x=x.nextElementSibling;}h.hidden=!any;}
 }
 function render(){
  if(!game.user.isGM||!game.settings.get(ID,'showBar')){bar?.remove();bar=null;return;}
@@ -128,7 +147,7 @@ function render(){
   ...g.effects.map(e=>cueBtn(!!soundInfo(e.sound,sel),'g~'+e.id,'geffect~'+e.id,e.label||find(e.sound,'sound',sel)?.name||'—',e.icon||'wave-square',isPlaying(e.sound,'fx',sel))),
   btn('assign','cue~'+sel.id+'~new',L('AddEffect'),'plus','','mrd-chip mrd-add')].join('');
  bar.innerHTML=`<div class="mrd-head">${grip}${sceneMenu(list,sel)}<div class="mrd-grp">${btn('read',sel.id,L('Read'),'book-open')}${btn('activate',sel.id,L('Show'),'panorama','','is-primary')}</div><div class="mrd-grp mrd-secondary">${hasMusic?btn('music',sel.id,L(playing?'Resume':'Music'),'music'):btn('assign','music~'+sel.id,L('Music'),'music','aria-disabled="true"','mrd-off').replace(/title="[^"]*"/,`title="${E(L('Music')+' · '+noAudio)}"`)}${motifMenu}${btn('quiet',sel.id,L('Quiet'),'volume-low',pressed(0,m.quiet))}${btn('stop',sel.id,L('Stop'),'volume-xmark')}</div><div class="mrd-grp mrd-secondary">${btn('fit',sel.id,L('Fit'),'expand')}${figs}${handouts}${notes}${mixMenu}</div>${collapse}</div><div class="mrd-cues">${chips}</div>`;
- for(const d of bar.querySelectorAll('details'))d.open=open.has(d.dataset.menu);
+ for(const d of bar.querySelectorAll('details[data-menu]'))d.open=open.has(d.dataset.menu);
  for(const b of bar.querySelectorAll('.mrd-btn:not([title])')){const t=b.textContent.trim();if(t)b.title=t;}
  applyPos();
 }
@@ -147,10 +166,10 @@ function build(){
  });
  bar.addEventListener('pointerout',e=>{const it=e.target.closest('.mrd-scene-item');if(it&&!it.contains(e.relatedTarget))hide();});
  bar.addEventListener('click',e=>{if(e.target.closest('.mrd-scene-item')){hide();bar.querySelector('details[data-menu=scenes]')?.removeAttribute('open');}},true);
- bar.addEventListener('toggle',e=>{if(!e.target.open)hide();},true);
+ bar.addEventListener('toggle',e=>{if(!e.target.open)hide();else if(e.target.matches('details[data-menu=scenes]'))e.target.querySelector('.mrd-scene-item.is-current')?.scrollIntoView({block:'center'});},true);
  closeOnOutside(()=>bar);
  bar.addEventListener('click',e=>{const b=e.target.closest('[data-mrd-action]');if(!b)return;e.preventDefault();if(b.dataset.mrdAction==='assign')for(const d of bar.querySelectorAll('details[open]'))d.open=false;dispatch(b.dataset.mrdAction,b.dataset.mrdArg).catch(fail);});
- bar.addEventListener('input',e=>{if(e.target.matches('.mrd-size-range,.mrd-size-val'))liveSize(Number(e.target.value),e.target);});
+ bar.addEventListener('input',e=>{if(e.target.matches('.mrd-size-range,.mrd-size-val'))liveSize(Number(e.target.value),e.target);if(e.target.matches('.mrd-scene-filter'))filterScenes(e.target);});
  bar.addEventListener('change',e=>{
   if(e.target.matches('input[type=range]:not(.mrd-size-range)'))dispatch('level',e.target.value).catch(fail);
   if(e.target.dataset.mrdOption){let k=e.target.dataset.mrdOption,v=e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='rotate'){k='lockRotation';v=!v;}dispatch('presentation',k+'~'+v).catch(fail);}
