@@ -157,5 +157,7 @@
  "MRDIR.SizeMax": "Max.",
  "MRDIR.SizeCount": "{n} token(s).",
  "MRDIR.SizeNoSel": "Select tokens in the scene.",
- "MRDIR.Opt_rotate": "Rotate towards the movement direction"
+ "MRDIR.Opt_rotate": "Rotate towards the movement direction",
+ "MRDIR.NoFolder": "Scenes without folder",
+ "MRDIR.FilterScenes": "Search scene or place…"
 }

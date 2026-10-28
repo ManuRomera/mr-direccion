@@ -1,5 +1,10 @@
 # Cambios
 
+## 0.1.5 — 2026-10-28
+- **Menú de escenas organizado por carpetas.** Si las escenas configuradas están en varias carpetas, el menú las agrupa: la carpeta raíz (p. ej. el capítulo) como encabezado y cada carpeta (ciudad, lugar) plegable con su número de escenas. Se abre sola la de la escena actual y el menú se desplaza hasta ella.
+- **Buscador de escenas** en ese menú: filtra por nombre de escena o de carpeta y abre los grupos con coincidencias.
+- Redibujar la barra ya no cierra los grupos abiertos.
+
 ## 0.1.4 — 2026-10-27
 - **Figuras para todas las fichas.** Las opciones (tamaño, escala por profundidad, giro y línea de desplazamiento) valen para **todas** las fichas de una escena configurada, no solo para las del reparto.
 - **Barra de tamaño de fichas** (en el menú Figuras): deslizador en px con valor numérico y máximo editable (hasta 4000 px). Actúa en directo mientras se mueve sobre **Todos** o **Seleccionados** (el elegido se resalta y se indica cuántas fichas son). Con suelo marcado es el tamaño en primer plano; sin él, un cuadrado de esos px conservando centro y pies.

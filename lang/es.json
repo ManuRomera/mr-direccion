@@ -157,5 +157,7 @@
  "MRDIR.SizeMax": "Máx.",
  "MRDIR.SizeCount": "{n} ficha(s).",
  "MRDIR.SizeNoSel": "Selecciona fichas en la escena.",
- "MRDIR.Opt_rotate": "Girar en la dirección del movimiento"
+ "MRDIR.Opt_rotate": "Girar en la dirección del movimiento",
+ "MRDIR.NoFolder": "Escenas sin carpeta",
+ "MRDIR.FilterScenes": "Buscar escena o lugar…"
 }
