@@ -1,5 +1,9 @@
 # Cambios · Changelog
 
+## 0.1.8 (2026-10-29)
+- **Arreglo:** la carpeta de la escena actual (y cualquier carpeta que abrieras) se cerraba al hacer clic fuera del menú, porque el cierre «al hacer clic fuera» también cerraba los grupos de carpetas. Ahora solo cierra los menús de la barra y las carpetas siguen abiertas al cambiar de escena, desde la barra o desde Foundry.
+- **Fix:** the current scene's folder (and any folder you had opened) closed when clicking outside the menu, because the “close on outside click” also closed the folder groups. It now only closes the bar's menus, and folders stay open when you change scene, from the bar or from Foundry.
+
 ## 0.1.7 (2026-10-29)
 - **Carpetas:** la carpeta de la escena actual se resalta en el menú y permanece abierta; los grupos que abres a mano y el texto del buscador sobreviven a los redibujados.
 - **Ocultar:** un botón de ojo oculta escenas o carpetas del menú (no se borran ni dejan de estar configuradas); «mostrar lo oculto» las deja ver atenuadas. La escena actual siempre se ve.

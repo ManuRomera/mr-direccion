@@ -205,7 +205,8 @@ function build(){
  bar.addEventListener('pointerout',e=>{const it=e.target.closest('.mrd-scene-item');if(it&&!it.contains(e.relatedTarget))hide();});
  bar.addEventListener('click',e=>{if(e.target.closest('.mrd-scene-item')){hide();bar.querySelector('details[data-menu=scenes]')?.removeAttribute('open');}},true);
  bar.addEventListener('toggle',e=>{if(!e.target.open)hide();else if(e.target.matches('details[data-menu=scenes]'))e.target.querySelector('.mrd-scene-item.is-current')?.scrollIntoView({block:'center'});},true);
- closeOnOutside(()=>bar);
+ // Solo los menús de la barra: los grupos de carpetas dentro del menú de escenas no se cierran al hacer clic fuera (la carpeta actual debe seguir abierta).
+ closeOnOutside(()=>bar,'details[data-menu][open]');
  bar.addEventListener('click',e=>{const b=e.target.closest('[data-mrd-action]');if(!b)return;e.preventDefault();if(b.dataset.mrdAction==='assign')for(const d of bar.querySelectorAll('details[open]'))d.open=false;dispatch(b.dataset.mrdAction,b.dataset.mrdArg).catch(fail);});
  bar.addEventListener('input',e=>{if(e.target.matches('.mrd-size-range,.mrd-size-val'))liveSize(Number(e.target.value),e.target);if(e.target.matches('.mrd-scene-filter'))filterScenes(e.target);});
  bar.addEventListener('change',e=>{
