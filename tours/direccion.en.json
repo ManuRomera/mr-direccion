@@ -24,7 +24,7 @@
    "selector": "#mr-direccion-bar .mrd-scenes",
    "tooltipDirection": "DOWN",
    "restricted": true,
-   "content": "Your configured scenes live here. <b>Rest the cursor on one for two seconds</b> to see its thumbnail before switching."
+   "content": "Your configured scenes live here. <b>Rest the cursor on one for one second</b> to see its thumbnail before switching."
   },
   {
    "id": "mostrar",

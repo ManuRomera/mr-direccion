@@ -36,7 +36,9 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 
 | | |
 |---|---|
-| 🎞️ **Selector de escena con vista previa** | Menú propio; deja el cursor **2 s** sobre una escena y aparece su miniatura, colocada para no salirse de pantalla. |
+| 🎞️ **Selector de escena con vista previa** | Menú propio; deja el cursor **1 s** sobre una escena y aparece su miniatura, colocada para no salirse de pantalla. |
+| 🗂️ **Carpetas y escenas ocultas** | El menú agrupa por carpetas (la de la escena actual, resaltada y abierta) y deja **ocultar** escenas o carpetas que aún no hacen falta, con un ojo; se recuperan con «mostrar lo oculto». |
+| ↔️ **Barra horizontal o vertical** | Un botón la pasa a **vertical** para los márgenes izquierdo o derecho; se arrastra con el botón derecho y recuerda su sitio en cada orientación. |
 | 📖 **Leer escena** | Abre la lectura inicial (diario o página) con **pistas clicables** `@Dir[…]` que lanzan música, efectos o ambiente. |
 | 📺 **Mostrar a todos** | Activa la escena para los jugadores y arranca su música y su ambiente. |
 | 🎼 **Música sin huecos** | **Fundido cruzado** (3,5 s por defecto, configurable) entre pistas, también al repetir la misma. Bucles Ogg Opus. |
@@ -55,7 +57,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 <table>
 <tr>
 <td width="50%"><img src="docs/img/motifs.webp" alt="Menú de motivos"><br><sub><b>Motivos</b> editables por partida; pulsa el activo para volver a la música de la escena.</sub></td>
-<td width="50%"><img src="docs/img/preview.webp" alt="Vista previa de escena al dejar el cursor"><br><sub><b>Vista previa</b> a los 2 s sobre una escena.</sub></td>
+<td width="50%"><img src="docs/img/preview.webp" alt="Vista previa de escena al dejar el cursor"><br><sub><b>Vista previa</b> al cabo de 1 s sobre una escena.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de las siete lámparas e hitos secretos.</sub></td>
@@ -146,7 +148,9 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 
 | | |
 |---|---|
-| 🎞️ **Scene picker with preview** | Its own menu; rest the cursor on a scene for **2 s** and its thumbnail appears, placed so it never leaves the screen. |
+| 🎞️ **Scene picker with preview** | Its own menu; rest the cursor on a scene for **1 s** and its thumbnail appears, placed so it never leaves the screen. |
+| 🗂️ **Folders and hidden scenes** | The menu groups scenes by folder (the current scene's folder is highlighted and kept open) and lets you **hide** scenes or folders you don't need yet with an eye button; bring them back with “show hidden”. |
+| ↔️ **Horizontal or vertical bar** | One button turns it **vertical** for the left or right margin; drag it with the right button and it remembers its place in each orientation. |
 | 📖 **Read scene** | Opens the read-aloud text (journal or page) with **clickable cues** `@Dir[…]` that fire music, effects or ambience. |
 | 📺 **Show to everyone** | Activates the scene for the players and starts its music and ambience. |
 | 🎼 **Gapless music** | **Crossfade** (3.5 s by default, configurable) between tracks, even when replaying the same one. Ogg Opus loops. |
@@ -169,7 +173,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/suelo.webp" alt="Floor and horizon editor"><br><sub><b>Floor and horizon</b>: the lines show a figure’s height at each point.</sub></td>
-<td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 2 s on a scene.</sub></td>
+<td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 1 s on a scene.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/classic.webp" alt="Classic style"><br><sub><b>Classic</b> style.</sub></td>

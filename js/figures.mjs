@@ -66,8 +66,10 @@ export async function setOption(key,value){
  }
 }
 let adjusting=false;
-export function fitScreen(center=true){
- if(adjusting||!canvas?.ready||!sceneConfig(canvas.scene)||!options().cover)return;
+/** `force`: el botón «Ajustar pantalla» rellena la pantalla con la imagen de la escena sin deformarla, aunque «mantener a pantalla completa» esté desactivado. */
+export function fitScreen(center=true,force=false){
+ if(adjusting||!canvas?.ready)return;
+ if(!force&&(!sceneConfig(canvas.scene)||!options().cover))return;
  const old={x:canvas.stage.pivot.x,y:canvas.stage.pivot.y,scale:canvas.stage.scale.x};
  const p=coverPosition(canvas.dimensions.sceneRect,canvas.screenDimensions,old,center);if(!p)return;
  if(['x','y','scale'].every(k=>Math.abs(old[k]-p[k])<1e-5))return;

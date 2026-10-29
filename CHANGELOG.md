@@ -1,4 +1,19 @@
-# Cambios
+# Cambios · Changelog
+
+## 0.1.7 (2026-10-29)
+- **Carpetas:** la carpeta de la escena actual se resalta en el menú y permanece abierta; los grupos que abres a mano y el texto del buscador sobreviven a los redibujados.
+- **Ocultar:** un botón de ojo oculta escenas o carpetas del menú (no se borran ni dejan de estar configuradas); «mostrar lo oculto» las deja ver atenuadas. La escena actual siempre se ve.
+- **Barra vertical:** un botón cambia entre horizontal y vertical (márgenes izquierdo o derecho); los menús se abren hacia el lado libre y cada orientación recuerda su posición.
+- La barra horizontal **ya no baja un icono a una segunda línea** con nombres de escena largos: si no cabe, primero se ocultan los textos de los botones y luego el título.
+- **Ajustar pantalla** funcionaba solo con «cubrir pantalla» activado; ahora rellena siempre toda la pantalla con la imagen de la escena, sin deformarla.
+- La miniatura del menú aparece al **1 s** (antes 2 s).
+
+- **Folders:** the current scene's folder is highlighted and stays open; groups you open by hand and the search text survive redraws.
+- **Hide:** an eye button hides scenes or folders from the menu (nothing is deleted or unconfigured); “show hidden” reveals them dimmed. The current scene is always shown.
+- **Vertical bar:** a button toggles horizontal/vertical (left or right margin); menus open towards the free side and each orientation remembers its position.
+- The horizontal bar **no longer drops an icon onto a second row** with long scene names: when it doesn't fit, button labels are hidden first, then the title.
+- **Fit screen** only worked with “cover screen” enabled; it now always fills the whole screen with the scene image, without distortion.
+- The menu thumbnail appears after **1 s** (it was 2 s).
 
 ## 0.1.6 (2026-10-28)
 - **English everywhere:** the guided tour and the example adventure (“The Raven Inn”) now follow Foundry’s language (English or Spanish); English README section and `docs/DESIGN.md` (design and API).

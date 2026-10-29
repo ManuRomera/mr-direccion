@@ -22,7 +22,7 @@
  "MRDIR.ResizeAll": "Reapply size",
  "MRDIR.Opt_depthScale": "Scale by depth (when tokens move)",
  "MRDIR.Opt_hideTrails": "Remove the movement ruler line",
- "MRDIR.Opt_cover": "Cover screen with background",
+ "MRDIR.Opt_cover": "Keep the background full-screen when panning",
  "MRDIR.DepthScaleHelp": "These options apply to every token in the scene, not only the cast.",
  "MRDIR.NoFigures": "This scene has no figures. Add them in the editor.",
  "MRDIR.AlreadyPlaced": "The whole cast is already in the scene.",
@@ -159,5 +159,10 @@
  "MRDIR.SizeNoSel": "Select tokens in the scene.",
  "MRDIR.Opt_rotate": "Rotate towards the movement direction",
  "MRDIR.NoFolder": "Scenes without folder",
- "MRDIR.FilterScenes": "Search scene or place…"
+ "MRDIR.FilterScenes": "Search scene or place…",
+ "MRDIR.Hide": "Hide from the list",
+ "MRDIR.Unhide": "Show again",
+ "MRDIR.ShowHidden": "Show hidden ({n})",
+ "MRDIR.Orient_v": "Make the bar vertical",
+ "MRDIR.Orient_h": "Make the bar horizontal"
 }

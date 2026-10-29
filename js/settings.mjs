@@ -9,6 +9,10 @@ export function registerSettings(EditorMenu){
  S('bg',{name:'MRDIR.Set.Bg',hint:'MRDIR.Set.BgHint',scope:'client',config:true,type:Boolean,default:true,onChange:refreshDirector});
  S('style',{name:'MRDIR.Set.Style',hint:'MRDIR.Set.StyleHint',scope:'client',config:true,type:String,default:'glass',choices:{glass:'MRDIR.Set.StyleGlass',classic:'MRDIR.Set.StyleClassic'},onChange:refreshDirector});
  S('fade',{name:'MRDIR.Set.Fade',hint:'MRDIR.Set.FadeHint',scope:'client',config:true,type:new foundry.data.fields.NumberField({min:0,max:10,step:.5,initial:0,nullable:false}),default:0});
+ S('orient',{scope:'client',config:false,type:String,default:'h'});
+ S('posV',{scope:'client',config:false,type:Object,default:null});
+ S('showHiddenScenes',{scope:'client',config:false,type:Boolean,default:false});
+ S('hidden',{scope:'world',config:false,type:Object,default:{scenes:[],folders:[]}});
  S('sizeTarget',{scope:'client',config:false,type:String,default:'all'});
  S('sizeMax',{scope:'client',config:false,type:Number,default:900});
  S('compact',{scope:'client',config:false,type:Boolean,default:false});

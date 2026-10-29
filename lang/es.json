@@ -22,7 +22,7 @@
  "MRDIR.ResizeAll": "Reaplicar el tamaño",
  "MRDIR.Opt_depthScale": "Escala por profundidad (al mover las fichas)",
  "MRDIR.Opt_hideTrails": "Quitar la línea de desplazamiento",
- "MRDIR.Opt_cover": "Cubrir pantalla con el fondo",
+ "MRDIR.Opt_cover": "Mantener el fondo a pantalla completa al mover",
  "MRDIR.DepthScaleHelp": "Estas opciones valen para todas las fichas de la escena, no solo para las del reparto.",
  "MRDIR.NoFigures": "Esta escena no tiene figuras. Añádelas en el editor.",
  "MRDIR.AlreadyPlaced": "Todo el reparto ya está en la escena.",
@@ -159,5 +159,10 @@
  "MRDIR.SizeNoSel": "Selecciona fichas en la escena.",
  "MRDIR.Opt_rotate": "Girar en la dirección del movimiento",
  "MRDIR.NoFolder": "Escenas sin carpeta",
- "MRDIR.FilterScenes": "Buscar escena o lugar…"
+ "MRDIR.FilterScenes": "Buscar escena o lugar…",
+ "MRDIR.Hide": "Ocultar de la lista",
+ "MRDIR.Unhide": "Volver a mostrar",
+ "MRDIR.ShowHidden": "Mostrar lo oculto ({n})",
+ "MRDIR.Orient_v": "Poner la barra en vertical",
+ "MRDIR.Orient_h": "Poner la barra en horizontal"
 }
