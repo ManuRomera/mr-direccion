@@ -1,5 +1,15 @@
 # Cambios · Changelog
 
+## 0.2.0 (2026-11-01)
+- **Perspectiva a elegir por escena:** la pestaña del editor (antes «Suelo y horizonte», ahora **Perspectiva**) ofrece tres modos: **Horizonte** (como hasta ahora), **Punto de fuga** (un punto que arrastras hasta donde convergen las líneas del suelo, por ejemplo el fondo de un pasillo; el editor dibuja los rayos y la línea de horizonte) y **Ninguna** (vista cenital o mapa: las figuras no cambian de tamaño).
+- Con punto de fuga y sin puntos de apoyo, **Colocar el reparto** escalona las figuras a distintas profundidades a lo largo de los rayos que salen del punto de fuga; al arrastrar una figura su tamaño se recalcula como siempre.
+- Con la cámara a nivel el punto de fuga cae en el horizonte, así que el tamaño depende de su altura (la X no lo cambia); para vistas inclinadas hacia abajo sigue sin haber un modelo propio.
+- Las escenas y paquetes anteriores siguen funcionando igual (sin modo = horizonte). El esquema del paquete sigue en la versión 1: `stage.mode` y `stage.vp` son opcionales.
+- **Choose the perspective per scene:** the editor tab (formerly “Floor & horizon”, now **Perspective**) offers three modes: **Horizon** (as before), **Vanishing point** (a point you drag to where the floor lines converge, e.g. the end of a corridor; the editor draws the rays and the horizon line) and **None** (top-down view or map: figures do not change size).
+- With a vanishing point and no floor anchors, **Place the cast** staggers the figures at different depths along the rays from the vanishing point; dragging a figure still recomputes its size as usual.
+- With a level camera the vanishing point lies on the horizon, so size depends on its height (its X does not change it); there is still no dedicated model for downward-tilted views.
+- Existing scenes and packs work as before (no mode = horizon). The pack schema stays at version 1: `stage.mode` and `stage.vp` are optional.
+
 ## 0.1.9 (2026-11-01)
 - **Arreglo grave de rendimiento en el editor:** cada vez que cambiabas de escena o de pestaña en el editor se acumulaban los oyentes de eventos de la ventana, de modo que cada clic rehacía la ventana el doble de veces que el anterior (1, 2, 4, 8, 16…). Tras unas diez escenas el navegador se quedaba bloqueado. Ahora cada clic hace un solo redibujado, sea cual sea el número de escenas o de cambios.
 - El buscador del editor filtra la lista en el sitio (sin rehacer la ventana en cada tecla) y el editor recorre las escenas una sola vez por redibujado.

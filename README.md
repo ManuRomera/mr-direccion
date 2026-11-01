@@ -46,11 +46,11 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🌩️ **Motivos y efectos** | Batalla, tensión, persecución, sigilo, horror…: lista **editable por partida**. Chips de efectos por escena y globales, como interruptores: se ve claramente cuáles suenan. |
 | 🔉 **Mezcla** | Volumen, **Modo lectura** (baja el fondo), Parar audio y **ambiente** claro/penumbra/oscuro (luz y volumen a la vez, recordado por escena). |
 | 📏 **Barra de tamaño** | Deslizador en px (máximo editable) que actúa en directo sobre **Todas** o sobre las **Seleccionadas**; giro hacia el movimiento y quitar la línea de desplazamiento, para todas las fichas de la escena. |
-| 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del horizonte y de los puntos de apoyo; se recalcula al arrastrar. |
+| 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del **horizonte** o de un **punto de fuga** (o de ninguno, para mapas en vista cenital) y de los puntos de apoyo; se recalcula al arrastrar. |
 | 🕯️ **Marcadores** | **Hitos secretos** que desbloquea el GM (con aviso a la mesa) y **relojes** de N segmentos solo-GM. Insignia arrastrable. |
 | 🖱️ **Se coloca donde quieras** | Toda la barra se arrastra con el **botón derecho**; la posición se recuerda y se restablece. Menús que se cierran al hacer clic fuera. |
 | 🪟 **Estilos** | **Cristal líquido** (por defecto) o Clásico, con o sin fondo, compacta o plegada. |
-| ✏️ **Editor del GM** | Arrastra desde el directorio, marca suelo y horizonte, **Autoconfigurar**, copia de otra escena, importa y exporta. |
+| ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna), **Autoconfigurar**, copia de otra escena, importa y exporta. |
 | 🎓 **Tutorial guiado** | Tour nativo de Foundry en castellano o inglés; se ofrece la primera vez y se repite desde Configuración → Tours. |
 | ♿ **Accesible** | Roles y `aria-*`, foco visible, `prefers-reduced-motion`, es/en. |
 
@@ -61,7 +61,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de las siete lámparas e hitos secretos.</sub></td>
-<td width="50%"><img src="docs/img/suelo.webp" alt="Editor de suelo y horizonte"><br><sub><b>Suelo y horizonte</b>: las líneas muestran la altura de una figura en cada punto.</sub></td>
+<td width="50%"><img src="docs/img/perspectiva.webp" alt="Editor de perspectiva con punto de fuga"><br><sub><b>Perspectiva</b>: horizonte, punto de fuga o ninguna; los rayos y las líneas blancas muestran hacia dónde se alejan las figuras y su altura.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/classic.webp" alt="Estilo clásico"><br><sub>Estilo <b>Clásico</b>.</sub></td>
@@ -87,7 +87,7 @@ Funciona con **cualquier sistema** (probado con Cairn, dnd5e, Legend in the Mist
 2. **Abre el Editor** y elige una escena propia.
 3. **Música y lectura (2 min).** Arrastra un sonido de una lista de reproducción a *Música de la escena* y un diario o página a *Lectura inicial*. También puedes escribir la ruta de un archivo de audio. O pulsa **Autoconfigurar** y revisa el borrador.
 4. **Efectos y motivos (2 min).** Arrastra sonidos a *Efectos de la escena*. En la pestaña **Global** pulsa *Añadir motivos habituales* y arrastra la música de cada uno.
-5. **Suelo y horizonte (2 min).** En *Suelo y horizonte* arrastra la línea punteada hasta la altura de los ojos de un personaje de pie y haz clic en el suelo para marcar dónde se pisa. Arrastra actores a *Figuras* y, en la barra, **Figuras → Colocar el reparto**.
+5. **Perspectiva (2 min).** En *Perspectiva* elige **Horizonte** (arrastra la línea punteada hasta la altura de los ojos de un personaje de pie) o **Punto de fuga** (arrastra el punto hasta donde convergen las líneas del suelo, p. ej. el fondo de un pasillo) y haz clic en el suelo para marcar dónde se pisa. Para un mapa cenital elige **Ninguna**: las figuras no cambian de tamaño. Arrastra actores a *Figuras* y, en la barra, **Figuras → Colocar el reparto**.
 6. **Ayudas y marcadores (2 min).** Arrastra diarios o imágenes a *Ayudas*; en Global crea hitos y relojes.
 7. **Compártelo.** **Exportar paquete** guarda un JSON; **Importar paquete** lo aplica en otro mundo (las escenas se enlazan por la referencia que indique el paquete).
 
@@ -158,11 +158,11 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🌩️ **Motifs and effects** | Battle, tension, chase, stealth, horror…: an **editable list per world**. Scene and global effect chips work as toggles, so you always see which ones are playing. |
 | 🔉 **Mix** | Volume, **Reading mode** (ducks the background), Stop audio and **ambience** light/dim/dark (lighting and volume at once, remembered per scene). |
 | 📏 **Size bar** | A px slider (editable maximum) that works live on **All** or **Selected** tokens; turn toward movement and remove the movement ruler, for every token in the scene. |
-| 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the horizon and the floor anchors and is recomputed while dragging. |
+| 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the **horizon** or a **vanishing point** (or from neither, for top-down maps) and the floor anchors, and is recomputed while dragging. |
 | 🕯️ **Markers** | **Secret milestones** the GM unlocks (with a notice to the table) and GM-only **clocks** of N segments. Draggable badge. |
 | 🖱️ **Put it anywhere** | Drag the whole bar with the **right mouse button**; the position is remembered and can be reset. Menus close when you click outside. |
 | 🪟 **Styles** | **Liquid Glass** (default) or Classic, with or without background, compact or folded. |
-| ✏️ **GM editor** | Drag from the sidebar, mark floor and horizon, **Auto-configure**, copy from another scene, import and export. |
+| ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none), **Auto-configure**, copy from another scene, import and export. |
 | 🎓 **Guided tour** | Native Foundry tour in English or Spanish, offered the first time and repeatable from Settings → Tours. |
 | ♿ **Accessible** | Roles and `aria-*`, visible focus, `prefers-reduced-motion`, English and Spanish. |
 
@@ -172,7 +172,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 <td width="50%"><img src="docs/img/markers-en.webp" alt="Markers panel with clocks and milestones, and the figures menu"><br><sub><b>Markers</b> (three clocks and the evidence milestones) and the <b>Figures</b> menu with the size bar.</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/img/suelo.webp" alt="Floor and horizon editor"><br><sub><b>Floor and horizon</b>: the lines show a figure’s height at each point.</sub></td>
+<td width="50%"><img src="docs/img/perspectiva-en.webp" alt="Perspective editor with a vanishing point"><br><sub><b>Perspective</b>: horizon, vanishing point or none; the rays and white lines show where figures recede and how tall they are.</sub></td>
 <td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 1 s on a scene.</sub></td>
 </tr>
 <tr>
@@ -199,7 +199,7 @@ Works with **any system** (tested with Cairn, dnd5e, Legend in the Mist and Moth
 2. **Open the Editor** and pick one of your own scenes.
 3. **Music and read-aloud (2 min).** Drag a sound from a playlist into *Scene music* and a journal or page into *Opening reading*. You can also type an audio file path. Or press **Auto-configure** and review the draft.
 4. **Effects and motifs (2 min).** Drag sounds into *Scene effects*. In the **Global** tab press *Add common motifs* and drag the music for each one.
-5. **Floor and horizon (2 min).** In *Floor & horizon* drag the dotted line to the eye height of a standing character and click the floor to mark where people stand. Drag actors into *Figures* and, on the bar, **Figures → Place the cast**.
+5. **Perspective (2 min).** In *Perspective* choose **Horizon** (drag the dotted line to the eye height of a standing character) or **Vanishing point** (drag the point to where the floor lines converge, e.g. the end of a corridor) and click the floor to mark where people stand. For a top-down map choose **None**: figures keep their size. Drag actors into *Figures* and, on the bar, **Figures → Place the cast**.
 6. **Handouts and markers (2 min).** Drag journals or images into *Handouts*; create milestones and clocks in Global.
 7. **Share it.** **Export pack** saves a JSON; **Import pack** applies it in another world (scenes are linked by the reference the pack gives).
 

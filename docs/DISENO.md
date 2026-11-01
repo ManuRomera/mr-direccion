@@ -43,13 +43,15 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
     "figures": [{"ref":REF,"label":""}],     // actores
     "handouts": [{"ref":REF,"label":""}],    // diarios, páginas, actores o imágenes
     "notes": "", "thumb": "ruta.webp",
-    "stage": {"eye": 0.5, "anchors": [[x,y],…]}   // fracciones del fondo
+    "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "anchors": [[x,y],…]}   // fracciones del fondo; sin mode = horizon
   }]
 }
 ```
 **REF** = `{"uuid"}` · `{"src"}` (archivo; crea un sonido en la lista «MR- Dirección») · `{"flag":[ámbito,clave,valor]}` · `{"name"}` · `{"sceneFlag":[ámbito,clave]}` (lectura enlazada por flags de escena, como hace Trono). Una cadena suelta se interpreta como uuid o ruta. `validatePack` normaliza (recorta rangos, descarta cues sin sonido, ids únicos), devuelve `errors` y `warnings` y rechaza esquemas futuros con un mensaje claro.
 
 ## Perspectiva
+Tres modos por escena (`stage.mode`): **horizon** (línea `eye`), **vanishing** (punto de fuga `vp`; con la cámara a nivel el punto de fuga cae en el horizonte, así que su altura hace de `eye` y la X no cambia el tamaño: sirve para colocar el punto con un clic, ver los rayos y repartir el reparto escalonado a lo largo de ellos cuando no hay apoyos, `vpAnchors`) y **none** (vista cenital: sin escala, tamaño uniforme). `effectiveStage` resuelve cuál aplica; los modos son retrocompatibles (sin `mode` = horizon).
+
 Altura de una figura = `(pies − eye) · alto de escena / visible · (píxeles / 360)`, con `visible = 0,885` y margen de pies `0,055` (los del token estándar). Solo se coloca sobre los puntos de apoyo del suelo; al arrastrar se recalcula conservando el centro y la línea de los pies. El tamaño inicial al crear una ficha solo se da a las colocadas por la barra (marca `placed`) o de actores de la lista; el resto de opciones (reajuste al mover, giro, regla, barra de tamaño) valen para todas las fichas de una escena configurada. En v13 el reajuste por profundidad es una segunda actualización tras el movimiento (`updateToken`), y el giro hacia el movimiento también se reaplica ahí porque otros módulos pueden quitarlo.
 
 ## Fundido cruzado

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors} from '../js/core/perspective.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
@@ -132,4 +132,32 @@ test('giro hacia el movimiento: misma convención que Foundry (0 = mirando hacia
  assert.equal(facingAngle(o,{x:100,y:0}),180);      // arriba
  assert.equal(facingAngle(o,{x:0,y:100}),90);       // izquierda
  assert.equal(facingAngle(o,o),null);
+});
+
+test('effectiveStage: horizonte, punto de fuga y sin perspectiva',()=>{
+ assert.equal(effectiveStage({mode:'none',eye:.5,anchors:[[.5,.9]],vp:[.5,.4]}),null);          // cenital: nunca escala
+ assert.equal(effectiveStage({mode:'horizon',eye:.5,anchors:[]}),null);                          // sin apoyos no está configurado (como antes)
+ assert.equal(effectiveStage({mode:'horizon',eye:.4,anchors:[[.5,.9]]}).eye,.4);
+ assert.equal(effectiveStage({eye:.4,anchors:[[.5,.9]]}).eye,.4);                                // configuraciones antiguas, sin mode
+ assert.equal(effectiveStage({mode:'vanishing',eye:.5,vp:[.3,.42],anchors:[]}).eye,.42);         // la altura del punto de fuga hace de horizonte
+ assert.equal(effectiveStage({mode:'vanishing',eye:.5,vp:null,anchors:[[.5,.9]]}),null);         // sin punto no hay perspectiva
+});
+test('punto de fuga y horizonte a la misma altura dan el mismo tamaño',()=>{
+ const h=effectiveStage({mode:'horizon',eye:.45,anchors:[[.5,.9]]}),v=effectiveStage({mode:'vanishing',eye:.9,vp:[.2,.45],anchors:[]});
+ for(const y of [.6,.8,.95])assert.equal(figureSize(h,y*900,900),figureSize(v,y*900,900));
+});
+test('vpAnchors: apoyos sobre rayos del punto de fuga, bajo el horizonte y dentro de la escena',()=>{
+ const vp=[.35,.45],pts=vpAnchors(vp,6);assert.equal(pts.length,6);
+ for(const [x,y] of pts){assert.ok(x>=0&&x<=1&&y>vp[1]&&y<=1);}
+ assert.ok(pts.every((p,i)=>i===0||p[0]>pts[i-1][0]-.02),'de izquierda a derecha');
+ assert.ok(new Set(pts.map(p=>p[1])).size>3,'a distintas profundidades');
+ const [lo]=vpAnchors([.5,.97],1);assert.ok(lo[1]>.97||lo[1]<=1);                               // punto de fuga muy bajo: no se sale
+});
+test('esquema: stage.mode y stage.vp se normalizan y lo antiguo sigue siendo horizonte',()=>{
+ const n=st=>validatePack({id:'p',scenes:[{ref:{name:'S'},stage:st}]}).pack.scenes[0].stage;
+ assert.equal(n({eye:.4,anchors:[[.5,.9]]}).mode,'horizon');
+ assert.equal(n({mode:'raro'}).mode,'horizon');
+ assert.deepEqual(n({mode:'vanishing',vp:[2,-1]}).vp,[1,0]);
+ assert.equal(n({mode:'vanishing',vp:['x',1]}).vp,null);
+ assert.equal(n({mode:'none'}).mode,'none');
 });

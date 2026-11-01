@@ -134,6 +134,18 @@
 .mrd-anchor{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#9a3f58;border:2px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px #000a}
 .mrd-anchor b{font-size:9px;color:#fff;pointer-events:none}
 .mrd-anchor-fig{position:absolute;left:50%;bottom:8px;width:0;border-left:3px solid rgba(255,255,255,.75);pointer-events:none;transform:translateX(-50%)}
+.mrd-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.mrd-editor .mrd-modes button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:8px 10px;text-align:left;line-height:1.25;white-space:normal}
+.mrd-modes button b{font-size:13px}.mrd-modes button small{font-size:11px;opacity:.75;font-weight:400}
+.mrd-editor .mrd-modes button.is-on{background:linear-gradient(180deg,#9a3f58,#6f2a3f);border-color:#e0bd83}
+.mrd-rays{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.mrd-rays line{stroke:rgba(240,210,143,.5);stroke-width:1;vector-effect:non-scaling-stroke}
+.mrd-rays line.h{stroke:#f0d28f;stroke-width:2;stroke-dasharray:6 5}
+.mrd-rays line.a{stroke:rgba(255,255,255,.8)}
+.mrd-vp{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid #f0d28f;background:rgba(0,0,0,.35);cursor:grab;box-shadow:0 2px 8px #000a}
+.mrd-vp::before,.mrd-vp::after{content:"";position:absolute;background:#f0d28f}
+.mrd-vp::before{left:50%;top:-8px;bottom:-8px;width:2px;margin-left:-1px}.mrd-vp::after{top:50%;left:-8px;right:-8px;height:2px;margin-top:-1px}
+.mrd-vp span{position:absolute;left:32px;top:-3px;font-size:11px;color:#f0d28f;white-space:nowrap;text-shadow:0 1px 3px #000}
 /* sin audio: translúcido, pero pulsable para asignarlo al momento */
 #mr-direccion-bar .mrd-btn.mrd-off{opacity:.45;border-style:dashed}
 #mr-direccion-bar .mrd-btn.mrd-off:hover{opacity:.9}

@@ -1,13 +1,13 @@
 import {ID,sceneConfig} from './store.mjs';
 import {find} from './refs.mjs';
 import {facingAngle} from './core/geometry.mjs';
-import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast} from './core/perspective.mjs';
+import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast,effectiveStage,vpAnchors} from './core/perspective.mjs';
 /** Módulos que ajustan fichas por su cuenta: se les avisa de que estas ya están colocadas para que no las reajusten. */
 const FOREIGN=['mr-trono-de-la-sed'];
 const foreignFlags=()=>Object.fromEntries(FOREIGN.filter(id=>game.modules.get(id)?.active).map(id=>[id,{placed:true}]));
 const activeGM=()=>game.user.isGM&&(!game.users.activeGM||game.users.activeGM.id===game.user.id);
 export const options=()=>figureOptions(game.settings.get(ID,'figures'));
-const stageOf=scene=>{const c=sceneConfig(scene);return c&&c.stage.anchors.length?c.stage:null;};
+const stageOf=scene=>{const c=sceneConfig(scene);return c?effectiveStage(c.stage):null;};
 /** Las opciones (giro, línea de desplazamiento, escala por profundidad, tamaño) valen para TODAS las fichas de una escena configurada. */
 const managed=scene=>!!sceneConfig(scene);
 /** Solo las fichas colocadas por la barra (o de actores de la lista) reciben el tamaño inicial al crearse. */
@@ -22,8 +22,10 @@ export function visibleBounds(scene){
  return {x,y,width:Math.min(scene.width-x,sc[0]/k),height:Math.min(scene.height-y,sc[1]/k)};
 }
 export async function placeActors(scene,actors){
- const o=options(),stage=o.depthScale?stageOf(scene):null,pending=missingCast(scene.tokens.contents,actors);
+ const o=options(),found=o.depthScale?stageOf(scene):null,pending=missingCast(scene.tokens.contents,actors);
  if(!pending.length)return 0;
+ // Con punto de fuga y sin puntos de apoyo, el reparto se escalona a lo largo de rayos que salen del punto de fuga.
+ const stage=found&&found.mode==='vanishing'&&!found.anchors.length?{...found,anchors:vpAnchors(found.vp,scene.tokens.size+pending.length)}:found;
  const b=visibleBounds(scene),pos=stage?stageLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,stage,b):rowLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,b);
  const docs=[];
  for(let i=0;i<pending.length;i++){

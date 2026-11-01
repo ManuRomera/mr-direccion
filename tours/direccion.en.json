@@ -56,7 +56,7 @@
    "selector": "#mr-direccion-bar details[data-menu=mix]",
    "tooltipDirection": "DOWN",
    "restricted": true,
-   "content": "In the <b>Editor</b> you set up each scene without touching files: drag music, actors and journals from the sidebar, mark the floor and horizon for perspective, or press <b>Auto-configure</b> for a first draft. <b>Install example</b> gives you a small adventure to try."
+   "content": "In the <b>Editor</b> you set up each scene without touching files: drag music, actors and journals from the sidebar, choose the perspective (horizon, vanishing point or none) and mark the floor, or press <b>Auto-configure</b> for a first draft. <b>Install example</b> gives you a small adventure to try."
   },
   {
    "id": "fin",

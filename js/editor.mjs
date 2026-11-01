@@ -54,10 +54,17 @@ export class DirectionEditor extends ApplicationV2{
   <fieldset class="wide mrd-tools"><legend>${E(L('Ed.Tools'))}</legend><button type="button" data-act="auto"><i class="fa-solid fa-wand-magic-sparkles"></i> ${E(L('Ed.Auto'))}</button> ${others.length?`<select class="copy-from">${others.map(x=>`<option value="${x.scene.id}">${E(x.scene.name)}</option>`).join('')}</select><button type="button" data-act="copy"><i class="fa-solid fa-copy"></i> ${E(L('Ed.Copy'))}</button>`:''} <button type="button" data-act="unconfig" class="danger"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.Unconfig'))}</button></fieldset></div>`;
  }
  floorTab(c){
-  const s=this.scene,src=s.background?.src,eye=c.stage.eye,W=s.width||1600,H=s.height||900;
-  if(!src)return `<p>${E(L('Ed.NoBackground'))}</p>`;
-  return `<p class="mrd-hint">${E(L('Ed.FloorHint'))}</p><div class="mrd-floor-bar"><label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="0" max="1" data-path="stage.eye" data-num value="${eye}"></label><button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button></div>
-  <div class="mrd-floor" style="aspect-ratio:${W}/${H}"><img src="${E(src)}" alt="" draggable="false"><div class="mrd-horizon" style="top:${eye*100}%"><span>${E(L('Ed.Horizon'))}</span></div>${c.stage.anchors.map(([x,y],i)=>`<div class="mrd-anchor" data-i="${i}" style="left:${x*100}%;top:${y*100}%"><div class="mrd-anchor-fig" style="height:${Math.max(0,(y-eye)*100)}cqh"></div><b>${i+1}</b></div>`).join('')}</div>`;
+  const s=this.scene,src=s.background?.src,st=c.stage,mode=st.mode,vp=st.vp,eye=mode==='vanishing'&&vp?vp[1]:st.eye,W=s.width||1600,H=s.height||900;
+  const picker=`<div class="mrd-modes" role="radiogroup" aria-label="${E(L('Ed.Mode'))}">${['horizon','vanishing','none'].map(m=>`<button type="button" role="radio" aria-checked="${mode===m}" class="${mode===m?'is-on':''}" data-act="mode" data-mode="${m}"><b>${E(L('Ed.Mode_'+m))}</b><small>${E(L('Ed.ModeHint_'+m))}</small></button>`).join('')}</div>`;
+  if(mode==='none')return picker+`<p class="mrd-hint">${E(L('Ed.NoneHint'))}</p>`;
+  if(!src)return picker+`<p>${E(L('Ed.NoBackground'))}</p>`;
+  const bar=mode==='vanishing'
+   ?`<p class="mrd-hint">${E(L(vp?'Ed.VPHint':'Ed.VPHintNone'))}</p><div class="mrd-floor-bar"><button type="button" data-act="clear-vp"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearVP'))}</button><button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button></div>`
+   :`<p class="mrd-hint">${E(L('Ed.FloorHint'))}</p><div class="mrd-floor-bar"><label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="0" max="1" data-path="stage.eye" data-num value="${eye}"></label><button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button></div>`;
+  // Punto de fuga: línea de horizonte por su altura y rayos hacia el suelo (abanico fijo + uno por cada punto de apoyo).
+  const rays=mode==='vanishing'&&vp?`<svg class="mrd-rays" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="h" x1="0" y1="${vp[1]*100}" x2="100" y2="${vp[1]*100}"/>${[0,.2,.4,.6,.8,1].map(x=>`<line x1="${vp[0]*100}" y1="${vp[1]*100}" x2="${x*100}" y2="100"/>`).join('')}${st.anchors.filter(([,y])=>y>vp[1]+.01).map(([x,y])=>`<line class="a" x1="${vp[0]*100}" y1="${vp[1]*100}" x2="${(vp[0]+(x-vp[0])*(1-vp[1])/(y-vp[1]))*100}" y2="100"/>`).join('')}</svg>`:'';
+  const mark=mode==='vanishing'?(vp?`<div class="mrd-vp" style="left:${vp[0]*100}%;top:${vp[1]*100}%" title="${E(L('Ed.VP'))}"><span>${E(L('Ed.VP'))}</span></div>`:''):`<div class="mrd-horizon" style="top:${eye*100}%"><span>${E(L('Ed.Horizon'))}</span></div>`;
+  return picker+bar+`<div class="mrd-floor" style="aspect-ratio:${W}/${H}"><img src="${E(src)}" alt="" draggable="false">${rays}${mark}${st.anchors.map(([x,y],i)=>`<div class="mrd-anchor" data-i="${i}" style="left:${x*100}%;top:${y*100}%"><div class="mrd-anchor-fig" style="height:${Math.max(0,(y-eye)*100)}cqh"></div><b>${i+1}</b></div>`).join('')}</div>`;
  }
  globalTab(g){
   const row=(kind,i,it,extra='')=>`<div class="mrd-row"><input data-gpath="${kind}.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(it.label)}">${extra}<button type="button" data-act="gdel" data-list="${kind}" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`;
@@ -133,6 +140,8 @@ export class DirectionEditor extends ApplicationV2{
    case 'copy':{const src=sceneConfig(game.scenes.get(this.element.querySelector('.copy-from').value));if(!src)return;return this.commit(c=>{Object.assign(c,structuredClone({...src,ref:c.ref,thumb:c.thumb,name:c.name}));});}
    case 'unconfig':await clearSceneConfig(this.scene);return this.render();
    case 'clear-anchors':return this.commit(c=>{c.stage.anchors=[];});
+   case 'mode':return this.commit(c=>{c.stage.mode=b.dataset.mode;if(b.dataset.mode==='vanishing'&&!c.stage.vp)c.stage.vp=[.5,c.stage.eye];});
+   case 'clear-vp':return this.commit(c=>{c.stage.vp=null;});
    case 'gadd-motif':return this.commitGlobal(g=>g.motifs.push({id:'m'+Date.now().toString(36),label:L('Ed.NewMotif'),icon:'music',music:null}));
    case 'gdefault-motifs':return this.commitGlobal(g=>{const have=new Set(g.motifs.map(m=>m.id));for(const [id,es,en,icon] of DEFAULT_MOTIFS)if(!have.has(id))g.motifs.push({id,label:game.i18n.lang==='es'?es:en,icon,music:null});});
    case 'gadd-milestone':return this.commitGlobal(g=>g.markers.milestones.push({id:'h'+Date.now().toString(36),label:L('Ed.NewMilestone')}));
@@ -158,13 +167,17 @@ export class DirectionEditor extends ApplicationV2{
   floor.addEventListener('pointerdown',e=>{
    if(e.button===2){const a=e.target.closest('.mrd-anchor');if(a){e.preventDefault();this.commit(c=>c.stage.anchors.splice(Number(a.dataset.i),1));}return;}
    if(e.button!==0)return;
-   const a=e.target.closest('.mrd-anchor'),h=e.target.closest('.mrd-horizon');
-   if(a)drag={kind:'a',i:Number(a.dataset.i),el:a};else if(h)drag={kind:'h',el:h};else{const [x,y]=frac(e);return void this.commit(c=>c.stage.anchors.push([+x.toFixed(3),+y.toFixed(3)]));}
+   const a=e.target.closest('.mrd-anchor'),h=e.target.closest('.mrd-horizon'),v=e.target.closest('.mrd-vp');
+   if(a)drag={kind:'a',i:Number(a.dataset.i),el:a};else if(v)drag={kind:'v',el:v};else if(h)drag={kind:'h',el:h};
+   else{const [x,y]=frac(e),st=this.cfg.stage;
+    // En modo punto de fuga, el primer clic lo coloca; los siguientes marcan puntos de apoyo.
+    if(st.mode==='vanishing'&&!st.vp)return void this.commit(c=>{c.stage.vp=[+x.toFixed(3),+y.toFixed(3)];});
+    return void this.commit(c=>c.stage.anchors.push([+x.toFixed(3),+y.toFixed(3)]));}
    try{floor.setPointerCapture(e.pointerId);}catch{}e.preventDefault();
   });
   floor.addEventListener('contextmenu',e=>e.preventDefault());
-  floor.addEventListener('pointermove',e=>{if(!drag)return;const [x,y]=frac(e);drag.v=[+x.toFixed(3),+y.toFixed(3)];if(drag.kind==='a'){drag.el.style.left=x*100+'%';drag.el.style.top=y*100+'%';}else drag.el.style.top=y*100+'%';});
-  floor.addEventListener('pointerup',()=>{const d=drag;drag=null;if(!d?.v)return;this.commit(c=>{if(d.kind==='a')c.stage.anchors[d.i]=d.v;else c.stage.eye=d.v[1];});});
+  floor.addEventListener('pointermove',e=>{if(!drag)return;const [x,y]=frac(e);drag.v=[+x.toFixed(3),+y.toFixed(3)];if(drag.kind==='a'||drag.kind==='v'){drag.el.style.left=x*100+'%';drag.el.style.top=y*100+'%';}else drag.el.style.top=y*100+'%';});
+  floor.addEventListener('pointerup',()=>{const d=drag;drag=null;if(!d?.v)return;this.commit(c=>{if(d.kind==='a')c.stage.anchors[d.i]=d.v;else if(d.kind==='v')c.stage.vp=d.v;else c.stage.eye=d.v[1];});});
  }
  async importFile(file){
   try{const r=await importPack(await file.text());ui.notifications.info(L('Ed.Imported',{n:r.done.length,m:r.missing.length}));if(r.missing.length)console.warn(`${ID} | escenas sin encontrar`,r.missing);this.render();}

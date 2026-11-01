@@ -8,6 +8,25 @@ export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE
  return Math.min(o.max,width,height,Math.max(o.min,base*(pixels/o.base)));
 }
 export const depthFactor=(stage,footY,height,o=FIGURE_DEFAULTS)=>figureSize(stage,footY,height,o.base,Infinity,o)/o.base;
+export const STAGE_MODES=Object.freeze(['horizon','vanishing','none']);
+/** Perspectiva efectiva de una escena (la que usa el resto del módulo, que solo conoce `eye` y `anchors`), o null si no hay que escalar por profundidad.
+ *  - horizon: línea de horizonte (`eye`); cuenta como configurada cuando hay puntos de apoyo.
+ *  - vanishing: punto de fuga `vp`; con la cámara a nivel el punto de fuga cae en el horizonte, así que su altura (`vp[1]`) hace de `eye`.
+ *  - none: sin perspectiva (vista cenital): las figuras no cambian de tamaño según dónde estén. */
+export function effectiveStage(st){
+ if(!st||st.mode==='none')return null;
+ if(st.mode==='vanishing')return Array.isArray(st.vp)?{...st,eye:st.vp[1]}:null;
+ return st.anchors?.length?st:null;
+}
+/** Puntos de apoyo repartidos a lo largo de rayos que salen del punto de fuga (como figuras alejándose por un pasillo):
+ *  cada uno a distinta profundidad, de izquierda a derecha. Se usan cuando la escena tiene punto de fuga pero aún no puntos de apoyo. */
+export function vpAnchors(vp,count,bottom=.94){
+ const n=Math.max(1,Math.round(count)),floor=Math.max(bottom,vp[1]+.1);
+ return Array.from({length:n},(_,i)=>{
+  const bx=.14+.72*((i+.5)/n),t=.5+.42*((i*.618)%1);
+  return [+clamp(vp[0]+(bx-vp[0])*t,0,1).toFixed(3),+clamp(vp[1]+(floor-vp[1])*t,0,1).toFixed(3)];
+ });
+}
 /** Posiciones iniciales sobre los puntos de apoyo; si hay más figuras que puntos se desplazan un poco sin salir del suelo. */
 export function stageLayout(scene,count,start,pixels,stage,bounds={x:0,y:0,width:scene.width,height:scene.height},o=FIGURE_DEFAULTS){
  const unit=scene.grid?.size||100,anchors=stage.anchors??[];

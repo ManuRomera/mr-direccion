@@ -43,13 +43,15 @@ Nothing uses `game.system.id`: anything system-specific would go into a separate
     "figures": [{"ref":REF,"label":""}],     // actors
     "handouts": [{"ref":REF,"label":""}],    // journals, pages, actors or images
     "notes": "", "thumb": "path.webp",
-    "stage": {"eye": 0.5, "anchors": [[x,y],…]}   // fractions of the background
+    "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "anchors": [[x,y],…]}   // fractions of the background; no mode = horizon
   }]
 }
 ```
 **REF** = `{"uuid"}` · `{"src"}` (file; creates a sound in the «MR- Dirección» playlist) · `{"flag":[scope,key,value]}` · `{"name"}` · `{"sceneFlag":[scope,key]}` (reading linked through scene flags, as Trono does). A bare string is read as a uuid or a path. `validatePack` normalizes (clamps ranges, drops cues without sound, unique ids), returns `errors` and `warnings`, and rejects future schemas with a clear message.
 
 ## Perspective
+Three modes per scene (`stage.mode`): **horizon** (the `eye` line), **vanishing** (vanishing point `vp`; with a level camera the vanishing point lies on the horizon, so its height acts as `eye` and its X does not change size: it lets you place the point with one click, see the rays and, when there are no anchors, spreads the cast staggered along them, `vpAnchors`) and **none** (top-down view: no scaling, uniform size). `effectiveStage` resolves which one applies; modes are backward compatible (no `mode` = horizon).
+
 Figure height = `(feet − eye) · scene height / visible · (pixels / 360)`, with `visible = 0.885` and a feet margin of `0.055` (those of the standard token). Figures are only placed on the floor anchors; dragging recomputes the size keeping the center and the feet line. The initial size on creation is only given to tokens placed by the bar (`placed` flag) or to listed actors; the other options (rescale on move, rotation, ruler, size bar) apply to every token in a configured scene. In v13 the depth rescale is a second update after the movement (`updateToken`), and turning toward the movement is also reapplied there because other modules may remove it.
 
 ## Crossfade
