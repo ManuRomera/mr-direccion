@@ -102,6 +102,7 @@
 .mrd-ed-item:hover{background:rgba(255,255,255,.1)}.mrd-ed-item.is-current{background:rgba(154,63,88,.5);font-weight:600}
 .mrd-editor .mrd-ed-item{justify-content:flex-start;gap:6px}.mrd-ed-item.no-cfg{opacity:.65}
 .mrd-ed-item i{font-size:10px;color:#caa66b;width:12px}
+.mrd-editor .mrd-ed-item[hidden]{display:none}
 .mrd-ed-actions{display:flex;flex-direction:column;gap:5px}
 .mrd-editor button:not([class*=fa-]):not(.header-control){color:#f4e9d2;background:linear-gradient(180deg,#3d2d3e,#2b2030);border:1px solid rgba(202,166,107,.4);border-radius:8px;cursor:pointer;width:auto;margin:0}
 .mrd-editor button:not([class*=fa-]):not(.header-control):hover{border-color:#caa66b}

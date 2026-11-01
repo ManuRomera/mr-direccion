@@ -1,5 +1,13 @@
 # Cambios · Changelog
 
+## 0.1.9 (2026-11-01)
+- **Arreglo grave de rendimiento en el editor:** cada vez que cambiabas de escena o de pestaña en el editor se acumulaban los oyentes de eventos de la ventana, de modo que cada clic rehacía la ventana el doble de veces que el anterior (1, 2, 4, 8, 16…). Tras unas diez escenas el navegador se quedaba bloqueado. Ahora cada clic hace un solo redibujado, sea cual sea el número de escenas o de cambios.
+- El buscador del editor filtra la lista en el sitio (sin rehacer la ventana en cada tecla) y el editor recorre las escenas una sola vez por redibujado.
+- Menos trabajo en cada fotograma al desplazar el lienzo cuando «mantener a pantalla completa» está desactivado.
+- **Serious editor performance fix:** each time you switched scene or tab in the editor, the window's event listeners piled up, so every click re-rendered the window twice as many times as the previous one (1, 2, 4, 8, 16…). After about ten scenes the browser froze. Each click now triggers a single re-render, however many scenes or switches.
+- The editor search now filters the list in place (no window re-render per keystroke) and the editor walks the scenes once per render.
+- Less work per frame when panning the canvas while “keep background full-screen” is off.
+
 ## 0.1.8 (2026-10-29)
 - **Arreglo:** la carpeta de la escena actual (y cualquier carpeta que abrieras) se cerraba al hacer clic fuera del menú, porque el cierre «al hacer clic fuera» también cerraba los grupos de carpetas. Ahora solo cierra los menús de la barra y las carpetas siguen abiertas al cambiar de escena, desde la barra o desde Foundry.
 - **Fix:** the current scene's folder (and any folder you had opened) closed when clicking outside the menu, because the “close on outside click” also closed the folder groups. It now only closes the bar's menus, and folders stay open when you change scene, from the bar or from Foundry.

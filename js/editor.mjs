@@ -40,7 +40,7 @@ export class DirectionEditor extends ApplicationV2{
   return `<div class="mrd-ref ${ref?'has':''}" data-drop="${path}" data-accept="${accept}"><span class="mrd-ref-name">${E(name||L('Ed.DropHere'))}</span>${accept==='sound'||accept==='handout'?`<input class="mrd-ref-src" data-path="${path}" data-src placeholder="${E(L('Ed.FilePath'))}" value="${E(src)}">`:''}${accept==='sound'||accept==='handout'?`<button type="button" data-act="pick" data-path="${path}" data-type="${accept==='sound'?'audio':'image'}" title="${E(L('Ed.Browse'))}"><i class="fa-solid fa-folder-open"></i></button>`:''}${test&&ref?`<button type="button" data-act="test" data-path="${path}" data-mode="${test}" title="${E(L('Ed.Test'))}"><i class="fa-solid fa-play"></i></button>`:''}${ref?`<button type="button" data-act="clear" data-path="${path}" title="${E(L('Ed.Clear'))}"><i class="fa-solid fa-xmark"></i></button>`:''}</div>`;
  }
  sceneTab(c,g){
-  const others=configuredScenes().filter(x=>x.scene.id!==this.scene.id);
+  const others=this.configured.filter(x=>x.scene.id!==this.scene.id);
   return `<div class="mrd-cols">
   <fieldset><legend>${E(L('Ed.Reading'))}</legend>${this.refField('reading','journal',c.reading)}</fieldset>
   <fieldset><legend>${E(L('Ed.Music'))}</legend>${this.refField('music','sound',c.music,{test:'music'})}</fieldset>
@@ -68,7 +68,9 @@ export class DirectionEditor extends ApplicationV2{
   <fieldset><legend>${E(L('Ed.Clocks'))}</legend>${g.markers.clocks.map((m,i)=>row('markers.clocks',i,m,`<input type="number" min="2" max="12" data-gpath="markers.clocks.${i}.segments" data-num value="${m.segments}" title="${E(L('Ed.Segments'))}">`)).join('')}<button type="button" data-act="gadd-clock"><i class="fa-solid fa-plus"></i> ${E(L('Ed.Add'))}</button></fieldset></div>`;
  }
  html(){
-  const scenes=game.scenes.contents,cur=this.scene,cfgd=new Set(configuredScenes().map(x=>x.scene.id)),g=globalSettings();
+  // Una sola pasada por las escenas por render (cada consulta normaliza la configuración de todas).
+  this.configured=configuredScenes();
+  const scenes=game.scenes.contents,cur=this.scene,cfgd=new Set(this.configured.map(x=>x.scene.id)),g=globalSettings();
   const list=scenes.filter(s=>s.name.toLowerCase().includes(this.filter.toLowerCase())).map(s=>`<button type="button" class="mrd-ed-item ${cur?.id===s.id?'is-current':''} ${cfgd.has(s.id)?'':'no-cfg'}" data-scene="${s.id}"><i class="fa-solid fa-${cfgd.has(s.id)?'circle-check':'circle'}" aria-hidden="true"></i> ${E(s.name)}</button>`).join('');
   const tabs=['scene','floor','global'].map(t=>`<button type="button" role="tab" class="${this.tab===t?'is-on':''}" data-tab="${t}" aria-selected="${this.tab===t}">${E(L('Ed.Tab_'+t))}</button>`).join('');
   let body='';
@@ -81,12 +83,18 @@ export class DirectionEditor extends ApplicationV2{
  }
  async commitGlobal(mut,{rerender=true}={}){const g=structuredClone(globalSettings());mut(g);await saveGlobal(g);if(rerender)this.render();}
  bind(root){
-  root.querySelector('.mrd-filter')?.addEventListener('input',e=>{this.filter=e.target.value;const pos=e.target.selectionStart;this.render().then(()=>{const i=this.element.querySelector('.mrd-filter');i?.focus();i?.setSelectionRange(pos,pos);});});
-  root.addEventListener('click',e=>this.onClick(e));
-  root.addEventListener('change',e=>this.onChange(e));
-  root.addEventListener('dragover',e=>{if(e.target.closest('[data-drop],[data-drop-add]')){e.preventDefault();e.target.closest('[data-drop],[data-drop-add]').classList.add('over');}});
-  root.addEventListener('dragleave',e=>e.target.closest?.('[data-drop],[data-drop-add]')?.classList.remove('over'));
-  root.addEventListener('drop',e=>this.onDrop(e));
+  // `root` sobrevive a los renders (solo se sustituye su contenido): los oyentes del contenedor se añaden una sola vez;
+  // si se repitieran, cada clic dispararía tantos renders como renders previos (crece al doble por clic y bloquea el navegador).
+  if(!root.dataset.mrdBound){
+   root.dataset.mrdBound='1';
+   root.addEventListener('click',e=>this.onClick(e));
+   root.addEventListener('change',e=>this.onChange(e));
+   root.addEventListener('dragover',e=>{if(e.target.closest('[data-drop],[data-drop-add]')){e.preventDefault();e.target.closest('[data-drop],[data-drop-add]').classList.add('over');}});
+   root.addEventListener('dragleave',e=>e.target.closest?.('[data-drop],[data-drop-add]')?.classList.remove('over'));
+   root.addEventListener('drop',e=>this.onDrop(e));
+  }
+  // El buscador filtra la lista en el sitio, sin rehacer la ventana en cada tecla.
+  root.querySelector('.mrd-filter')?.addEventListener('input',e=>{this.filter=e.target.value;const q=this.filter.toLowerCase();for(const b of root.querySelectorAll('.mrd-ed-item'))b.hidden=!!q&&!b.textContent.toLowerCase().includes(q);});
   this.bindFloor(root.querySelector('.mrd-floor'));
  }
  async onDrop(e){
