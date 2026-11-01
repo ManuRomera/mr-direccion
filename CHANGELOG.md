@@ -1,5 +1,15 @@
 # Cambios · Changelog
 
+## 0.3.0 (2026-11-01)
+- **Referencia de escala:** en la pestaña Perspectiva puedes dibujar un **rectángulo sobre la puerta del fondo** (o una mesa, una columna…) e indicar su altura real (una puerta mide unos 2,1 m). Una persona de 1,75 m junto a su base mide justo lo que le toca, así que las figuras salen a su **escala real** en lugar de depender de un tamaño a ojo. Las líneas blancas de los puntos de apoyo muestran esa altura. Funciona con horizonte y con punto de fuga; el tamaño 360 de la barra equivale a esta escala.
+- El botón **Horizonte a los ojos** coloca la línea del horizonte (o la altura del punto de fuga) a la altura de los ojos medida sobre el rectángulo. Las esquinas del rectángulo se arrastran.
+- El editor es más compacto: los tres modos son una fila de botones (la descripción pasa a tooltip), modo y referencia comparten una barra de herramientas y la ventana es algo más alta.
+- Sin referencia todo funciona exactamente igual que antes. El esquema de paquete sigue en la versión 1: `stage.ref` y `stage.refM` son opcionales.
+- **Scale reference:** in the Perspective tab you can draw a **rectangle over the door at the end** (or a table, a column…) and enter its real height (a door is about 2.1 m). A 1.75 m person at its base is exactly as tall as they should be, so figures come out at their **real scale** instead of depending on a by-eye size. The white lines at the floor points show that height. Works with horizon and vanishing point; size 360 in the bar equals this scale.
+- The **Horizon at eye height** button puts the horizon line (or the vanishing point's height) at eye height measured on the rectangle. The rectangle's corners are draggable.
+- The editor is more compact: the three modes are a row of buttons (the description is a tooltip), mode and reference share one toolbar and the window is a bit taller.
+- Without a reference everything works exactly as before. The pack schema stays at version 1: `stage.ref` and `stage.refM` are optional.
+
 ## 0.2.0 (2026-11-01)
 - **Perspectiva a elegir por escena:** la pestaña del editor (antes «Suelo y horizonte», ahora **Perspectiva**) ofrece tres modos: **Horizonte** (como hasta ahora), **Punto de fuga** (un punto que arrastras hasta donde convergen las líneas del suelo, por ejemplo el fondo de un pasillo; el editor dibuja los rayos y la línea de horizonte) y **Ninguna** (vista cenital o mapa: las figuras no cambian de tamaño).
 - Con punto de fuga y sin puntos de apoyo, **Colocar el reparto** escalona las figuras a distintas profundidades a lo largo de los rayos que salen del punto de fuga; al arrastrar una figura su tamaño se recalcula como siempre.

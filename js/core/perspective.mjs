@@ -4,7 +4,7 @@ const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
 /** La cabeza de una persona de pie queda en la línea de horizonte (eye): su altura en pantalla es (pies − eye) × alto.
  *  `visible` es la parte útil del token (margen transparente); `pixels` escala todo el reparto a la vez. */
 export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE_DEFAULTS){
- const base=Math.max(.02,footY/height-stage.eye)*height/o.visible;
+ const base=Math.max(.02,footY/height-stage.eye)*height/o.visible*(stage.k??1); // k: calibración por el rectángulo de referencia (1 sin él)
  return Math.min(o.max,width,height,Math.max(o.min,base*(pixels/o.base)));
 }
 export const depthFactor=(stage,footY,height,o=FIGURE_DEFAULTS)=>figureSize(stage,footY,height,o.base,Infinity,o)/o.base;
@@ -15,8 +15,24 @@ export const STAGE_MODES=Object.freeze(['horizon','vanishing','none']);
  *  - none: sin perspectiva (vista cenital): las figuras no cambian de tamaño según dónde estén. */
 export function effectiveStage(st){
  if(!st||st.mode==='none')return null;
- if(st.mode==='vanishing')return Array.isArray(st.vp)?{...st,eye:st.vp[1]}:null;
- return st.anchors?.length?st:null;
+ const s=st.mode==='vanishing'?(Array.isArray(st.vp)?{...st,eye:st.vp[1]}:null):(st.anchors?.length?st:null);
+ if(!s||!s.ref)return s;
+ const k=refScale(s.eye,s.ref,s.refM);return k?{...s,k}:s;
+}
+/** Referencia de escala: un rectángulo dibujado sobre algo de medida conocida (la puerta del fondo, una mesa…), `ref`=[x0,y0,x1,y1] en fracciones.
+ *  Con una cámara a nivel, una persona al pie del rectángulo mide PERSON_M/refM de su alto; el resto sigue la regla de (pies − horizonte).
+ *  `k` es el factor sobre el modelo base (cabeza de la figura en el horizonte): sin referencia vale 1. */
+export const PERSON_M=1.75,EYE_M=1.6;
+export function refScale(eye,ref,refM=2.1){
+ if(!Array.isArray(ref)||ref.length!==4)return null;
+ const top=Math.min(ref[1],ref[3]),base=Math.max(ref[1],ref[3]),h=base-top;
+ if(!(h>.01)||!(base-eye>.02))return null;
+ return clamp(PERSON_M/clamp(refM,.3,50)*h/(base-eye),.25,4);
+}
+/** Horizonte a la altura de los ojos (EYE_M) medida sobre la referencia: la línea de los ojos cae a ese tanto de su altura. */
+export function eyeFromRef(ref,refM=2.1){
+ const top=Math.min(ref[1],ref[3]),base=Math.max(ref[1],ref[3]);
+ return clamp(base-EYE_M/clamp(refM,.3,50)*(base-top),0,1);
 }
 /** Puntos de apoyo repartidos a lo largo de rayos que salen del punto de fuga (como figuras alejándose por un pasillo):
  *  cada uno a distinta profundidad, de izquierda a derecha. Se usan cuando la escena tiene punto de fuga pero aún no puntos de apoyo. */

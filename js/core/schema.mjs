@@ -35,7 +35,9 @@ function sceneCfg(s,i,w,ids){
   handouts:(Array.isArray(s.handouts)?s.handouts:[]).map(h=>({ref:normalizeRef(h?.ref??h),label:str(h?.label)})).filter(h=>h.ref),
   notes:str(s.notes),thumb:str(s.thumb),
   stage:{mode:['horizon','vanishing','none'].includes(st.mode)?st.mode:'horizon',eye:num(st.eye,.5,0,1),
-   vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,0,1),num(st.vp[1],.5,0,1)]:null,anchors}};
+   vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,0,1),num(st.vp[1],.5,0,1)]:null,
+   ref:Array.isArray(st.ref)&&st.ref.length===4&&st.ref.every(Number.isFinite)?(([a,b,c,d])=>[Math.min(a,c),Math.min(b,d),Math.max(a,c),Math.max(b,d)])(st.ref.map(v=>num(v,0,0,1))):null,
+   refM:num(st.refM,2.1,.3,50),anchors}};
 }
 export function normalizeSettings(raw){
  const s=isObj(raw)?raw:{},m=isObj(s.markers)?s.markers:{};

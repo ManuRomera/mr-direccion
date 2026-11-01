@@ -61,7 +61,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de las siete lámparas e hitos secretos.</sub></td>
-<td width="50%"><img src="docs/img/perspectiva.webp" alt="Editor de perspectiva con punto de fuga"><br><sub><b>Perspectiva</b>: horizonte, punto de fuga o ninguna; los rayos y las líneas blancas muestran hacia dónde se alejan las figuras y su altura.</sub></td>
+<td width="50%"><img src="docs/img/perspectiva.webp" alt="Editor de perspectiva con punto de fuga"><br><sub><b>Perspectiva</b>: horizonte, punto de fuga o ninguna, y un rectángulo sobre la puerta (u otro objeto de medida conocida) que calibra el tamaño real de las figuras.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/classic.webp" alt="Estilo clásico"><br><sub>Estilo <b>Clásico</b>.</sub></td>
@@ -87,7 +87,7 @@ Funciona con **cualquier sistema** (probado con Cairn, dnd5e, Legend in the Mist
 2. **Abre el Editor** y elige una escena propia.
 3. **Música y lectura (2 min).** Arrastra un sonido de una lista de reproducción a *Música de la escena* y un diario o página a *Lectura inicial*. También puedes escribir la ruta de un archivo de audio. O pulsa **Autoconfigurar** y revisa el borrador.
 4. **Efectos y motivos (2 min).** Arrastra sonidos a *Efectos de la escena*. En la pestaña **Global** pulsa *Añadir motivos habituales* y arrastra la música de cada uno.
-5. **Perspectiva (2 min).** En *Perspectiva* elige **Horizonte** (arrastra la línea punteada hasta la altura de los ojos de un personaje de pie) o **Punto de fuga** (arrastra el punto hasta donde convergen las líneas del suelo, p. ej. el fondo de un pasillo) y haz clic en el suelo para marcar dónde se pisa. Para un mapa cenital elige **Ninguna**: las figuras no cambian de tamaño. Arrastra actores a *Figuras* y, en la barra, **Figuras → Colocar el reparto**.
+5. **Perspectiva (2 min).** En *Perspectiva* elige **Horizonte** (arrastra la línea punteada hasta la altura de los ojos de un personaje de pie) o **Punto de fuga** (arrastra el punto hasta donde convergen las líneas del suelo, p. ej. el fondo de un pasillo) y haz clic en el suelo para marcar dónde se pisa. Opcional: dibuja un rectángulo sobre la puerta del fondo e indica su altura real (≈ 2,1 m) y las figuras saldrán a su escala real. Para un mapa cenital elige **Ninguna**: las figuras no cambian de tamaño. Arrastra actores a *Figuras* y, en la barra, **Figuras → Colocar el reparto**.
 6. **Ayudas y marcadores (2 min).** Arrastra diarios o imágenes a *Ayudas*; en Global crea hitos y relojes.
 7. **Compártelo.** **Exportar paquete** guarda un JSON; **Importar paquete** lo aplica en otro mundo (las escenas se enlazan por la referencia que indique el paquete).
 
@@ -172,7 +172,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 <td width="50%"><img src="docs/img/markers-en.webp" alt="Markers panel with clocks and milestones, and the figures menu"><br><sub><b>Markers</b> (three clocks and the evidence milestones) and the <b>Figures</b> menu with the size bar.</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/img/perspectiva-en.webp" alt="Perspective editor with a vanishing point"><br><sub><b>Perspective</b>: horizon, vanishing point or none; the rays and white lines show where figures recede and how tall they are.</sub></td>
+<td width="50%"><img src="docs/img/perspectiva-en.webp" alt="Perspective editor with a vanishing point"><br><sub><b>Perspective</b>: horizon, vanishing point or none, plus a rectangle over the door (or any object of known size) that calibrates the figures’ real size.</sub></td>
 <td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 1 s on a scene.</sub></td>
 </tr>
 <tr>
@@ -199,7 +199,7 @@ Works with **any system** (tested with Cairn, dnd5e, Legend in the Mist and Moth
 2. **Open the Editor** and pick one of your own scenes.
 3. **Music and read-aloud (2 min).** Drag a sound from a playlist into *Scene music* and a journal or page into *Opening reading*. You can also type an audio file path. Or press **Auto-configure** and review the draft.
 4. **Effects and motifs (2 min).** Drag sounds into *Scene effects*. In the **Global** tab press *Add common motifs* and drag the music for each one.
-5. **Perspective (2 min).** In *Perspective* choose **Horizon** (drag the dotted line to the eye height of a standing character) or **Vanishing point** (drag the point to where the floor lines converge, e.g. the end of a corridor) and click the floor to mark where people stand. For a top-down map choose **None**: figures keep their size. Drag actors into *Figures* and, on the bar, **Figures → Place the cast**.
+5. **Perspective (2 min).** In *Perspective* choose **Horizon** (drag the dotted line to the eye height of a standing character) or **Vanishing point** (drag the point to where the floor lines converge, e.g. the end of a corridor) and click the floor to mark where people stand. Optional: draw a rectangle over the door at the end and enter its real height (≈ 2.1 m) so figures come out at their real scale. For a top-down map choose **None**: figures keep their size. Drag actors into *Figures* and, on the bar, **Figures → Place the cast**.
 6. **Handouts and markers (2 min).** Drag journals or images into *Handouts*; create milestones and clocks in Global.
 7. **Share it.** **Export pack** saves a JSON; **Import pack** applies it in another world (scenes are linked by the reference the pack gives).
 

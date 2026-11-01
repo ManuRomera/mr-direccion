@@ -43,7 +43,7 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
     "figures": [{"ref":REF,"label":""}],     // actores
     "handouts": [{"ref":REF,"label":""}],    // diarios, páginas, actores o imágenes
     "notes": "", "thumb": "ruta.webp",
-    "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "anchors": [[x,y],…]}   // fracciones del fondo; sin mode = horizon
+    "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "ref": [x0,y0,x1,y1]|null, "refM": 2.1, "anchors": [[x,y],…]}   // fracciones del fondo; sin mode = horizon
   }]
 }
 ```
@@ -51,6 +51,8 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
 
 ## Perspectiva
 Tres modos por escena (`stage.mode`): **horizon** (línea `eye`), **vanishing** (punto de fuga `vp`; con la cámara a nivel el punto de fuga cae en el horizonte, así que su altura hace de `eye` y la X no cambia el tamaño: sirve para colocar el punto con un clic, ver los rayos y repartir el reparto escalonado a lo largo de ellos cuando no hay apoyos, `vpAnchors`) y **none** (vista cenital: sin escala, tamaño uniforme). `effectiveStage` resuelve cuál aplica; los modos son retrocompatibles (sin `mode` = horizon).
+
+**Referencia de escala** (`stage.ref`, `stage.refM`): un rectángulo dibujado sobre un objeto de medida conocida (la puerta del fondo, 2,1 m por defecto). Con cámara a nivel, una persona de 1,75 m al pie del rectángulo mide `1,75/refM` de su alto; `refScale` convierte eso en un factor `k` sobre el modelo base (cabeza en el horizonte), que `figureSize` aplica. Sin referencia `k=1` y nada cambia; con ella, el tamaño 360 de la barra equivale a la escala real. `eyeFromRef` coloca el horizonte a la altura de los ojos (1,6 m) medida sobre el rectángulo.
 
 Altura de una figura = `(pies − eye) · alto de escena / visible · (píxeles / 360)`, con `visible = 0,885` y margen de pies `0,055` (los del token estándar). Solo se coloca sobre los puntos de apoyo del suelo; al arrastrar se recalcula conservando el centro y la línea de los pies. El tamaño inicial al crear una ficha solo se da a las colocadas por la barra (marca `placed`) o de actores de la lista; el resto de opciones (reajuste al mover, giro, regla, barra de tamaño) valen para todas las fichas de una escena configurada. En v13 el reajuste por profundidad es una segunda actualización tras el movimiento (`updateToken`), y el giro hacia el movimiento también se reaplica ahí porque otros módulos pueden quitarlo.
 

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef} from '../js/core/perspective.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
@@ -160,4 +160,33 @@ test('esquema: stage.mode y stage.vp se normalizan y lo antiguo sigue siendo hor
  assert.deepEqual(n({mode:'vanishing',vp:[2,-1]}).vp,[1,0]);
  assert.equal(n({mode:'vanishing',vp:['x',1]}).vp,null);
  assert.equal(n({mode:'none'}).mode,'none');
+});
+
+test('referencia de escala: una persona al pie de la puerta mide PERSON/puerta de su alto',()=>{
+ const ref=[.45,.4,.55,.7],eye=.45,k=refScale(eye,ref,2.1);
+ assert.ok(Math.abs(k-1.75/2.1*.3/(.7-eye))<1e-9);
+ const st=effectiveStage({mode:'vanishing',eye:.5,vp:[.5,eye],ref,refM:2.1,anchors:[]});
+ const token=figureSize(st,.7*900,900,360),person=token*FIGURE_DEFAULTS.visible;          // píxeles de la persona
+ assert.ok(Math.abs(person-(1.75/2.1)*.3*900)<.5,`persona ${person}`);                      // 0,8333 × la altura de la puerta (270 px)
+ assert.ok(figureSize(st,.9*900,900)>figureSize(st,.6*900,900));                           // sigue creciendo hacia el frente
+ const doble=effectiveStage({mode:'vanishing',eye:.5,vp:[.5,eye],ref,refM:4.2,anchors:[]});  // la misma puerta, pero de 4,2 m: la gente es la mitad
+ assert.ok(Math.abs(figureSize(doble,.7*900,900)*2-token)<1);
+});
+test('referencia: sin referencia o inválida el modelo base no cambia (k=1)',()=>{
+ const base={mode:'horizon',eye:.45,anchors:[[.5,.9]]};
+ assert.equal(effectiveStage(base).k,undefined);
+ assert.equal(effectiveStage({...base,ref:[.1,.5,.2,.5],refM:2.1}).k,undefined);              // sin altura
+ assert.equal(effectiveStage({...base,ref:[.1,.2,.2,.4],refM:2.1}).k,undefined);              // base por encima del horizonte
+ assert.equal(refScale(.5,null),null);
+});
+test('eyeFromRef: el horizonte cae a la altura de los ojos medida sobre la puerta',()=>{
+ const y=eyeFromRef([.4,.4,.6,.7],2.1);assert.ok(Math.abs(y-(.7-1.6/2.1*.3))<1e-9);
+ assert.ok(y>.4&&y<.7);
+});
+test('esquema: stage.ref se ordena y se acota; refM por defecto 2,1',()=>{
+ const n=st=>validatePack({id:'p',scenes:[{ref:{name:'S'},stage:st}]}).pack.scenes[0].stage;
+ assert.deepEqual(n({ref:[.8,.9,.2,.3]}).ref,[.2,.3,.8,.9]);
+ assert.deepEqual(n({ref:[2,-1,0,0]}).ref,[0,0,1,0]);
+ assert.equal(n({ref:[1,2,3]}).ref,null);assert.equal(n({}).ref,null);
+ assert.equal(n({}).refM,2.1);assert.equal(n({refM:999}).refM,50);
 });
