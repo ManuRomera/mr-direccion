@@ -147,6 +147,10 @@
 .mrd-rays line{stroke:rgba(240,210,143,.5);stroke-width:1;vector-effect:non-scaling-stroke}
 .mrd-rays line.h{stroke:#f0d28f;stroke-width:2;stroke-dasharray:6 5}
 .mrd-rays line.a{stroke:rgba(255,255,255,.8)}
+.mrd-rays line.c{stroke:#f0d28f;stroke-width:1.8}
+.mrd-rays line.g{stroke:rgba(240,210,143,.3)}
+.mrd-rays line.x{stroke:rgba(240,210,143,.45);stroke-dasharray:3 4}
+.mrd-vp.is-derived{pointer-events:none;cursor:default}
 .mrd-vp{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid #f0d28f;background:rgba(0,0,0,.35);cursor:grab;box-shadow:0 2px 8px #000a}
 .mrd-vp::before,.mrd-vp::after{content:"";position:absolute;background:#f0d28f}
 .mrd-vp::before{left:50%;top:-8px;bottom:-8px;width:2px;margin-left:-1px}.mrd-vp::after{top:50%;left:-8px;right:-8px;height:2px;margin-top:-1px}

@@ -9,13 +9,33 @@ export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE
 }
 export const depthFactor=(stage,footY,height,o=FIGURE_DEFAULTS)=>figureSize(stage,footY,height,o.base,Infinity,o)/o.base;
 export const STAGE_MODES=Object.freeze(['horizon','vanishing','none']);
+/** Punto de fuga a partir del RECTÁNGULO DE SALIDA `box`=[x0,y0,x1,y1] (fracciones): donde acaba la perspectiva (el fondo de un pasillo, el final de una calle).
+ *  Como en un dibujo de perspectiva con un punto de fuga, cada esquina del cuadro (de la imagen) se une con su esquina del rectángulo y las cuatro líneas se cruzan
+ *  en el punto de fuga. Si el rectángulo no es exacto las líneas no se cruzan en un solo punto: se toma el punto que minimiza la distancia a las cuatro
+ *  (mínimos cuadrados, en proporciones reales: `aspect` = ancho/alto de la imagen). null si las líneas son paralelas o el rectángulo ocupa todo el cuadro. */
+export function vpFromBox(box,aspect=16/9){
+ if(!Array.isArray(box)||box.length!==4||!box.every(Number.isFinite))return null;
+ const [x0,y0,x1,y1]=box,pairs=[[[0,0],[x0,y0]],[[1,0],[x1,y0]],[[0,1],[x0,y1]],[[1,1],[x1,y1]]];
+ let a=0,b=0,c=0,e=0,f=0;
+ for(const [p,q] of pairs){
+  const dx=(q[0]-p[0])*aspect,dy=q[1]-p[1],n=Math.hypot(dx,dy);if(n<1e-6)continue;
+  const ux=dx/n,uy=dy/n,m11=1-ux*ux,m12=-ux*uy,m22=1-uy*uy,px=p[0]*aspect,py=p[1];
+  a+=m11;b+=m12;c+=m22;e+=m11*px+m12*py;f+=m12*px+m22*py;
+ }
+ const det=a*c-b*b;if(Math.abs(det)<1e-6)return null;
+ return [clamp((c*e-b*f)/det/aspect,0,1),clamp((a*f-b*e)/det,0,1)].map(v=>+v.toFixed(4));
+}
+/** Punto de fuga de una escena en modo `vanishing`: el que sale del rectángulo de salida y, sin él, el colocado a mano. */
+export const derivedVp=(st,aspect=16/9)=>st?.mode==='vanishing'?((st.ref&&vpFromBox(st.ref,aspect))||st.vp||null):null;
 /** Perspectiva efectiva de una escena (la que usa el resto del módulo, que solo conoce `eye` y `anchors`), o null si no hay que escalar por profundidad.
  *  - horizon: línea de horizonte (`eye`); cuenta como configurada cuando hay puntos de apoyo.
- *  - vanishing: punto de fuga `vp`; con la cámara a nivel el punto de fuga cae en el horizonte, así que su altura (`vp[1]`) hace de `eye`.
+ *  - vanishing: punto de fuga (del rectángulo de salida o a mano); con la cámara a nivel cae en el horizonte, así que su altura (`vp[1]`) hace de `eye`.
  *  - none: sin perspectiva (vista cenital): las figuras no cambian de tamaño según dónde estén. */
-export function effectiveStage(st){
+export function effectiveStage(st,aspect=16/9){
  if(!st||st.mode==='none')return null;
- const s=st.mode==='vanishing'?(Array.isArray(st.vp)?{...st,eye:st.vp[1]}:null):(st.anchors?.length?st:null);
+ let s=null;
+ if(st.mode==='vanishing'){const vp=derivedVp(st,aspect);s=vp?{...st,vp,eye:vp[1]}:null;}
+ else if(st.anchors?.length)s=st;
  if(!s||!s.ref)return s;
  const k=refScale(s.eye,s.ref,s.refM);return k?{...s,k}:s;
 }

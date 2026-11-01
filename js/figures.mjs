@@ -7,7 +7,7 @@ const FOREIGN=['mr-trono-de-la-sed'];
 const foreignFlags=()=>Object.fromEntries(FOREIGN.filter(id=>game.modules.get(id)?.active).map(id=>[id,{placed:true}]));
 const activeGM=()=>game.user.isGM&&(!game.users.activeGM||game.users.activeGM.id===game.user.id);
 export const options=()=>figureOptions(game.settings.get(ID,'figures'));
-const stageOf=scene=>{const c=sceneConfig(scene);return c?effectiveStage(c.stage):null;};
+const stageOf=scene=>{const c=sceneConfig(scene);return c?effectiveStage(c.stage,(scene.width||16)/(scene.height||9)):null;};
 /** Las opciones (giro, línea de desplazamiento, escala por profundidad, tamaño) valen para TODAS las fichas de una escena configurada. */
 const managed=scene=>!!sceneConfig(scene);
 /** Solo las fichas colocadas por la barra (o de actores de la lista) reciben el tamaño inicial al crearse. */

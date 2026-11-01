@@ -1,7 +1,7 @@
 import {ID,sceneConfig,saveSceneConfig,clearSceneConfig,globalSettings,saveGlobal,importPack,exportPack,configuredScenes} from './store.mjs';
 import {normalizeSceneConfig,normalizeSettings,DEFAULT_MOTIFS} from './core/schema.mjs';
 import {proposeConfig} from './core/autoconfig.mjs';
-import {refScale,eyeFromRef} from './core/perspective.mjs';
+import {refScale,eyeFromRef,derivedVp} from './core/perspective.mjs';
 import {find,labelOf} from './refs.mjs';
 import {playRef,playEffect} from './audio.mjs';
 import {installExample} from './example.mjs';
@@ -55,20 +55,38 @@ export class DirectionEditor extends ApplicationV2{
   <fieldset class="wide mrd-tools"><legend>${E(L('Ed.Tools'))}</legend><button type="button" data-act="auto"><i class="fa-solid fa-wand-magic-sparkles"></i> ${E(L('Ed.Auto'))}</button> ${others.length?`<select class="copy-from">${others.map(x=>`<option value="${x.scene.id}">${E(x.scene.name)}</option>`).join('')}</select><button type="button" data-act="copy"><i class="fa-solid fa-copy"></i> ${E(L('Ed.Copy'))}</button>`:''} <button type="button" data-act="unconfig" class="danger"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.Unconfig'))}</button></fieldset></div>`;
  }
  floorTab(c){
-  const s=this.scene,src=s.background?.src,st=c.stage,mode=st.mode,vp=st.vp,eye=mode==='vanishing'&&vp?vp[1]:st.eye,W=s.width||1600,H=s.height||900,ref=st.ref,k=ref?(refScale(eye,ref,st.refM)??1):1;
+  const s=this.scene,src=s.background?.src,st=c.stage,mode=st.mode,ref=st.ref,W=s.width||1600,H=s.height||900,exit=mode==='vanishing';
+  // Con rectángulo de salida el punto de fuga sale de las cuatro líneas esquina→esquina; sin él es el punto que se coloca a mano.
+  const vp=exit?derivedVp(st,W/H):null,derived=!!(vp&&ref),eye=vp?vp[1]:st.eye,k=ref?(refScale(eye,ref,st.refM)??1):1;
   const picker=`<div class="mrd-modes" role="radiogroup" aria-label="${E(L('Ed.Mode'))}">${['horizon','vanishing','none'].map(m=>`<button type="button" role="radio" aria-checked="${mode===m}" class="${mode===m?'is-on':''}" data-act="mode" data-mode="${m}" title="${E(L('Ed.ModeHint_'+m))}"><b>${E(L('Ed.Mode_'+m))}</b></button>`).join('')}</div>`;
   if(mode==='none')return picker+`<p class="mrd-hint">${E(L('Ed.NoneHint'))}</p>`;
   if(!src)return picker+`<p>${E(L('Ed.NoBackground'))}</p>`;
-  const modeCtl=mode==='vanishing'
-   ?`<button type="button" data-act="clear-vp"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearVP'))}</button><button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button>`
-   :`<label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="0" max="1" data-path="stage.eye" data-num value="${eye}"></label><button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button>`;
-  // Referencia de escala (puerta, pared de fondo…): rectángulo de medida conocida que calibra el tamaño de las figuras.
-  const refCtl=`<span class="mrd-sep" aria-hidden="true"></span><label title="${E(L('Ed.RefHeightTip'))}">${E(L('Ed.RefHeight'))} <input type="number" step=".05" min=".3" max="50" data-path="stage.refM" data-num value="${st.refM}"> m</label>${ref?`<button type="button" data-act="ref-eye"><i class="fa-solid fa-eye" aria-hidden="true"></i> ${E(L('Ed.RefEye'))}</button><button type="button" data-act="clear-ref"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearRef'))}</button>`:`<button type="button" data-act="ref-draw" class="${this.refDraw?'is-on':''}" aria-pressed="${!!this.refDraw}" title="${E(L('Ed.RefHintNone'))}"><i class="fa-solid fa-vector-square" aria-hidden="true"></i> ${E(L('Ed.RefDraw'))}</button>`}`;
-  const bar=`<p class="mrd-hint">${E(L(mode==='vanishing'?(vp?'Ed.VPHint':'Ed.VPHintNone'):'Ed.FloorHint'))}</p><div class="mrd-floor-bar">${modeCtl}${refCtl}</div>${ref||this.refDraw?`<p class="mrd-hint">${E(L(ref?'Ed.RefHint':'Ed.RefDrawing'))}</p>`:''}`;
-  const box=ref?`<div class="mrd-ref-box" style="left:${ref[0]*100}%;top:${ref[1]*100}%;width:${(ref[2]-ref[0])*100}%;height:${(ref[3]-ref[1])*100}%"><em>${E(L('Ed.RefLabel',{m:st.refM}))}</em><span class="mrd-ref-h" data-corner="0"></span><span class="mrd-ref-h" data-corner="1"></span></div>`:'';
-  // Punto de fuga: línea de horizonte por su altura y rayos hacia el suelo (abanico fijo + uno por cada punto de apoyo).
-  const rays=mode==='vanishing'&&vp?`<svg class="mrd-rays" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="h" x1="0" y1="${vp[1]*100}" x2="100" y2="${vp[1]*100}"/>${[0,.2,.4,.6,.8,1].map(x=>`<line x1="${vp[0]*100}" y1="${vp[1]*100}" x2="${x*100}" y2="100"/>`).join('')}${st.anchors.filter(([,y])=>y>vp[1]+.01).map(([x,y])=>`<line class="a" x1="${vp[0]*100}" y1="${vp[1]*100}" x2="${(vp[0]+(x-vp[0])*(1-vp[1])/(y-vp[1]))*100}" y2="100"/>`).join('')}</svg>`:'';
-  const mark=mode==='vanishing'?(vp?`<div class="mrd-vp" style="left:${vp[0]*100}%;top:${vp[1]*100}%" title="${E(L('Ed.VP'))}"><span>${E(L('Ed.VP'))}</span></div>`:''):`<div class="mrd-horizon" style="top:${eye*100}%"><span>${E(L('Ed.Horizon'))}</span></div>`;
+  const clearAnchors=`<button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button>`;
+  const modeCtl=exit?(ref?'':`<button type="button" data-act="clear-vp"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearVP'))}</button>`)+clearAnchors
+   :`<label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="0" max="1" data-path="stage.eye" data-num value="${eye}"></label>`+clearAnchors;
+  // Rectángulo: en «punto de fuga» es el de salida (fija el punto de fuga); en «horizonte», una referencia de escala (puerta, mesa…).
+  const refCtl=`<span class="mrd-sep" aria-hidden="true"></span><label title="${E(L('Ed.RefHeightTip'))}">${E(L('Ed.RefHeight'))} <input type="number" step=".05" min=".3" max="50" data-path="stage.refM" data-num value="${st.refM}"> m</label>${ref
+   ?(exit?'':`<button type="button" data-act="ref-eye"><i class="fa-solid fa-eye" aria-hidden="true"></i> ${E(L('Ed.RefEye'))}</button>`)+`<button type="button" data-act="clear-ref"><i class="fa-solid fa-eraser"></i> ${E(L(exit?'Ed.ExitClear':'Ed.ClearRef'))}</button>`
+   :`<button type="button" data-act="ref-draw" class="${this.refDraw?'is-on':''}" aria-pressed="${!!this.refDraw}" title="${E(L(exit?'Ed.ExitHintNone':'Ed.RefHintNone'))}"><i class="fa-solid fa-vector-square" aria-hidden="true"></i> ${E(L(exit?'Ed.ExitDraw':'Ed.RefDraw'))}</button>`}`;
+  const hint=exit?(ref?'Ed.ExitHint':this.refDraw?'Ed.ExitDrawing':'Ed.ExitHintNone'):'Ed.FloorHint';
+  const bar=`<p class="mrd-hint">${E(L(hint))}</p><div class="mrd-floor-bar">${modeCtl}${refCtl}</div>${!exit&&(ref||this.refDraw)?`<p class="mrd-hint">${E(L(ref?'Ed.RefHint':'Ed.RefDrawing'))}</p>`:''}`;
+  const box=ref?`<div class="mrd-ref-box" style="left:${ref[0]*100}%;top:${ref[1]*100}%;width:${(ref[2]-ref[0])*100}%;height:${(ref[3]-ref[1])*100}%"><em>${E(L(exit?'Ed.ExitLabel':'Ed.RefLabel',{m:st.refM}))}</em><span class="mrd-ref-h" data-corner="0"></span><span class="mrd-ref-h" data-corner="1"></span></div>`:'';
+  // Líneas de perspectiva. Con rectángulo de salida: de cada esquina de la imagen a la suya del rectángulo (trazo fuerte), una malla de suelo/techo/paredes
+  // entre ambos y la prolongación discontinua hasta el punto de fuga. Sin él: abanico desde el punto. Siempre: la línea de horizonte y un rayo por cada apoyo.
+  const f=v=>+(v*100).toFixed(2),ln=(x1,y1,x2,y2,cls='')=>`<line${cls?` class="${cls}"`:''} x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}"/>`;
+  let g='';
+  if(exit&&vp){
+   g+=ln(0,vp[1],1,vp[1],'h');
+   if(ref){
+    const [x0,y0,x1,y1]=ref,w=x1-x0,h=y1-y0;
+    for(const u of [.25,.5,.75])g+=ln(u,1,x0+u*w,y1,'g')+ln(u,0,x0+u*w,y0,'g')+ln(0,u,x0,y0+u*h,'g')+ln(1,u,x1,y0+u*h,'g');
+    g+=ln(0,0,x0,y0,'c')+ln(1,0,x1,y0,'c')+ln(0,1,x0,y1,'c')+ln(1,1,x1,y1,'c');
+    for(const [cx,cy] of [[x0,y0],[x1,y0],[x0,y1],[x1,y1]])g+=ln(cx,cy,vp[0],vp[1],'x');
+   }else g+=[0,.2,.4,.6,.8,1].map(x=>ln(vp[0],vp[1],x,1)).join('');
+   g+=st.anchors.filter(([,y])=>y>vp[1]+.01).map(([x,y])=>ln(vp[0],vp[1],vp[0]+(x-vp[0])*(1-vp[1])/(y-vp[1]),1,'a')).join('');
+  }
+  const rays=g?`<svg class="mrd-rays" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${g}</svg>`:'';
+  const mark=exit?(vp?`<div class="mrd-vp ${derived?'is-derived':''}" style="left:${vp[0]*100}%;top:${vp[1]*100}%" title="${E(L('Ed.VP'))}"><span>${E(L('Ed.VP'))}</span></div>`:''):`<div class="mrd-horizon" style="top:${eye*100}%"><span>${E(L('Ed.Horizon'))}</span></div>`;
   return picker+bar+`<div class="mrd-floor ${this.refDraw?'is-drawing':''}" style="aspect-ratio:${W}/${H}"><img src="${E(src)}" alt="" draggable="false">${rays}${box}${mark}${st.anchors.map(([x,y],i)=>`<div class="mrd-anchor" data-i="${i}" style="left:${x*100}%;top:${y*100}%"><div class="mrd-anchor-fig" style="height:${Math.max(0,(y-eye)*k*100)}cqh"></div><b>${i+1}</b></div>`).join('')}</div>`;
  }
  globalTab(g){
@@ -145,10 +163,11 @@ export class DirectionEditor extends ApplicationV2{
    case 'copy':{const src=sceneConfig(game.scenes.get(this.element.querySelector('.copy-from').value));if(!src)return;return this.commit(c=>{Object.assign(c,structuredClone({...src,ref:c.ref,thumb:c.thumb,name:c.name}));});}
    case 'unconfig':await clearSceneConfig(this.scene);return this.render();
    case 'clear-anchors':return this.commit(c=>{c.stage.anchors=[];});
-   case 'mode':return this.commit(c=>{c.stage.mode=b.dataset.mode;if(b.dataset.mode==='vanishing'&&!c.stage.vp)c.stage.vp=[.5,c.stage.eye];});
+   // Al pasar a punto de fuga sin rectángulo de salida, el siguiente arrastre sobre la imagen lo dibuja.
+   case 'mode':{this.refDraw=b.dataset.mode==='vanishing'&&!this.cfg.stage.ref;return this.commit(c=>{c.stage.mode=b.dataset.mode;if(b.dataset.mode==='vanishing'&&!c.stage.vp&&!c.stage.ref)c.stage.vp=[.5,c.stage.eye];});}
    case 'clear-vp':return this.commit(c=>{c.stage.vp=null;});
    case 'ref-draw':this.refDraw=!this.refDraw;return this.render();
-   case 'clear-ref':return this.commit(c=>{c.stage.ref=null;});
+   case 'clear-ref':{const a=(this.scene.width||16)/(this.scene.height||9);this.refDraw=false;return this.commit(c=>{if(c.stage.mode==='vanishing')c.stage.vp=derivedVp(c.stage,a);c.stage.ref=null;});}
    case 'ref-eye':return this.commit(c=>{const y=+eyeFromRef(c.stage.ref,c.stage.refM).toFixed(3);if(c.stage.mode==='vanishing'&&c.stage.vp)c.stage.vp=[c.stage.vp[0],y];else c.stage.eye=y;});
    case 'gadd-motif':return this.commitGlobal(g=>g.motifs.push({id:'m'+Date.now().toString(36),label:L('Ed.NewMotif'),icon:'music',music:null}));
    case 'gdefault-motifs':return this.commitGlobal(g=>{const have=new Set(g.motifs.map(m=>m.id));for(const [id,es,en,icon] of DEFAULT_MOTIFS)if(!have.has(id))g.motifs.push({id,label:game.i18n.lang==='es'?es:en,icon,music:null});});
@@ -195,7 +214,7 @@ export class DirectionEditor extends ApplicationV2{
    }
    if(drag.kind==='a'||drag.kind==='v'){drag.el.style.left=x*100+'%';drag.el.style.top=y*100+'%';}else drag.el.style.top=y*100+'%';});
   floor.addEventListener('pointerup',()=>{const d=drag;drag=null;if(!d?.v)return;
-   if(d.kind==='r'||d.kind==='rn'){if(d.kind==='rn')this.refDraw=false;if(!d.ref||d.ref[2]-d.ref[0]<.01||d.ref[3]-d.ref[1]<.01)return void this.render();return void this.commit(c=>{c.stage.ref=d.ref;});}
+   if(d.kind==='r'||d.kind==='rn'){if(d.kind==='rn')this.refDraw=false;if(!d.ref||d.ref[2]-d.ref[0]<.01||d.ref[3]-d.ref[1]<.01)return void this.render();return void this.commit(c=>{c.stage.ref=d.ref;if(c.stage.mode==='vanishing'&&c.stage.refM===2.1)c.stage.refM=2.7;});}
    this.commit(c=>{if(d.kind==='a')c.stage.anchors[d.i]=d.v;else if(d.kind==='v')c.stage.vp=d.v;else c.stage.eye=d.v[1];});});
  }
  async importFile(file){

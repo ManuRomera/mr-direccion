@@ -1,5 +1,13 @@
 # Cambios · Changelog
 
+## 0.4.0 (2026-11-01)
+- **Rectángulo de salida (perspectiva como en un dibujo):** en el modo *Punto de fuga* ahora lo primero que marcas es el **rectángulo donde acaba la perspectiva** (el fondo de un pasillo, el final de una calle). El editor dibuja las **cuatro líneas, desde cada esquina de la imagen hasta su esquina del rectángulo** (también las de arriba), una malla de suelo, techo y paredes entre ambos y la prolongación hasta el punto de fuga. Esas líneas **fijan el punto de fuga** —y con él el horizonte y la escala de las figuras—; si el rectángulo no es exacto, se toma el punto más cercano a las cuatro líneas. Arrastra las esquinas para ajustarlo.
+- La altura real del rectángulo (techo ≈ 2,7 m; puerta ≈ 2,1 m) calibra la escala: una persona de 1,75 m junto a su base mide justo lo que le toca.
+- Sin rectángulo sigue funcionando el punto de fuga colocado a mano, y el modo *Horizonte* conserva el rectángulo como referencia de escala (por ejemplo, sobre una puerta). Las configuraciones anteriores siguen igual.
+- **Exit rectangle (perspective as in a drawing):** in *Vanishing point* mode the first thing you now mark is the **rectangle where the perspective ends** (the end of a corridor, the end of a street). The editor draws the **four lines, from each corner of the image to its corner of the rectangle** (the top ones too), a floor/ceiling/wall grid between them and the extension to the vanishing point. Those lines **fix the vanishing point** —and with it the horizon and the figures' scale—; if the rectangle is not exact, the point closest to the four lines is used. Drag the corners to adjust it.
+- The rectangle's real height (ceiling ≈ 2.7 m; door ≈ 2.1 m) calibrates the scale: a 1.75 m person at its base is exactly as tall as they should be.
+- Without a rectangle the hand-placed vanishing point still works, and *Horizon* mode keeps the rectangle as a scale reference (e.g. over a door). Existing configurations stay as they were.
+
 ## 0.3.0 (2026-11-01)
 - **Referencia de escala:** en la pestaña Perspectiva puedes dibujar un **rectángulo sobre la puerta del fondo** (o una mesa, una columna…) e indicar su altura real (una puerta mide unos 2,1 m). Una persona de 1,75 m junto a su base mide justo lo que le toca, así que las figuras salen a su **escala real** en lugar de depender de un tamaño a ojo. Las líneas blancas de los puntos de apoyo muestran esa altura. Funciona con horizonte y con punto de fuga; el tamaño 360 de la barra equivale a esta escala.
 - El botón **Horizonte a los ojos** coloca la línea del horizonte (o la altura del punto de fuga) a la altura de los ojos medida sobre el rectángulo. Las esquinas del rectángulo se arrastran.

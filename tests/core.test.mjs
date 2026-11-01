@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef,vpFromBox,derivedVp} from '../js/core/perspective.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
@@ -165,11 +165,11 @@ test('esquema: stage.mode y stage.vp se normalizan y lo antiguo sigue siendo hor
 test('referencia de escala: una persona al pie de la puerta mide PERSON/puerta de su alto',()=>{
  const ref=[.45,.4,.55,.7],eye=.45,k=refScale(eye,ref,2.1);
  assert.ok(Math.abs(k-1.75/2.1*.3/(.7-eye))<1e-9);
- const st=effectiveStage({mode:'vanishing',eye:.5,vp:[.5,eye],ref,refM:2.1,anchors:[]});
+ const st=effectiveStage({mode:'horizon',eye,ref,refM:2.1,anchors:[[.5,.9]]});
  const token=figureSize(st,.7*900,900,360),person=token*FIGURE_DEFAULTS.visible;          // píxeles de la persona
  assert.ok(Math.abs(person-(1.75/2.1)*.3*900)<.5,`persona ${person}`);                      // 0,8333 × la altura de la puerta (270 px)
  assert.ok(figureSize(st,.9*900,900)>figureSize(st,.6*900,900));                           // sigue creciendo hacia el frente
- const doble=effectiveStage({mode:'vanishing',eye:.5,vp:[.5,eye],ref,refM:4.2,anchors:[]});  // la misma puerta, pero de 4,2 m: la gente es la mitad
+ const doble=effectiveStage({mode:'horizon',eye,ref,refM:4.2,anchors:[[.5,.9]]});  // la misma puerta, pero de 4,2 m: la gente es la mitad
  assert.ok(Math.abs(figureSize(doble,.7*900,900)*2-token)<1);
 });
 test('referencia: sin referencia o inválida el modelo base no cambia (k=1)',()=>{
@@ -189,4 +189,20 @@ test('esquema: stage.ref se ordena y se acota; refM por defecto 2,1',()=>{
  assert.deepEqual(n({ref:[2,-1,0,0]}).ref,[0,0,1,0]);
  assert.equal(n({ref:[1,2,3]}).ref,null);assert.equal(n({}).ref,null);
  assert.equal(n({}).refM,2.1);assert.equal(n({refM:999}).refM,50);
+});
+
+test('vpFromBox: las cuatro líneas esquina→esquina de un rectángulo de salida se cruzan en el punto de fuga',()=>{
+ const v=[.5,.4],s=.3,box=[v[0]+s*(0-v[0]),v[1]+s*(0-v[1]),v[0]+s*(1-v[0]),v[1]+s*(1-v[1])];   // la imagen reducida al 30 % hacia el punto de fuga
+ for(const a of [16/9,1,2.4]){const p=vpFromBox(box,a);assert.ok(Math.abs(p[0]-.5)<1e-3&&Math.abs(p[1]-.4)<1e-3,`aspect ${a}: ${p}`);}
+ const q=vpFromBox([.4,.3,.62,.58],16/9);assert.ok(q[0]>=0&&q[0]<=1&&q[1]>=0&&q[1]<=1);           // rectángulo a ojo: queda un punto razonable dentro de la imagen
+ assert.equal(vpFromBox([0,0,1,1]),null);assert.equal(vpFromBox(null),null);assert.equal(vpFromBox([.1,.1,.2]),null);
+});
+test('derivedVp / effectiveStage: con rectángulo de salida el punto de fuga sale de él; sin él manda el punto manual',()=>{
+ const box=[.35,.28,.65,.58],st={mode:'vanishing',eye:.9,vp:[.1,.1],ref:box,refM:2.7,anchors:[]};
+ const vp=derivedVp(st,16/9);assert.ok(Math.abs(vp[0]-.5)<1e-3&&Math.abs(vp[1]-.4)<1e-3);
+ const e=effectiveStage(st,16/9);assert.equal(e.eye,vp[1]);assert.deepEqual(e.vp,vp);assert.ok(e.k>0);
+ assert.deepEqual(derivedVp({mode:'vanishing',vp:[.3,.4],ref:null},16/9),[.3,.4]);
+ assert.equal(derivedVp({mode:'horizon',vp:[.3,.4],ref:box},16/9),null);
+ // la escala coherente: una persona al pie del rectángulo (techo de 2,7 m) mide 1,75/2,7 de su alto
+ const person=figureSize(e,.58*900,900,360)*FIGURE_DEFAULTS.visible;assert.ok(Math.abs(person-(1.75/2.7)*.30*900)<1,`persona ${person}`);
 });
