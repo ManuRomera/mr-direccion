@@ -39,14 +39,16 @@ function sceneCfg(s,i,w,ids){
    ref:Array.isArray(st.ref)&&st.ref.length===4&&st.ref.every(Number.isFinite)?(([a,b,c,d])=>[Math.min(a,c),Math.min(b,d),Math.max(a,c),Math.max(b,d)])(st.ref.map(v=>num(v,0,0,1))):null,
    refM:num(st.refM,2.1,.3,50),anchors}};
 }
+/** Frases de un reloj: una por casilla, en orden; admite lista o texto con una por línea. */
+const phrases=v=>{const a=Array.isArray(v)?v:typeof v==='string'?v.split(/\r?\n/):[];const o=a.slice(0,12).map(x=>String(x??'').trim());while(o.length&&!o[o.length-1])o.pop();return o;};
 export function normalizeSettings(raw){
  const s=isObj(raw)?raw:{},m=isObj(s.markers)?s.markers:{};
  const seen=new Set(),uniq=(a,k)=>a.filter(x=>x&&x.id&&!seen.has(k+x.id)&&seen.add(k+x.id));
  return {fade:s.fade==null?null:num(s.fade,3.5,.3,10),
   motifs:uniq((Array.isArray(s.motifs)?s.motifs:[]).map(x=>isObj(x)&&x.id?{id:String(x.id),label:str(x.label,String(x.id)),icon:str(x.icon,'music'),music:normalizeRef(x.music)}:null),'m'),
   effects:uniq((Array.isArray(s.effects)?s.effects:[]).map(x=>isObj(x)&&x.id&&normalizeRef(x.sound)?{id:String(x.id),label:str(x.label),icon:str(x.icon,'wave-square'),sound:normalizeRef(x.sound)}:null),'e'),
-  markers:{milestones:uniq((Array.isArray(m.milestones)?m.milestones:[]).map(x=>isObj(x)&&x.id?{id:String(x.id),label:str(x.label,String(x.id))}:null),'h'),
-   clocks:uniq((Array.isArray(m.clocks)?m.clocks:[]).map(x=>isObj(x)&&x.id?{id:String(x.id),label:str(x.label,String(x.id)),segments:Math.round(num(x.segments,6,2,12))}:null),'c')}};
+  markers:{milestones:uniq((Array.isArray(m.milestones)?m.milestones:[]).map(x=>isObj(x)&&x.id?{id:String(x.id),label:str(x.label,String(x.id)),public:x.public!==false}:null),'h'),
+   clocks:uniq((Array.isArray(m.clocks)?m.clocks:[]).map(x=>isObj(x)&&x.id?{id:String(x.id),label:str(x.label,String(x.id)),segments:Math.round(num(x.segments,6,2,12)),public:x.public===true,announce:x.announce===true,phrases:phrases(x.phrases)}:null),'c')}};
 }
 export const normalizeSceneConfig=(s,w=[])=>sceneCfg(s,0,w,new Set());
 /** Migra a la versión actual (hoy solo existe la 1). */

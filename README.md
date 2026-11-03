@@ -47,7 +47,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🔉 **Mezcla** | Volumen, **Modo lectura** (baja el fondo), Parar audio y **ambiente** claro/penumbra/oscuro (luz y volumen a la vez, recordado por escena). |
 | 📏 **Barra de tamaño** | Deslizador en px (máximo editable) que actúa en directo sobre **Todas** o sobre las **Seleccionadas**; giro hacia el movimiento y quitar la línea de desplazamiento, para todas las fichas de la escena. |
 | 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del **horizonte** o de un **rectángulo de salida** que fija el punto de fuga como en un dibujo en perspectiva (o de ninguno, para mapas en vista cenital) y de los puntos de apoyo; se recalcula al arrastrar. |
-| 🕯️ **Marcadores** | **Hitos secretos** que desbloquea el GM (con aviso a la mesa) y **relojes** de N segmentos solo-GM. Insignia arrastrable. |
+| 🕯️ **Marcadores** | **Hitos** que logra el GM (cada uno se revela a la mesa o se queda secreto) y **relojes** de N segmentos, ocultos o públicos reloj a reloj. Al avanzar un reloj sale un **aviso a la mesa** con su título y una frase opcional (Mayús + clic para escribirla al momento). Insignia arrastrable. |
 | 🖱️ **Se coloca donde quieras** | Toda la barra se arrastra con el **botón derecho**; la posición se recuerda y se restablece. Menús que se cierran al hacer clic fuera. |
 | 🪟 **Estilos** | **Cristal líquido** (por defecto) o Clásico, con o sin fondo, compacta o plegada. |
 | ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna), **Autoconfigurar**, copia de otra escena, importa y exporta. |
@@ -62,6 +62,10 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 <tr>
 <td width="50%"><img src="docs/img/markers.webp" alt="Panel de marcadores con reloj e hitos"><br><sub><b>Marcadores</b>: reloj de las siete lámparas e hitos secretos.</sub></td>
 <td width="50%"><img src="docs/img/perspectiva.webp" alt="Editor de perspectiva con punto de fuga"><br><sub><b>Perspectiva</b>: marcas el rectángulo de salida y las líneas esquina a esquina, como en un dibujo, fijan el punto de fuga, el horizonte y la escala real de las figuras.</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/img/altavoz.webp" alt="Aviso a la mesa al avanzar un reloj"><br><sub><b>Altavoz</b>: al avanzar un reloj, a los jugadores les sale su título, las casillas y una frase de sabor.</sub></td>
+<td width="50%"><img src="docs/img/relojes-gm.webp" alt="Panel del GM con relojes públicos y avisos"><br><sub><b>Relojes del GM</b>: el ojo los hace públicos y el altavoz activa el aviso; también hay un ojo por hito.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/classic.webp" alt="Estilo clásico"><br><sub>Estilo <b>Clásico</b>.</sub></td>
@@ -88,7 +92,7 @@ Funciona con **cualquier sistema** (probado con Cairn, dnd5e, Legend in the Mist
 3. **Música y lectura (2 min).** Arrastra un sonido de una lista de reproducción a *Música de la escena* y un diario o página a *Lectura inicial*. También puedes escribir la ruta de un archivo de audio. O pulsa **Autoconfigurar** y revisa el borrador.
 4. **Efectos y motivos (2 min).** Arrastra sonidos a *Efectos de la escena*. En la pestaña **Global** pulsa *Añadir motivos habituales* y arrastra la música de cada uno.
 5. **Perspectiva (2 min).** En *Perspectiva* elige **Horizonte** (arrastra la línea punteada hasta la altura de los ojos de un personaje de pie) o **Punto de fuga** (dibuja el **rectángulo de salida**, donde acaba el pasillo o la calle: las líneas de las cuatro esquinas de la imagen hasta las suyas fijan el punto de fuga, el horizonte y la escala; indica su altura real, techo ≈ 2,7 m) y haz clic en el suelo para marcar dónde se pisa. Para un mapa cenital elige **Ninguna**: las figuras no cambian de tamaño. Arrastra actores a *Figuras* y, en la barra, **Figuras → Colocar el reparto**.
-6. **Ayudas y marcadores (2 min).** Arrastra diarios o imágenes a *Ayudas*; en Global crea hitos y relojes.
+6. **Ayudas y marcadores (2 min).** Arrastra diarios o imágenes a *Ayudas*; en Global crea hitos y relojes: marca cuáles se revelan o son públicos, cuáles avisan a la mesa al avanzar y sus frases de sabor.
 7. **Compártelo.** **Exportar paquete** guarda un JSON; **Importar paquete** lo aplica en otro mundo (las escenas se enlazan por la referencia que indique el paquete).
 
 Una pista clicable dentro de un diario: `@Dir[motif|tension~@]{Tensión}` (el `@` es la escena actual) o `@Dir[effect|g~campana]{Campana}`.
@@ -159,7 +163,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🔉 **Mix** | Volume, **Reading mode** (ducks the background), Stop audio and **ambience** light/dim/dark (lighting and volume at once, remembered per scene). |
 | 📏 **Size bar** | A px slider (editable maximum) that works live on **All** or **Selected** tokens; turn toward movement and remove the movement ruler, for every token in the scene. |
 | 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the **horizon** or an **exit rectangle** that fixes the vanishing point as in a perspective drawing (or from neither, for top-down maps) and the floor anchors, and is recomputed while dragging. |
-| 🕯️ **Markers** | **Secret milestones** the GM unlocks (with a notice to the table) and GM-only **clocks** of N segments. Draggable badge. |
+| 🕯️ **Markers** | **Milestones** the GM achieves (each one is revealed to the table or stays secret) and **clocks** of N segments, hidden or public clock by clock. Advancing a clock shows the table an **announcement** with its title and an optional line (Shift + click to write one on the spot). Draggable badge. |
 | 🖱️ **Put it anywhere** | Drag the whole bar with the **right mouse button**; the position is remembered and can be reset. Menus close when you click outside. |
 | 🪟 **Styles** | **Liquid Glass** (default) or Classic, with or without background, compact or folded. |
 | ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none), **Auto-configure**, copy from another scene, import and export. |
@@ -174,6 +178,10 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 <tr>
 <td width="50%"><img src="docs/img/perspectiva-en.webp" alt="Perspective editor with a vanishing point"><br><sub><b>Perspective</b>: you mark the exit rectangle and the corner-to-corner lines, as in a drawing, fix the vanishing point, the horizon and the figures’ real scale.</sub></td>
 <td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 1 s on a scene.</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/img/altavoz-en.webp" alt="Announcement to the table when a clock advances"><br><sub><b>Loudspeaker</b>: when a clock advances, players get its title, the segments and a flavour line.</sub></td>
+<td width="50%"><img src="docs/img/relojes-gm-en.webp" alt="GM panel with public clocks and announcements"><br><sub><b>GM clocks</b>: the eye makes them public and the loudspeaker turns the announcement on; each milestone has an eye too.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/classic.webp" alt="Classic style"><br><sub><b>Classic</b> style.</sub></td>
@@ -200,7 +208,7 @@ Works with **any system** (tested with Cairn, dnd5e, Legend in the Mist and Moth
 3. **Music and read-aloud (2 min).** Drag a sound from a playlist into *Scene music* and a journal or page into *Opening reading*. You can also type an audio file path. Or press **Auto-configure** and review the draft.
 4. **Effects and motifs (2 min).** Drag sounds into *Scene effects*. In the **Global** tab press *Add common motifs* and drag the music for each one.
 5. **Perspective (2 min).** In *Perspective* choose **Horizon** (drag the dotted line to the eye height of a standing character) or **Vanishing point** (draw the **exit rectangle**, where the corridor or street ends: the lines from the four corners of the image to its corners fix the vanishing point, the horizon and the scale; enter its real height, ceiling ≈ 2.7 m) and click the floor to mark where people stand. For a top-down map choose **None**: figures keep their size. Drag actors into *Figures* and, on the bar, **Figures → Place the cast**.
-6. **Handouts and markers (2 min).** Drag journals or images into *Handouts*; create milestones and clocks in Global.
+6. **Handouts and markers (2 min).** Drag journals or images into *Handouts*; create milestones and clocks in Global: choose which are revealed or public, which tell the table when they advance, and their flavour lines.
 7. **Share it.** **Export pack** saves a JSON; **Import pack** applies it in another world (scenes are linked by the reference the pack gives).
 
 A clickable cue inside a journal: `@Dir[motif|tension~@]{Tension}` (`@` is the current scene) or `@Dir[effect|g~bell]{Bell}`.

@@ -18,7 +18,7 @@ Nothing uses `game.system.id`: anything system-specific would go into a separate
 
 ## Where things are stored
 - **Scene**: `flags.mr-direccion.config` (travels with the scene, also inside compendiums/adventures).
-- **World**: setting `global` (fade, motifs, global effects, milestones and clocks), `mix` (volume, reading mode), `figures` (figure options), `markerState` (unlocked milestones and clock values).
+- **World**: setting `global` (fade, motifs, global effects, milestones and clocks), `mix` (volume, reading mode), `figures` (figure options), `markerState` (unlocked milestones, clock values and `event`, the latest clock announcement: it travels in the setting itself and each client shows it on change, no sockets). Visibility: a `public:false` milestone stays secret even when achieved (the table neither sees nor counts it nor gets a notice); a clock is GM-only unless `public:true`; `announce:true` shows everyone an announcement (title, segments and `phrases`: one per segment, or a single one for all) when it advances; Shift + click forces the announcement with a line of your own.
 - **Client**: bar visibility, background, style, own fade, bar and badge position, editor state, tour offered.
 - **Memory**: packs registered by other modules with `registerPack` (never written to the world).
 
@@ -30,7 +30,7 @@ Nothing uses `game.system.id`: anything system-specific would go into a separate
     "fade": 3.5,                                         // s; null = client value / 3.5
     "motifs":  [{"id":"tension","label":"Tension","icon":"eye","music":REF}],
     "effects": [{"id":"bell","label":"Bell","icon":"bell","sound":REF}],   // global chips
-    "markers": {"milestones":[{"id":"x","label":"…"}], "clocks":[{"id":"r","label":"…","segments":6}]}
+    "markers": {"milestones":[{"id":"x","label":"…","public":true}], "clocks":[{"id":"r","label":"…","segments":6,"public":false,"announce":false,"phrases":["…"]}]}
   },
   "scenes": [{
     "ref": REF,                 // scene

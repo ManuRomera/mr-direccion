@@ -5,7 +5,7 @@ import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.m
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
 import {convertTrono} from '../js/core/trono.mjs';
 import {proposeConfig} from '../js/core/autoconfig.mjs';
-import {clockAfterClick,clampSeg,milestonesProgress,clockState} from '../js/core/markers.mjs';
+import {clockAfterClick,clampSeg,milestonesProgress,clockState,publicMilestones,publicClocks,phraseFor,clockEvent} from '../js/core/markers.mjs';
 const json=p=>JSON.parse(readFileSync(new URL(p,import.meta.url),'utf8'));
 const scene={width:1600,height:900,grid:{size:100}};
 test('perspectiva: más cerca del frente = figura más grande; el horizonte limita la altura',()=>{
@@ -205,4 +205,35 @@ test('derivedVp / effectiveStage: con rectángulo de salida el punto de fuga sal
  assert.equal(derivedVp({mode:'horizon',vp:[.3,.4],ref:box},16/9),null);
  // la escala coherente: una persona al pie del rectángulo (techo de 2,7 m) mide 1,75/2,7 de su alto
  const person=figureSize(e,.58*900,900,360)*FIGURE_DEFAULTS.visible;assert.ok(Math.abs(person-(1.75/2.7)*.30*900)<1,`persona ${person}`);
+});
+
+test('hitos y relojes: qué ve la mesa (hitos públicos por defecto, relojes solo si son públicos)',()=>{
+ const ms=[{id:'a'},{id:'b',public:false},{id:'c',public:true}],cl=[{id:'r'},{id:'s',public:true},{id:'t',public:false}];
+ assert.deepEqual(publicMilestones(ms).map(m=>m.id),['a','c']);
+ assert.deepEqual(publicClocks(cl).map(c=>c.id),['s']);
+ assert.deepEqual(milestonesProgress(publicMilestones(ms),{a:true,b:true}),{done:1,total:2});   // el secreto no cuenta ni se filtra en el contador
+});
+test('phraseFor: una frase por casilla; con una sola línea se usa siempre',()=>{
+ assert.equal(phraseFor(['uno','dos','tres'],2),'dos');
+ assert.equal(phraseFor(['uno','','tres'],2),'');
+ assert.equal(phraseFor(['siempre'],4),'siempre');
+ assert.equal(phraseFor([],1),'');assert.equal(phraseFor(undefined,1),'');assert.equal(phraseFor(['a','b'],5),'');
+ assert.equal(phraseFor(['  hola  '],1),'hola');
+});
+test('clockEvent: solo avisa al subir y si el reloj avisa (o se fuerza); la frase propia manda sobre la preparada',()=>{
+ const c={id:'r',label:'La puerta cede',segments:6,announce:true,phrases:['crujido','golpe']};
+ const e=clockEvent(c,1,2,{now:7});assert.deepEqual({...e},{id:'r',label:'La puerta cede',segments:6,from:1,to:2,phrase:'golpe',t:7});
+ assert.equal(clockEvent(c,3,2),null);assert.equal(clockEvent(c,2,2),null);                       // bajar o no mover: nada
+ assert.equal(clockEvent({...c,announce:false},1,2),null);                                          // no avisa
+ assert.equal(clockEvent({...c,announce:false},1,2,{force:true,phrase:'¡Voces!'}).phrase,'¡Voces!'); // Mayús + clic
+ assert.equal(clockEvent(c,0,1,{phrase:'a mano'}).phrase,'a mano');
+ assert.equal(clockEvent(c,0,1,{phrase:'  '}).phrase,'crujido');                                      // vacío: cae a la preparada
+});
+test('esquema: public/announce/phrases de hitos y relojes se normalizan y lo anterior sigue igual',()=>{
+ const n=m=>validatePack({id:'p',settings:{markers:m},scenes:[]}).pack.settings.markers;
+ const k=n({milestones:[{id:'h',label:'H'},{id:'i',label:'I',public:false}],clocks:[{id:'r',label:'R',segments:4},{id:'s',label:'S',public:true,announce:true,phrases:' a \n\n b \n\n'}]});
+ assert.equal(k.milestones[0].public,true);assert.equal(k.milestones[1].public,false);
+ assert.equal(k.clocks[0].public,false);assert.equal(k.clocks[0].announce,false);assert.deepEqual(k.clocks[0].phrases,[]);
+ assert.equal(k.clocks[1].public,true);assert.equal(k.clocks[1].announce,true);assert.deepEqual(k.clocks[1].phrases,['a','','b']);
+ assert.equal(n({clocks:[{id:'x',label:'X',phrases:Array(30).fill('z')}]}).clocks[0].phrases.length,12);
 });

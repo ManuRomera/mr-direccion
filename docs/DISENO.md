@@ -18,7 +18,7 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
 
 ## Dónde se guarda cada cosa
 - **Escena**: `flags.mr-direccion.config` (viaja con la escena, también en compendios/aventuras).
-- **Partida** (mundo): ajuste `global` (fundido, motivos, efectos globales, hitos y relojes), `mix` (volumen, modo lectura), `figures` (opciones de figuras), `markerState` (hitos desbloqueados y relojes).
+- **Partida** (mundo): ajuste `global` (fundido, motivos, efectos globales, hitos y relojes), `mix` (volumen, modo lectura), `figures` (opciones de figuras), `markerState` (hitos desbloqueados, relojes y `event`, el último aviso de reloj: viaja en el propio ajuste y cada cliente lo muestra al cambiar, sin sockets). Visibilidad: un hito `public:false` queda secreto aunque se logre (la mesa ni lo ve ni lo cuenta ni recibe aviso); un reloj es solo del GM salvo `public:true`; `announce:true` muestra a todos un aviso (título, casillas y `phrases`: una por casilla, o una sola para todas) al avanzar; Mayús + clic fuerza el aviso con una frase propia.
 - **Cliente**: barra visible, fondo, estilo, fundido propio, posición de la barra y de la insignia, estado del editor, tutorial ofrecido.
 - **Memoria**: paquetes que otros módulos registran con `registerPack` (no se escriben en el mundo).
 
@@ -30,7 +30,7 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
     "fade": 3.5,                                         // s; null = el del cliente / 3,5
     "motifs":  [{"id":"tension","label":"Tensión","icon":"eye","music":REF}],
     "effects": [{"id":"campana","label":"Campana","icon":"bell","sound":REF}],   // chips globales
-    "markers": {"milestones":[{"id":"x","label":"…"}], "clocks":[{"id":"r","label":"…","segments":6}]}
+    "markers": {"milestones":[{"id":"x","label":"…","public":true}], "clocks":[{"id":"r","label":"…","segments":6,"public":false,"announce":false,"phrases":["…"]}]}
   },
   "scenes": [{
     "ref": REF,                 // escena

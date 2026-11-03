@@ -91,11 +91,12 @@ export class DirectionEditor extends ApplicationV2{
  }
  globalTab(g){
   const row=(kind,i,it,extra='')=>`<div class="mrd-row"><input data-gpath="${kind}.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(it.label)}">${extra}<button type="button" data-act="gdel" data-list="${kind}" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`;
+  const flag=(path,on,key)=>`<label class="mrd-flag"><input type="checkbox" data-gpath="${path}" data-bool ${on?'checked':''}> ${E(L(key))}</label>`;
   return `<div class="mrd-cols"><fieldset><legend>${E(L('Ed.Fade'))}</legend><label><input type="number" min="0.3" max="10" step=".5" data-gpath="fade" data-num value="${g.fade??3.5}"> s</label></fieldset>
   <fieldset class="wide"><legend>${E(L('Ed.GMotifs'))}</legend>${g.motifs.map((m,i)=>row('motifs',i,m,`<input class="icon" data-gpath="motifs.${i}.icon" value="${E(m.icon)}">${this.refField('g:motifs.'+i+'.music','sound',m.music,{test:'music'})}`)).join('')}<button type="button" data-act="gadd-motif"><i class="fa-solid fa-plus"></i> ${E(L('Ed.AddMotif'))}</button> <button type="button" data-act="gdefault-motifs">${E(L('Ed.DefaultMotifs'))}</button></fieldset>
   <fieldset class="wide"><legend>${E(L('Ed.GEffects'))}</legend>${g.effects.map((m,i)=>row('effects',i,m,`<input class="icon" data-gpath="effects.${i}.icon" value="${E(m.icon)}">${this.refField('g:effects.'+i+'.sound','sound',m.sound,{test:'fx'})}`)).join('')}<div class="mrd-dropzone" data-drop-add="g:effects" data-accept="sound">${E(L('Ed.DropSounds'))}</div></fieldset>
-  <fieldset><legend>${E(L('Ed.Milestones'))}</legend>${g.markers.milestones.map((m,i)=>row('markers.milestones',i,m)).join('')}<button type="button" data-act="gadd-milestone"><i class="fa-solid fa-plus"></i> ${E(L('Ed.Add'))}</button></fieldset>
-  <fieldset><legend>${E(L('Ed.Clocks'))}</legend>${g.markers.clocks.map((m,i)=>row('markers.clocks',i,m,`<input type="number" min="2" max="12" data-gpath="markers.clocks.${i}.segments" data-num value="${m.segments}" title="${E(L('Ed.Segments'))}">`)).join('')}<button type="button" data-act="gadd-clock"><i class="fa-solid fa-plus"></i> ${E(L('Ed.Add'))}</button></fieldset></div>`;
+  <fieldset><legend>${E(L('Ed.Milestones'))}</legend>${g.markers.milestones.map((m,i)=>`<div class="mrd-item">${row('markers.milestones',i,m)}<div class="mrd-opts">${flag(`markers.milestones.${i}.public`,m.public!==false,'Ed.MsPublic')}</div></div>`).join('')}<button type="button" data-act="gadd-milestone"><i class="fa-solid fa-plus"></i> ${E(L('Ed.Add'))}</button></fieldset>
+  <fieldset><legend>${E(L('Ed.Clocks'))}</legend>${g.markers.clocks.map((m,i)=>`<div class="mrd-item">${row('markers.clocks',i,m,`<input class="mrd-narrow" type="number" min="2" max="12" data-gpath="markers.clocks.${i}.segments" data-num value="${m.segments}" title="${E(L('Ed.Segments'))}">`)}<div class="mrd-opts">${flag(`markers.clocks.${i}.public`,m.public===true,'Ed.ClockPublic')}${flag(`markers.clocks.${i}.announce`,m.announce===true,'Ed.ClockAnnounce')}</div><textarea class="mrd-phrases" rows="2" data-gpath="markers.clocks.${i}.phrases" data-lines placeholder="${E(L('Ed.ClockPhrases'))}">${E((m.phrases??[]).join('\n'))}</textarea></div>`).join('')}<button type="button" data-act="gadd-clock"><i class="fa-solid fa-plus"></i> ${E(L('Ed.Add'))}</button></fieldset></div>`;
  }
  html(){
   // Una sola pasada por las escenas por render (cada consulta normaliza la configuración de todas).
@@ -139,7 +140,7 @@ export class DirectionEditor extends ApplicationV2{
  async onChange(e){
   const t=e.target;
   if(t.matches('[data-motif]'))return this.commit(c=>{const all=globalSettings().motifs.map(m=>m.id),on=new Set(c.motifs??all);t.checked?on.add(t.dataset.motif):on.delete(t.dataset.motif);c.motifs=all.every(x=>on.has(x))?null:[...on];},{rerender:false});
-  if(t.matches('[data-gpath]')){const v=t.dataset.num!==undefined?Number(t.value):t.value;return this.commitGlobal(g=>setPath(g,t.dataset.gpath,v),{rerender:false});}
+  if(t.matches('[data-gpath]')){const v=t.dataset.bool!==undefined?t.checked:t.dataset.lines!==undefined?t.value.split(/\r?\n/):t.dataset.num!==undefined?Number(t.value):t.value;return this.commitGlobal(g=>setPath(g,t.dataset.gpath,v),{rerender:false});}
   if(t.matches('[data-path]')){
    const p=t.dataset.path;
    if(t.dataset.src!==undefined)return this.commit(c=>setPath(c,p,t.value.trim()?{src:t.value.trim()}:null));
@@ -171,8 +172,8 @@ export class DirectionEditor extends ApplicationV2{
    case 'ref-eye':return this.commit(c=>{const y=+eyeFromRef(c.stage.ref,c.stage.refM).toFixed(3);if(c.stage.mode==='vanishing'&&c.stage.vp)c.stage.vp=[c.stage.vp[0],y];else c.stage.eye=y;});
    case 'gadd-motif':return this.commitGlobal(g=>g.motifs.push({id:'m'+Date.now().toString(36),label:L('Ed.NewMotif'),icon:'music',music:null}));
    case 'gdefault-motifs':return this.commitGlobal(g=>{const have=new Set(g.motifs.map(m=>m.id));for(const [id,es,en,icon] of DEFAULT_MOTIFS)if(!have.has(id))g.motifs.push({id,label:game.i18n.lang==='es'?es:en,icon,music:null});});
-   case 'gadd-milestone':return this.commitGlobal(g=>g.markers.milestones.push({id:'h'+Date.now().toString(36),label:L('Ed.NewMilestone')}));
-   case 'gadd-clock':return this.commitGlobal(g=>g.markers.clocks.push({id:'r'+Date.now().toString(36),label:L('Ed.NewClock'),segments:6}));
+   case 'gadd-milestone':return this.commitGlobal(g=>g.markers.milestones.push({id:'h'+Date.now().toString(36),label:L('Ed.NewMilestone'),public:true}));
+   case 'gadd-clock':return this.commitGlobal(g=>g.markers.clocks.push({id:'r'+Date.now().toString(36),label:L('Ed.NewClock'),segments:6,public:false,announce:false,phrases:[]}));
    case 'import':return this.element.querySelector('.mrd-file').click();
    case 'export':{const p=exportPack();return foundry.utils.saveDataToFile(JSON.stringify(p,null,1),'application/json',`mr-direccion-${game.world.id}.json`);}
    case 'example':{const r=await installExample();ui.notifications.info(L('Ed.ExampleDone',{n:r.done.length}));this.sceneId=game.scenes.find(s=>s.getFlag(ID,'example')==='camino')?.id??this.sceneId;return this.render();}
