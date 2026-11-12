@@ -1,5 +1,10 @@
 # Cambios · Changelog
 
+## 0.5.1 (2026-11-12)
+- **Ejemplo fotográfico con licencias verificables:** se sustituyen los nueve WEBP de la Posada (tres escenas, tres miniaturas y tres tokens) por fotografías humanas de Wikimedia Commons con licencias CC BY / CC BY-SA y créditos completos.
+- **Compatibilidad intacta:** las rutas, los actores, los diarios, el audio y las funciones de la barra permanecen sin cambios. Sigue siendo válido para cualquier sistema y mundo de Foundry v13.
+- **Créditos transparentes:** autores, enlaces y licencias de los recursos visuales en `examples/posada/ASSET_CREDITS.md` y `ASSET_SOURCES.json`; aclaración de la licencia MIT del código.
+
 ## 0.5.0 (2026-11-03)
 - **Altavoz de relojes:** cuando el GM avanza un reloj que lo tiene activado (el botón del altavoz en el panel, o la casilla «Avisar a la mesa al avanzar» en el editor), a **todos los jugadores** les sale un aviso con el **título del reloj**, sus casillas y, debajo, una **frase de sabor** opcional. Funciona también con relojes ocultos: la mesa se entera del movimiento sin ver el reloj. Las frases se preparan en el editor (una por casilla, en orden; con una sola línea se usa siempre) y **Mayús + clic** en una casilla permite escribir una frase al momento aunque el reloj no avise. Solo avisa al subir, no al retroceder; al completarse sale como «¡Reloj completo!».
 - **Relojes públicos:** cada reloj puede hacerse visible para los jugadores (el ojo del panel o «Visible para los jugadores» en el editor); verán sus casillas siempre, sin poder tocarlas. Por defecto siguen siendo solo del GM.
