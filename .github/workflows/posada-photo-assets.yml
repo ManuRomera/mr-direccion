@@ -1,0 +1,92 @@
+name: Posada · Importar fotografías de licencia libre
+
+on:
+  push:
+    branches:
+      - "assets/posada-human-commons-20261112"
+    paths:
+      - ".github/workflows/posada-photo-assets.yml"
+  pull_request:
+    paths:
+      - "scripts/rebuild_posada_stock.py"
+      - "examples/posada/assets/**"
+      - "examples/posada/ASSET_CREDITS.md"
+      - "examples/posada/ASSET_SOURCES.json"
+      - ".github/workflows/posada-photo-assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    name: Descargar y adaptar fotos (una sola vez)
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[STOCK-IMPORT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "assets/posada-human-commons-20261112"
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar procesador fotográfico
+        run: pip install "Pillow>=11,<13" "requests>=2.32,<3"
+      - name: Convertir 6 fotos humanas a 9 recursos para Foundry
+        run: python scripts/rebuild_posada_stock.py
+      - name: Verificar imágenes, miniaturas y créditos
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('examples/posada/assets')
+          backgrounds=('camino','sala','bodega')
+          actors=('posadera','viajero','sombra')
+          expected={name+'.webp' for name in backgrounds+actors}
+          expected|={name+'-thumb.webp' for name in backgrounds}
+          for filename in sorted(expected):
+              path=root/filename
+              assert path.is_file() and path.stat().st_size>3000, filename
+              with Image.open(path) as img:
+                  expected_size=((400,225) if '-thumb' in filename else
+                                 (512,512) if filename.split('.')[0] in actors else
+                                 (1600,900))
+                  assert img.size==expected_size, (filename, img.size)
+          sources=json.loads(Path('examples/posada/ASSET_SOURCES.json').read_text())
+          assert len(sources)==6
+          for item in sources.values():
+              assert 'commons.wikimedia.org' in item['wikimedia_page']
+              assert item['author'] and item['license_url']
+          print('OK: 9 WEBP de tamaño correcto, 6 fuentes documentadas.')
+          PY
+          node --test tests/*.test.mjs
+      - name: Incorporar únicamente los assets y el inventario de origen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add examples/posada/assets/*.webp examples/posada/ASSET_SOURCES.json
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(posada): replace AI-generated artwork with licensed human photography"
+            git push origin HEAD:assets/posada-human-commons-20261112
+          fi
+
+  validate:
+    name: Validar módulo y lista de recursos
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pruebas y empaquetado
+        run: |
+          node --test tests/*.test.mjs
+          node scripts/zip.mjs
+          unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_CREDITS.md$'
+          unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_SOURCES.json$'
