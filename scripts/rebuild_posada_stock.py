@@ -81,7 +81,9 @@ def get_image(name: str, entry: dict) -> Image.Image:
     info = (pages[0].get("imageinfo") or [{}])[0] if pages else {}
     address = info.get("thumburl") or info.get("url")
     if not address or not address.startswith("https://upload.wikimedia.org/"):
-        raise RuntimeError(f"{name}: Wikimedia Commons did not return a safe image URL")
+        summary=[{"title":p.get("title"),"missing":p.get("missing"),
+                  "fields":sorted(p.keys())} for p in pages]
+        raise RuntimeError(f"{name}: missing Wikimedia image URL; summary={summary}, response_keys={sorted(response.json().keys())}")
     img_response = SESSION.get(address, timeout=60)
     img_response.raise_for_status()
     if len(img_response.content) > 22_000_000 or len(img_response.content) < 8_000:
