@@ -1,6 +1,6 @@
 # MR · Dirección — preparación de catálogo oficial (Foundry VTT)
 
-**Estado:** las imágenes de la Posada se han sustituido por recursos con licencias libres en la rama de trabajo; el módulo todavía no está enviado ni aprobado por Foundry. Se mantienen **dos opciones**: paquete habitual con ejemplo fotográfico (pendiente de revisión integral) y paquete `zip-catalog.mjs` sin ejemplo (alternativa de contingencia).
+**Estado 12/11/2026:** imágenes sustituidas y **v0.5.1 publicada en GitHub** con los nueve recursos visuales humanos y sus créditos. El módulo todavía no está enviado ni aprobado por el catálogo oficial de Foundry. Se mantienen **dos opciones**: paquete habitual con ejemplo fotográfico (pendiente de revisión integral) y paquete `zip-catalog.mjs` sin ejemplo (alternativa de contingencia).
 
 ## Publicación que buscamos
 
