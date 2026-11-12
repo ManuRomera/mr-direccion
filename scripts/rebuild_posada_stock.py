@@ -109,7 +109,7 @@ def grade(source: Image.Image, place: str) -> Image.Image:
         {"camino": 0.91, "sala": 0.92, "bodega": 0.82}.get(place, 0.94)
     )
     # Subtle hand-built vignette, deliberately leaving the centre readable.
-    gradient = Image.radial_gradient().resize(im.size, Image.Resampling.BICUBIC)
+    gradient = Image.radial_gradient('L').resize(im.size, Image.Resampling.BICUBIC)
     fade = gradient.point(lambda v: min(255, round(v * 0.21)))
     im = Image.composite(Image.new("RGB", im.size, "#0b1014"), im, fade)
     return im
