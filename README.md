@@ -26,6 +26,10 @@
 
 ### 🎬 Qué es
 
+**Ejemplo fotográfico / Photo-based sample (v0.5.1):** [Galería de escenas y tokens](docs/POSADA_GALERIA.md) · [Fotógrafos, licencias y créditos / Image credits](examples/posada/ASSET_CREDITS.md). Estas imágenes acompañan un ejemplo opcional: el módulo funciona en cualquier mundo y sistema de Foundry v13.
+
+
+
 Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la Sed* y convertida en un módulo **independiente del sistema**. No lleva contenido: **tú (o el módulo de tu aventura) le dices qué música, qué efectos, qué personajes, qué lectura y qué ayudas van en cada escena**, sin tocar un archivo. Con un editor propio, o con un paquete JSON que se importa en un clic.
 
 <p align="center"><img src="docs/img/glass.webp" alt="La barra en estilo Cristal líquido sobre el banquete de la Corte, con cinco figuras a escala de perspectiva sobre el suelo" width="100%"></p>
