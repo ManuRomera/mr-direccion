@@ -1,0 +1,50 @@
+{
+  "camino": {
+    "wikimedia_file": "Winter cottage at night at Pokljuka 2.jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Winter_cottage_at_night_at_Pokljuka_2.jpg",
+    "author": "Dreamy Pixel",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  },
+  "sala": {
+    "wikimedia_file": "Znak Pitanja (Interior).jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Znak_Pitanja_(Interior).jpg",
+    "author": "Fred Cherrygarden",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  },
+  "bodega": {
+    "wikimedia_file": "Weinkeller mit Holzfässern in Bad Vöslau.jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Weinkeller_mit_Holzfässern_in_Bad_Vöslau.jpg",
+    "author": "Naturpuur",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  },
+  "posadera": {
+    "wikimedia_file": "Female reenactor dressed as Spanish lady.jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Female_reenactor_dressed_as_Spanish_lady.jpg",
+    "author": "Peter van der Sluijs",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  },
+  "viajero": {
+    "wikimedia_file": "Man in costume drinks from wooden cup at a historical reenactment event in a grassy area with tents in the background.jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Man_in_costume_drinks_from_wooden_cup_at_a_historical_reenactment_event_in_a_grassy_area_with_tents_in_the_background.jpg",
+    "author": "Shixart1985",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  },
+  "sombra": {
+    "wikimedia_file": "Hooded Figure -Cypress Grove Cemetery, New Orleans.jpg",
+    "wikimedia_page": "https://commons.wikimedia.org/wiki/File:Hooded_Figure_-Cypress_Grove_Cemetery,_New_Orleans.jpg",
+    "author": "Bart Everson",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "derivative": "Photographic crop and light/colour adjustment; game-token round frame for actors"
+  }
+}

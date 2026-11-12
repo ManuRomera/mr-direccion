@@ -1,0 +1,62 @@
+name: Posada · Validar fotos de licencia libre
+
+on:
+  pull_request:
+    paths:
+      - "scripts/rebuild_posada_stock.py"
+      - "examples/posada/assets/**"
+      - "examples/posada/ASSET_CREDITS.md"
+      - "examples/posada/ASSET_SOURCES.json"
+      - ".github/workflows/posada-photo-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validar fotos, licencias y ZIP del módulo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validación de los nueve archivos y sus créditos
+        run: |
+          pip install "Pillow>=11,<13"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('examples/posada/assets')
+          backgrounds=('camino','sala','bodega')
+          actors=('posadera','viajero','sombra')
+          expected={name+'.webp' for name in backgrounds+actors}
+          expected|={name+'-thumb.webp' for name in backgrounds}
+          for filename in sorted(expected):
+              path=root/filename
+              assert path.is_file() and path.stat().st_size>3000, filename
+              with Image.open(path) as img:
+                  expected_size=((400,225) if '-thumb' in filename else
+                                 (512,512) if filename.split('.')[0] in actors else
+                                 (1600,900))
+                  assert img.size==expected_size, (filename, img.size)
+                  assert img.format=='WEBP'
+          sources=json.loads(Path('examples/posada/ASSET_SOURCES.json').read_text())
+          assert set(sources)==set(backgrounds+actors)
+          for name, data in sources.items():
+              assert 'commons.wikimedia.org' in data['wikimedia_page']
+              assert data['author'] and data['license_url']
+          print('OK: 9 WEBP y 6 entradas de autor y licencia.')
+          PY
+      - name: Pruebas de código y paquete completo
+        run: |
+          node --test tests/*.test.mjs
+          node scripts/zip.mjs
+          unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_CREDITS.md$'
+          unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_SOURCES.json$'
