@@ -16,7 +16,7 @@ import json
 from pathlib import Path
 import sys
 import time
-from urllib.parse import urlencode
+from urllib.parse import urlparse
 
 import requests
 from PIL import Image, ImageEnhance, ImageOps, ImageDraw, ImageFilter, ImageChops
@@ -63,7 +63,7 @@ SOURCE = {
 }
 BG = ("camino", "sala", "bodega")
 PORTRAIT = ("posadera", "viajero", "sombra")
-ALLOWED_HOSTS = {"upload.wikimedia.org"}
+ALLOWED_HOSTS = {"upload.wikimedia.org", "thumb.wikimedia.org"}
 SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": UA, "Accept": "application/json,image/jpeg,image/png,image/webp,*/*;q=0.4"})
 
@@ -80,7 +80,7 @@ def get_image(name: str, entry: dict) -> Image.Image:
     pages = response.json().get("query", {}).get("pages", [])
     info = (pages[0].get("imageinfo") or [{}])[0] if pages else {}
     address = info.get("thumburl") or info.get("url")
-    if not address or not address.startswith("https://upload.wikimedia.org/"):
+    if not address or urlparse(address).scheme != "https" or urlparse(address).hostname not in ALLOWED_HOSTS:
         summary=[{"title":p.get("title"),"missing":p.get("missing"),
                   "fields":sorted(p.keys()), "imageinfo": [{k: v for k, v in info.items() if k in ("url", "thumburl", "width", "height")}]} for p in pages]
         raise RuntimeError(f"{name}: missing Wikimedia image URL; summary={summary}, response_keys={sorted(response.json().keys())}")
