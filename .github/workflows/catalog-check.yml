@@ -1,0 +1,58 @@
+name: Foundry Catalog · Validar paquete sin ejemplo
+on:
+  pull_request:
+    paths:
+      - "scripts/zip-catalog.mjs"
+      - ".github/workflows/catalog-check.yml"
+      - "module.json"
+      - "LICENSE"
+      - "js/**"
+      - "lang/**"
+      - "styles/**"
+      - "tours/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Verificar paquete técnico para revisión
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pruebas del módulo
+        run: node --test tests/*.test.mjs
+      - name: Preparar variante sin medios del ejemplo
+        run: node scripts/zip-catalog.mjs
+      - name: Comprobar estructura y manifiesto
+        run: |
+          set -euo pipefail
+          zipfile=$(find dist/catalog -name 'mr-direccion-*-catalog.zip' -print -quit)
+          test -s "$zipfile"
+          test -s dist/catalog/module-catalog.json
+          test "$(unzip -Z1 "$zipfile" | grep -c '^js/main.mjs$')" = "1"
+          ! unzip -Z1 "$zipfile" | grep -E '^(examples/|brand/|docs/|README.md$|js/example.mjs$)'
+          node - <<'NODE'
+          const fs = require('fs');
+          const m=JSON.parse(fs.readFileSync('dist/catalog/module-catalog.json','utf8'));
+          if(m.id!=='mr-direccion'||m.compatibility.minimum!=='13')throw Error('Manifiesto inválido');
+          if(!m.download.endsWith('-catalog.zip'))throw Error('URL de descarga incorrecta');
+          if(!m.manifest.endsWith('/module-catalog.json'))throw Error('URL de manifiesto incorrecta');
+          console.log('Comprobaciones de paquete superadas. La revisión de procedencia sigue pendiente.');
+          NODE
+          workdir=$(mktemp -d)
+          unzip -q "$zipfile" -d "$workdir"
+          find "$workdir/js" -name '*.mjs' -print0 | xargs -0 -n1 node --check
+      - name: Entregar candidato para revisión (no publicado en Foundry)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mr-direccion-catalog-review
+          path: dist/catalog/
+          retention-days: 7
+          if-no-files-found: error
