@@ -1,4 +1,4 @@
-# Candidatos de imágenes humanas para el ejemplo La Posada del Cuervo
+> **ACTUALIZACIÓN 12/11/2026 — recursos sustituidos.** Los candidatos de Pexels indicados más abajo se conservaron como investigación inicial, pero **no se han incluido** en el módulo por la restricción de redistribución independiente de Pexels. Se eligieron seis fuentes humanas de **Wikimedia Commons**, con licencias CC BY / CC BY-SA que permiten distribuir adaptaciones con atribución. Los nueve WEBP ya se generan desde [`scripts/rebuild_posada_stock.py`](../scripts/rebuild_posada_stock.py) y sus autores y derechos están registrados en [`examples/posada/ASSET_CREDITS.md`](../examples/posada/ASSET_CREDITS.md). El trabajo técnico de sustitución está realizado; pendiente revisión visual y de otros contenidos del ejemplo antes de solicitar el alta en Foundry.\n\n# Candidatos de imágenes humanas para el ejemplo La Posada del Cuervo
 
 **Estado: selección preliminar, pendiente de validación individual, descarga, adaptación e integración.**
 Esta selección conserva el ejemplo opcional en el módulo oficial con recursos sustituidos, en lugar de retirarlo.
