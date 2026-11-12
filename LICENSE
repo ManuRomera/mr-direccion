@@ -9,6 +9,19 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
-El código está bajo licencia MIT. Las imágenes y los audios del paquete de ejemplo (examples/posada) son
-obra propia (imágenes generadas con Z-Image-Turbo y retocadas; audio sintetizado con ffmpeg) y se ofrecen
-bajo CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): atribución a Manu Romera.
+
+The MIT license above covers the software code of MR · Dirección. It does **not**
+transfer ownership of third-party photographs or override their individual
+Creative Commons licenses. The photographs and their modified versions shipped
+inside `examples/posada/assets/` are credited with author, source and license
+in `examples/posada/ASSET_CREDITS.md` (CC BY and CC BY-SA, as applicable).
+
+El código es MIT. Las fotografías y derivados del ejemplo «La Posada» son obras
+de terceros con licencias Creative Commons individuales que requieren los
+créditos y, en su caso, compartir las adaptaciones bajo la misma licencia.
+Consultar `examples/posada/ASSET_CREDITS.md`. Nadie debe atribuir estas
+fotografías a Manu Romera como si las hubiera creado originalmente.
+
+Los efectos y ambientes del ejemplo proceden de síntesis de audio con FFmpeg
+según la declaración original del autor. Esta revisión gráfica no altera audio
+ni textos de escenas.
