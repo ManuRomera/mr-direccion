@@ -1,6 +1,6 @@
 # MR · Dirección — preparación de catálogo oficial (Foundry VTT)
 
-**Estado:** candidato técnico de revisión. **NO enviado ni aprobado por Foundry.**
+**Estado:** las imágenes de la Posada se han sustituido por recursos con licencias libres en la rama de trabajo; el módulo todavía no está enviado ni aprobado por Foundry. Se mantienen **dos opciones**: paquete habitual con ejemplo fotográfico (pendiente de revisión integral) y paquete `zip-catalog.mjs` sin ejemplo (alternativa de contingencia).
 
 ## Publicación que buscamos
 
@@ -14,7 +14,7 @@
 
 ## Motivo de preparar una variante específica
 
-El empaquetador normal incluye `examples/posada` con ilustraciones creadas con Z-Image-Turbo y posteriormente retocadas, tal como reconoce el archivo `LICENSE`. La política de Foundry (18/03/2026) no admite imágenes generativas preparadas ni aunque se repinten. El código asistido por IA sí puede presentarse con las condiciones de responsabilidad establecidas en esa misma política.
+**Situación anterior:** el empaquetador normal incluía en `examples/posada` ilustraciones generadas con Z-Image-Turbo. **Actualización 12/11/2026:** se han sustituido los nueve archivos de imagen de ese ejemplo por fotografías y recursos humanos disponibles bajo CC BY / CC BY-SA de Wikimedia Commons, con créditos verificables en `examples/posada/ASSET_CREDITS.md`. La edición sin medios de ejemplo sigue disponible como alternativa conservadora mientras se revisan los audios, textos y el material promocional. El código asistido por IA sí puede presentarse bajo la política oficial cuando el autor lo comprende y mantiene.
 
 El candidato generado por `node scripts/zip-catalog.mjs`:
 
