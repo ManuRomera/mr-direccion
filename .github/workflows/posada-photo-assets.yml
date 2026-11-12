@@ -90,3 +90,5 @@ jobs:
           node scripts/zip.mjs
           unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_CREDITS.md$'
           unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_SOURCES.json$'
+
+# Import autorizado de fotografías humanas (6 fuentes, 9 recursos). Ejecución única.
