@@ -82,7 +82,7 @@ def get_image(name: str, entry: dict) -> Image.Image:
     address = info.get("thumburl") or info.get("url")
     if not address or not address.startswith("https://upload.wikimedia.org/"):
         summary=[{"title":p.get("title"),"missing":p.get("missing"),
-                  "fields":sorted(p.keys())} for p in pages]
+                  "fields":sorted(p.keys()), "imageinfo": [{k: v for k, v in info.items() if k in ("url", "thumburl", "width", "height")}]} for p in pages]
         raise RuntimeError(f"{name}: missing Wikimedia image URL; summary={summary}, response_keys={sorted(response.json().keys())}")
     img_response = SESSION.get(address, timeout=60)
     img_response.raise_for_status()
