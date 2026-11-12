@@ -94,3 +94,5 @@ jobs:
 # Import autorizado de fotografías humanas (6 fuentes, 9 recursos). Ejecución única.
 
 # Segundo intento: comprobar metadatos de origen de Commons.
+
+# Tercer intento para identificar URL pública devuelta por Commons.
