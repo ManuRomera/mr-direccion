@@ -1,11 +1,6 @@
-name: Posada · Importar fotografías de licencia libre
+name: Posada · Validar fotos de licencia libre
 
 on:
-  push:
-    branches:
-      - "assets/posada-human-commons-20261112"
-    paths:
-      - ".github/workflows/posada-photo-assets.yml"
   pull_request:
     paths:
       - "scripts/rebuild_posada_stock.py"
@@ -13,31 +8,27 @@ on:
       - "examples/posada/ASSET_CREDITS.md"
       - "examples/posada/ASSET_SOURCES.json"
       - ".github/workflows/posada-photo-assets.yml"
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  import-assets:
-    name: Descargar y adaptar fotos (una sola vez)
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[STOCK-IMPORT]')
+  validate:
+    name: Validar fotos, licencias y ZIP del módulo
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          ref: "assets/posada-human-commons-20261112"
-          persist-credentials: true
-          fetch-depth: 0
+          node-version: "22"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Instalar procesador fotográfico
-        run: pip install "Pillow>=11,<13" "requests>=2.32,<3"
-      - name: Convertir 6 fotos humanas a 9 recursos para Foundry
-        run: python scripts/rebuild_posada_stock.py
-      - name: Verificar imágenes, miniaturas y créditos
+      - name: Validación de los nueve archivos y sus créditos
         run: |
+          pip install "Pillow>=11,<13"
           python - <<'PY'
           import json
           from pathlib import Path
@@ -55,48 +46,17 @@ jobs:
                                  (512,512) if filename.split('.')[0] in actors else
                                  (1600,900))
                   assert img.size==expected_size, (filename, img.size)
+                  assert img.format=='WEBP'
           sources=json.loads(Path('examples/posada/ASSET_SOURCES.json').read_text())
-          assert len(sources)==6
-          for item in sources.values():
-              assert 'commons.wikimedia.org' in item['wikimedia_page']
-              assert item['author'] and item['license_url']
-          print('OK: 9 WEBP de tamaño correcto, 6 fuentes documentadas.')
+          assert set(sources)==set(backgrounds+actors)
+          for name, data in sources.items():
+              assert 'commons.wikimedia.org' in data['wikimedia_page']
+              assert data['author'] and data['license_url']
+          print('OK: 9 WEBP y 6 entradas de autor y licencia.')
           PY
-          node --test tests/*.test.mjs
-      - name: Incorporar únicamente los assets y el inventario de origen
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add examples/posada/assets/*.webp examples/posada/ASSET_SOURCES.json
-          git diff --cached --stat
-          if ! git diff --cached --quiet; then
-            git commit -m "assets(posada): replace AI-generated artwork with licensed human photography"
-            git push origin HEAD:assets/posada-human-commons-20261112
-          fi
-
-  validate:
-    name: Validar módulo y lista de recursos
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Pruebas y empaquetado
+      - name: Pruebas de código y paquete completo
         run: |
           node --test tests/*.test.mjs
           node scripts/zip.mjs
           unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_CREDITS.md$'
           unzip -Z1 dist/mr-direccion-v*.zip | grep '^examples/posada/ASSET_SOURCES.json$'
-
-# Import autorizado de fotografías humanas (6 fuentes, 9 recursos). Ejecución única.
-
-# Segundo intento: comprobar metadatos de origen de Commons.
-
-# Tercer intento para identificar URL pública devuelta por Commons.
-
-# Cuarto intento: admitido CDN thumb.wikimedia.org.
-
-# Quinto intento: Pillow corrigió el gradiente radial.
