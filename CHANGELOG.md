@@ -1,5 +1,13 @@
 # Cambios · Changelog
 
+## 0.7.0 (2026-11-16)
+- **Calibrar con siluetas, desde el editor:** en la pestaña Perspectiva (modo Horizonte), el botón **Calibrar con siluetas** pone dos siluetas de persona sobre la imagen. Arrastra cada una a un sitio donde se pise (una cerca y otra lejos) y estira su cabeza hasta la altura que tendría una persona ahí, fijándote en puertas, mesas o barandillas: el **horizonte y la escala se calculan en vivo** y se guardan al soltar, aunque el horizonte caiga fuera de la imagen. Sin tocarlas, las siluetas parten de la perspectiva actual y no cambian nada.
+- **Silueta fantasma:** una silueta tenue sigue al cursor por la imagen y muestra el tamaño que tendría una persona en cada punto, para comprobar la perspectiva antes de cerrar el editor. Si las dos siluetas están a la misma profundidad o la de delante es menor, avisa y no guarda.
+- La etiqueta del horizonte ya no dice «(0–1)» (admite de −3 a 1,5) y la línea de apoyo muestra la escala calibrada.
+- **Calibrate with silhouettes, from the editor:** in the Perspective tab (Horizon mode), the **Calibrate with silhouettes** button puts two person silhouettes on the image. Drag each one to a spot where someone could stand (one near, one far) and stretch its head to the height a person would have there, looking at doors, tables or railings: the **horizon and scale are computed live** and saved on release, even if the horizon falls outside the image. Left untouched, the silhouettes start from the current perspective and change nothing.
+- **Ghost silhouette:** a faint silhouette follows the cursor over the image and shows the size a person would have at each point, so you can check the perspective before closing the editor. If the two silhouettes are at the same depth or the front one is smaller, it warns and does not save.
+- The horizon label no longer says “(0–1)” (it accepts −3 to 1.5) and the anchor height lines show the calibrated scale.
+
 ## 0.6.0 (2026-11-16)
 - **Medidas reales de cada ficha:** el módulo suponía el mismo margen bajo los pies y la misma parte visible para todas las figuras; ahora lee la transparencia de cada imagen y apoya los pies exactamente en el punto marcado, con la altura de persona prevista. En las fichas de las aventuras el error anterior era de un 8–12 % de altura y de unos 6–23 px en los pies.
 - **Orden por profundidad:** la figura con los pies más abajo (más cerca) se pinta delante de las del fondo, al colocar y al arrastrar.

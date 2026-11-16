@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef,vpFromBox,derivedVp,calibrate,EYE_MIN,EYE_MAX} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef,vpFromBox,derivedVp,calibrate,EYE_MIN,EYE_MAX,defaultSilhouettes} from '../js/core/perspective.mjs';
 import {alphaMetrics,figureMetrics} from '../js/core/metrics.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
@@ -294,4 +294,14 @@ test('effectiveStage: una escala calibrada (k) activa la perspectiva sin puntos 
  assert.ok(effectiveStage({...withRef,k:null,anchors:[[.5,.9]]}).k!==1.2);
  assert.equal(validatePack({id:'p',scenes:[{ref:{name:'S'},stage:{k:'x'}}]}).pack.scenes[0].stage.k,null);
  assert.equal(validatePack({id:'p',scenes:[{ref:{name:'S'},stage:{k:99}}]}).pack.scenes[0].stage.k,20);
+});
+
+test('defaultSilhouettes: sin tocarlas, la calibración devuelve la perspectiva de partida',()=>{
+ for(const [eye,k,px] of [[.4,1,360],[.3,1.4,360],[.45,.7,720]]){
+  const H=1000,[far,near]=defaultSilhouettes(eye,k,px);
+  assert.ok(near.y>far.y+.1&&far.y>eye&&near.h>far.h);
+  const r=calibrate([far,near].map(s=>({y:s.y,h:s.h*H})),H,px);
+  assert.ok(Math.abs(r.eye-eye)<.01&&Math.abs(r.k-k)<.02,`${eye}/${k}/${px} -> ${JSON.stringify(r)}`);
+ }
+ for(const s of defaultSilhouettes(-.5,1,360)){assert.ok(s.h>=.04&&s.h<=.9&&s.y<=1);}   // horizonte fuera de la imagen: alturas acotadas
 });

@@ -134,3 +134,10 @@ export function calibrate(samples,height,pixels=360,eye=null){
  }
  return {error:'count'};
 }
+/** Siluetas de calibración del editor (una lejos, otra cerca): parten de la perspectiva actual para que, sin tocarlas, la calibración no cambie nada.
+ *  `y` = pies (fracción del alto), `h` = altura de la persona (fracción del alto). */
+export function defaultSilhouettes(eye,k=1,pixels=360){
+ const kp=pixels/360,near=.92;let far=clamp(eye+.15,.5,.7);if(far>=near-.1)far=near-.25;
+ const h=y=>+clamp(Math.max(.02,y-eye)*k*kp,.04,.9).toFixed(4);
+ return [{x:.35,y:far,h:h(far)},{x:.65,y:near,h:h(near)}];
+}

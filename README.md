@@ -50,11 +50,11 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🌩️ **Motivos y efectos** | Batalla, tensión, persecución, sigilo, horror…: lista **editable por partida**. Chips de efectos por escena y globales, como interruptores: se ve claramente cuáles suenan. |
 | 🔉 **Mezcla** | Volumen, **Modo lectura** (baja el fondo), Parar audio y **ambiente** claro/penumbra/oscuro (luz y volumen a la vez, recordado por escena). |
 | 📏 **Barra de tamaño** | Deslizador en px (máximo editable) que actúa en directo sobre **Todas** o sobre las **Seleccionadas**; giro hacia el movimiento y quitar la línea de desplazamiento, para todas las fichas de la escena. |
-| 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del **horizonte** o de un **rectángulo de salida** que fija el punto de fuga como en un dibujo en perspectiva (o de ninguno, para mapas en vista cenital) y de los puntos de apoyo; se recalcula al arrastrar. Mide la **transparencia de cada ficha** para apoyar los pies donde toca, pinta delante la figura más cercana y se calibra con 1 o 2 fichas ya puestas al tamaño que quieres. El horizonte puede caer **fuera de la imagen** (vistas en picado). |
+| 🧍 **Figuras con perspectiva** | Coloca protagonistas y PNJ sobre el **suelo real** del fondo: el tamaño sale del **horizonte** o de un **rectángulo de salida** que fija el punto de fuga como en un dibujo en perspectiva (o de ninguno, para mapas en vista cenital) y de los puntos de apoyo; se recalcula al arrastrar. Mide la **transparencia de cada ficha** para apoyar los pies donde toca, pinta delante la figura más cercana y se calibra con 1 o 2 fichas ya puestas al tamaño que quieres o, en el editor, con **dos siluetas** que arrastras sobre la imagen. El horizonte puede caer **fuera de la imagen** (vistas en picado). |
 | 🕯️ **Marcadores** | **Hitos** que logra el GM (cada uno se revela a la mesa o se queda secreto) y **relojes** de N segmentos, ocultos o públicos reloj a reloj. Al avanzar un reloj sale un **aviso a la mesa** con su título y una frase opcional (Mayús + clic para escribirla al momento). Insignia arrastrable. |
 | 🖱️ **Se coloca donde quieras** | Toda la barra se arrastra con el **botón derecho**; la posición se recuerda y se restablece. Menús que se cierran al hacer clic fuera. |
 | 🪟 **Estilos** | **Cristal líquido** (por defecto) o Clásico, con o sin fondo, compacta o plegada. |
-| ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna), **Autoconfigurar**, copia de otra escena, importa y exporta. |
+| ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna; el horizonte se calibra con siluetas), **Autoconfigurar**, copia de otra escena, importa y exporta. |
 | 🎓 **Tutorial guiado** | Tour nativo de Foundry en castellano o inglés; se ofrece la primera vez y se repite desde Configuración → Tours. |
 | ♿ **Accesible** | Roles y `aria-*`, foco visible, `prefers-reduced-motion`, es/en. |
 
@@ -69,7 +69,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/calibrar.webp" alt="Botón Calibrar con las fichas seleccionadas en el menú Figuras"><br><sub><b>Calibrar con fichas</b>: pon 1 o 2 fichas al tamaño que quieres en su sitio y el módulo deduce el horizonte y la escala de la escena.</sub></td>
-<td width="50%"></td>
+<td width="50%"><img src="docs/img/siluetas.webp" alt="Editor con dos siluetas de calibración y la silueta fantasma"><br><sub><b>Calibrar con siluetas</b>: arrastra dos siluetas y estira sus cabezas; el horizonte y la escala salen solos y una silueta tenue sigue al cursor.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/altavoz.webp" alt="Aviso a la mesa al avanzar un reloj"><br><sub><b>Altavoz</b>: al avanzar un reloj, a los jugadores les sale su título, las casillas y una frase de sabor.</sub></td>
@@ -170,11 +170,11 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🌩️ **Motifs and effects** | Battle, tension, chase, stealth, horror…: an **editable list per world**. Scene and global effect chips work as toggles, so you always see which ones are playing. |
 | 🔉 **Mix** | Volume, **Reading mode** (ducks the background), Stop audio and **ambience** light/dim/dark (lighting and volume at once, remembered per scene). |
 | 📏 **Size bar** | A px slider (editable maximum) that works live on **All** or **Selected** tokens; turn toward movement and remove the movement ruler, for every token in the scene. |
-| 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the **horizon** or an **exit rectangle** that fixes the vanishing point as in a perspective drawing (or from neither, for top-down maps) and the floor anchors, and is recomputed while dragging. It measures **each token's transparency** to plant the feet where they belong, draws the nearest figure in front and calibrates from 1 or 2 tokens already set to the size you want. The horizon can fall **outside the image** (high-angle views). |
+| 🧍 **Figures in perspective** | Place PCs and NPCs on the **real floor** of the background: size comes from the **horizon** or an **exit rectangle** that fixes the vanishing point as in a perspective drawing (or from neither, for top-down maps) and the floor anchors, and is recomputed while dragging. It measures **each token's transparency** to plant the feet where they belong, draws the nearest figure in front and calibrates from 1 or 2 tokens already set to the size you want or, in the editor, with **two silhouettes** you drag on the image. The horizon can fall **outside the image** (high-angle views). |
 | 🕯️ **Markers** | **Milestones** the GM achieves (each one is revealed to the table or stays secret) and **clocks** of N segments, hidden or public clock by clock. Advancing a clock shows the table an **announcement** with its title and an optional line (Shift + click to write one on the spot). Draggable badge. |
 | 🖱️ **Put it anywhere** | Drag the whole bar with the **right mouse button**; the position is remembered and can be reset. Menus close when you click outside. |
 | 🪟 **Styles** | **Liquid Glass** (default) or Classic, with or without background, compact or folded. |
-| ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none), **Auto-configure**, copy from another scene, import and export. |
+| ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none; the horizon is calibrated with silhouettes), **Auto-configure**, copy from another scene, import and export. |
 | 🎓 **Guided tour** | Native Foundry tour in English or Spanish, offered the first time and repeatable from Settings → Tours. |
 | ♿ **Accessible** | Roles and `aria-*`, visible focus, `prefers-reduced-motion`, English and Spanish. |
 
@@ -189,7 +189,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/calibrar-en.webp" alt="Calibrate with the selected tokens button in the Figures menu"><br><sub><b>Calibrate with tokens</b>: set 1 or 2 tokens to the size you want where they stand and the module works out the scene's horizon and scale.</sub></td>
-<td width="50%"></td>
+<td width="50%"><img src="docs/img/siluetas-en.webp" alt="Editor with two calibration silhouettes and the ghost silhouette"><br><sub><b>Calibrate with silhouettes</b>: drag two silhouettes and stretch their heads; the horizon and scale come out on their own and a faint silhouette follows the cursor.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/altavoz-en.webp" alt="Announcement to the table when a clock advances"><br><sub><b>Loudspeaker</b>: when a clock advances, players get its title, the segments and a flavour line.</sub></td>
