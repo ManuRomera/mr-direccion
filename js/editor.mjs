@@ -63,13 +63,17 @@ export class DirectionEditor extends ApplicationV2{
   if(!src)return picker+`<p>${E(L('Ed.NoBackground'))}</p>`;
   const clearAnchors=`<button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button>`;
   const modeCtl=exit?(ref?'':`<button type="button" data-act="clear-vp"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearVP'))}</button>`)+clearAnchors
-   :`<label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="0" max="1" data-path="stage.eye" data-num value="${eye}"></label>`+clearAnchors;
+   :`<label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="-3" max="1.5" data-path="stage.eye" data-num value="${eye}"></label>`+clearAnchors;
   // Rectángulo: en «punto de fuga» es el de salida (fija el punto de fuga); en «horizonte», una referencia de escala (puerta, mesa…).
   const refCtl=`<span class="mrd-sep" aria-hidden="true"></span><label title="${E(L('Ed.RefHeightTip'))}">${E(L('Ed.RefHeight'))} <input type="number" step=".05" min=".3" max="50" data-path="stage.refM" data-num value="${st.refM}"> m</label>${ref
    ?(exit?'':`<button type="button" data-act="ref-eye"><i class="fa-solid fa-eye" aria-hidden="true"></i> ${E(L('Ed.RefEye'))}</button>`)+`<button type="button" data-act="clear-ref"><i class="fa-solid fa-eraser"></i> ${E(L(exit?'Ed.ExitClear':'Ed.ClearRef'))}</button>`
    :`<button type="button" data-act="ref-draw" class="${this.refDraw?'is-on':''}" aria-pressed="${!!this.refDraw}" title="${E(L(exit?'Ed.ExitHintNone':'Ed.RefHintNone'))}"><i class="fa-solid fa-vector-square" aria-hidden="true"></i> ${E(L(exit?'Ed.ExitDraw':'Ed.RefDraw'))}</button>`}`;
   const hint=exit?(ref?'Ed.ExitHint':this.refDraw?'Ed.ExitDrawing':'Ed.ExitHintNone'):'Ed.FloorHint';
-  const bar=`<p class="mrd-hint">${E(L(hint))}</p><div class="mrd-floor-bar">${modeCtl}${refCtl}</div>${!exit&&(ref||this.refDraw)?`<p class="mrd-hint">${E(L(ref?'Ed.RefHint':'Ed.RefDrawing'))}</p>`:''}`;
+  // El horizonte (o el punto de fuga) puede caer fuera de la imagen (vistas en picado): se avisa porque no se ve.
+  const outside=vp?(vp[0]<0||vp[0]>1||vp[1]<0||vp[1]>1):(eye<0||eye>1);
+  const offNote=outside?`<p class="mrd-hint">${E(L('Ed.OffImage',{y:(+eye).toFixed(2)}))}</p>`:'';
+  const calib=st.k!=null?`<div class="mrd-floor-bar"><span>${E(L('Ed.CalibNote',{k:st.k}))}</span><button type="button" data-act="clear-calib"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearCalib'))}</button></div>`:'';
+  const bar=`<p class="mrd-hint">${E(L(hint))}</p><div class="mrd-floor-bar">${modeCtl}${refCtl}</div>${calib}${offNote}${!exit&&(ref||this.refDraw)?`<p class="mrd-hint">${E(L(ref?'Ed.RefHint':'Ed.RefDrawing'))}</p>`:''}`;
   const box=ref?`<div class="mrd-ref-box" style="left:${ref[0]*100}%;top:${ref[1]*100}%;width:${(ref[2]-ref[0])*100}%;height:${(ref[3]-ref[1])*100}%"><em>${E(L(exit?'Ed.ExitLabel':'Ed.RefLabel',{m:st.refM}))}</em><span class="mrd-ref-h" data-corner="0"></span><span class="mrd-ref-h" data-corner="1"></span></div>`:'';
   // Líneas de perspectiva. Con rectángulo de salida: de cada esquina de la imagen a la suya del rectángulo (trazo fuerte), una malla de suelo/techo/paredes
   // entre ambos y la prolongación discontinua hasta el punto de fuga. Sin él: abanico desde el punto. Siempre: la línea de horizonte y un rayo por cada apoyo.
@@ -167,6 +171,7 @@ export class DirectionEditor extends ApplicationV2{
    // Al pasar a punto de fuga sin rectángulo de salida, el siguiente arrastre sobre la imagen lo dibuja.
    case 'mode':{this.refDraw=b.dataset.mode==='vanishing'&&!this.cfg.stage.ref;return this.commit(c=>{c.stage.mode=b.dataset.mode;if(b.dataset.mode==='vanishing'&&!c.stage.vp&&!c.stage.ref)c.stage.vp=[.5,c.stage.eye];});}
    case 'clear-vp':return this.commit(c=>{c.stage.vp=null;});
+   case 'clear-calib':return this.commit(c=>{c.stage.k=null;});
    case 'ref-draw':this.refDraw=!this.refDraw;return this.render();
    case 'clear-ref':{const a=(this.scene.width||16)/(this.scene.height||9);this.refDraw=false;return this.commit(c=>{if(c.stage.mode==='vanishing')c.stage.vp=derivedVp(c.stage,a);c.stage.ref=null;});}
    case 'ref-eye':return this.commit(c=>{const y=+eyeFromRef(c.stage.ref,c.stage.refM).toFixed(3);if(c.stage.mode==='vanishing'&&c.stage.vp)c.stage.vp=[c.stage.vp[0],y];else c.stage.eye=y;});

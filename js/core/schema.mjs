@@ -34,10 +34,10 @@ function sceneCfg(s,i,w,ids){
   figures:(Array.isArray(s.figures)?s.figures:[]).map(f=>({ref:normalizeRef(f?.ref??f),label:str(f?.label)})).filter(f=>f.ref),
   handouts:(Array.isArray(s.handouts)?s.handouts:[]).map(h=>({ref:normalizeRef(h?.ref??h),label:str(h?.label)})).filter(h=>h.ref),
   notes:str(s.notes),thumb:str(s.thumb),
-  stage:{mode:['horizon','vanishing','none'].includes(st.mode)?st.mode:'horizon',eye:num(st.eye,.5,0,1),
-   vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,0,1),num(st.vp[1],.5,0,1)]:null,
+  stage:{mode:['horizon','vanishing','none'].includes(st.mode)?st.mode:'horizon',eye:num(st.eye,.5,-3,1.5),
+   vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,-2,3),num(st.vp[1],.5,-3,1.5)]:null,
    ref:Array.isArray(st.ref)&&st.ref.length===4&&st.ref.every(Number.isFinite)?(([a,b,c,d])=>[Math.min(a,c),Math.min(b,d),Math.max(a,c),Math.max(b,d)])(st.ref.map(v=>num(v,0,0,1))):null,
-   refM:num(st.refM,2.1,.3,50),anchors}};
+   refM:num(st.refM,2.1,.3,50),k:Number(st.k)>0?num(st.k,1,.05,20):null,anchors}};
 }
 /** Frases de un reloj: una por casilla, en orden; admite lista o texto con una por línea. */
 const phrases=v=>{const a=Array.isArray(v)?v:typeof v==='string'?v.split(/\r?\n/):[];const o=a.slice(0,12).map(x=>String(x??'').trim());while(o.length&&!o[o.length-1])o.pop();return o;};

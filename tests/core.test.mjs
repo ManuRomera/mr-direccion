@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef,vpFromBox,derivedVp} from '../js/core/perspective.mjs';
+import {sizePatch,figureSize,stageLayout,depthPatch,rowLayout,coverPosition,figureOptions,missingCast,isExplicitResize,FIGURE_DEFAULTS,effectiveStage,vpAnchors,refScale,eyeFromRef,vpFromBox,derivedVp,calibrate,EYE_MIN,EYE_MAX} from '../js/core/perspective.mjs';
+import {alphaMetrics,figureMetrics} from '../js/core/metrics.mjs';
 import {crossfadeGain,crossfadePlan,audioVolume,fadeMs,ambientFor,soundKey,baseName} from '../js/core/crossfade.mjs';
 import {clampPos,previewPlace,panelSide,facingAngle} from '../js/core/geometry.mjs';
 import {validatePack,migratePack,normalizeRef,sceneMatches,SCHEMA} from '../js/core/schema.mjs';
@@ -67,7 +68,7 @@ test('refs: cadenas, uuid, flag y descartes',()=>{
 const pack=()=>({id:'p',scenes:[{ref:{name:'Sala'},music:'sounds/a.ogg',cues:[{sound:'sounds/b.ogg',label:'B'},{label:'sin sonido'}],ambient:'dim',stage:{eye:3,anchors:[[2,-1],[.5,.5],['x',1]]}}],settings:{motifs:[{id:'m1',label:'M'},{id:'m1'}],markers:{clocks:[{id:'r',segments:99}]}}});
 test('esquema: normaliza, recorta y avisa',()=>{
  const v=validatePack(pack());assert.ok(v.ok);const s=v.pack.scenes[0];
- assert.equal(s.stage.eye,1);assert.deepEqual(s.stage.anchors,[[1,0],[.5,.5]]);assert.equal(s.cues.length,1);assert.equal(v.pack.settings.motifs.length,1);assert.equal(v.pack.settings.markers.clocks[0].segments,12);
+ assert.equal(s.stage.eye,1.5);assert.deepEqual(s.stage.anchors,[[1,0],[.5,.5]]);assert.equal(s.cues.length,1);assert.equal(v.pack.settings.motifs.length,1);assert.equal(v.pack.settings.markers.clocks[0].segments,12);
  assert.ok(v.warnings.some(w=>w.includes('cue 1')));
 });
 test('esquema: errores claros y versión futura',()=>{
@@ -157,7 +158,7 @@ test('esquema: stage.mode y stage.vp se normalizan y lo antiguo sigue siendo hor
  const n=st=>validatePack({id:'p',scenes:[{ref:{name:'S'},stage:st}]}).pack.scenes[0].stage;
  assert.equal(n({eye:.4,anchors:[[.5,.9]]}).mode,'horizon');
  assert.equal(n({mode:'raro'}).mode,'horizon');
- assert.deepEqual(n({mode:'vanishing',vp:[2,-1]}).vp,[1,0]);
+ assert.deepEqual(n({mode:'vanishing',vp:[2,-1]}).vp,[2,-1]);assert.deepEqual(n({mode:'vanishing',vp:[9,-9]}).vp,[3,-3]);
  assert.equal(n({mode:'vanishing',vp:['x',1]}).vp,null);
  assert.equal(n({mode:'none'}).mode,'none');
 });
@@ -236,4 +237,61 @@ test('esquema: public/announce/phrases de hitos y relojes se normalizan y lo ant
  assert.equal(k.clocks[0].public,false);assert.equal(k.clocks[0].announce,false);assert.deepEqual(k.clocks[0].phrases,[]);
  assert.equal(k.clocks[1].public,true);assert.equal(k.clocks[1].announce,true);assert.deepEqual(k.clocks[1].phrases,['a','','b']);
  assert.equal(n({clocks:[{id:'x',label:'X',phrases:Array(30).fill('z')}]}).clocks[0].phrases.length,12);
+});
+
+test('alphaMetrics: pies y parte visible salen de la transparencia de la imagen',()=>{
+ const w=10,h=20,px=new Uint8ClampedArray(w*h*4);
+ for(let y=2;y<=17;y++)for(let x=3;x<7;x++)px[(y*w+x)*4+3]=255;   // figura opaca de la fila 2 a la 17
+ for(let x=0;x<w;x++)px[(19*w+x)*4+3]=10;                           // sombra casi invisible: se ignora
+ const m=alphaMetrics(px,w,h);assert.deepEqual(m,{foot:.1,visible:.8});
+ assert.equal(alphaMetrics(new Uint8ClampedArray(w*h*4),w,h),null);assert.equal(alphaMetrics(null,w,h),null);
+ const full=new Uint8ClampedArray(w*h*4).fill(255);assert.deepEqual(alphaMetrics(full,w,h),{foot:0,visible:1});   // recortado al borde
+});
+test('figureMetrics: las medidas reales mandan si son creíbles y, si no, las estándar',()=>{
+ const base=FIGURE_DEFAULTS;
+ assert.deepEqual({...figureMetrics(base,{foot:.012,visible:.973})},{...base,foot:.012,visible:.973});
+ assert.equal(figureMetrics(base,null),base);assert.equal(figureMetrics(base,{foot:.9,visible:.05}),base);assert.equal(figureMetrics(base,{foot:-1,visible:.9}),base);
+});
+test('stageLayout con medidas reales: los pies caen sobre el punto de apoyo y la persona mide lo previsto',()=>{
+ const st={eye:.4,anchors:[[.5,.8],[.3,.8]]},real={...FIGURE_DEFAULTS,foot:.012,visible:.973};
+ const def=stageLayout(scene,1,0,360,st)[0],mine=stageLayout(scene,1,0,360,st,undefined,FIGURE_DEFAULTS,[real])[0];
+ const feetOf=(p,o)=>p.y+p.height*100*(1-o.foot),personOf=(p,o)=>p.height*100*o.visible;
+ assert.ok(Math.abs(feetOf(mine,real)-.8*900)<.5,'pies sobre el apoyo');
+ assert.ok(Math.abs(personOf(mine,real)-personOf(def,FIGURE_DEFAULTS))<.5,'la misma altura de persona');
+ assert.ok(mine.width<def.width,'el token real, con menos aire, es menor para la misma persona');
+ assert.ok(Math.abs(feetOf(def,real)-.8*900)>10,'con las medidas fijas los pies quedaban por debajo');   // el fallo que se corrige
+});
+test('sort por profundidad: lo que está más cerca (pies más abajo) se pinta delante',()=>{
+ const st={eye:.4,anchors:[[.5,.5],[.5,.9]]},[far,near]=stageLayout(scene,2,0,360,st);
+ assert.ok(near.sort>far.sort);assert.equal(near.sort,Math.round(.9*900));
+ const d=depthPatch(scene,{width:1,height:1,x:700,y:200},360,st);assert.equal(d.sort,Math.round(200+100*(1-FIGURE_DEFAULTS.foot)));
+});
+test('horizonte fuera de la imagen (picado): tamaño finito, creciente hacia el frente y sin microfiguras arriba',()=>{
+ assert.ok(EYE_MIN<0&&EYE_MAX>1);
+ const st={eye:-.5,anchors:[[.5,.5]]},top=figureSize(st,.1*900,900),bottom=figureSize(st,.95*900,900);
+ assert.ok(Number.isFinite(top)&&top>FIGURE_DEFAULTS.min*3,`arriba ${top}`);assert.ok(bottom>top);assert.ok(bottom/top<3,'gradiente suave');
+ const flat={eye:.5,anchors:[[.5,.5]]};assert.ok(figureSize(flat,.1*900,900)<top,'con el horizonte a 0,5, arriba la figura se hacía casi mínima (sin gradiente)');
+});
+test('calibrate con dos fichas: recupera horizonte y escala (también con el horizonte fuera de la imagen)',()=>{
+ const H=1000,h=(y,eye,k,px=360)=>(y-eye)*H*k*(px/360);
+ for(const [eye,k,px] of [[.3,1.2,360],[-.6,.8,360],[.45,1.5,720]]){
+  const r=calibrate([{y:.95,h:h(.95,eye,k,px)},{y:.55,h:h(.55,eye,k,px)}],H,px);
+  assert.ok(Math.abs(r.eye-eye)<2e-3&&Math.abs(r.k-k)<2e-3,`${eye}/${k}/${px} → ${JSON.stringify(r)}`);
+ }
+ assert.equal(calibrate([{y:.5,h:100},{y:.5,h:200}],H).error,'same');
+ assert.equal(calibrate([{y:.5,h:200},{y:.9,h:100}],H).error,'inverted');           // la de delante, menor
+ assert.ok(calibrate([{y:.5,h:100},{y:.6,h:400}],H).eye<.5);                  // con dos fichas el horizonte siempre queda por encima de la del fondo
+ assert.equal(calibrate([],H).error,'count');
+});
+test('calibrate con una ficha: ajusta la escala conservando el horizonte',()=>{
+ const H=1000,r=calibrate([{y:.7,h:(.7-.3)*H*1.2}],H,360,.3);assert.ok(Math.abs(r.k-1.2)<1e-3);assert.equal(r.eye,.3);
+ assert.equal(calibrate([{y:.3,h:50}],H,360,.3).error,'eye');assert.equal(calibrate([{y:.7,h:100}],H,360,null).error,'count');
+});
+test('effectiveStage: una escala calibrada (k) activa la perspectiva sin puntos de apoyo y manda sobre la del rectángulo',()=>{
+ const cal={mode:'horizon',eye:.3,k:1.2,anchors:[]};
+ assert.equal(effectiveStage(cal).k,1.2);assert.equal(effectiveStage({...cal,k:null}),null);
+ const withRef={...cal,ref:[.4,.3,.6,.7],refM:2.1};assert.equal(effectiveStage(withRef).k,1.2);   // la calibración con fichas manda
+ assert.ok(effectiveStage({...withRef,k:null,anchors:[[.5,.9]]}).k!==1.2);
+ assert.equal(validatePack({id:'p',scenes:[{ref:{name:'S'},stage:{k:'x'}}]}).pack.scenes[0].stage.k,null);
+ assert.equal(validatePack({id:'p',scenes:[{ref:{name:'S'},stage:{k:99}}]}).pack.scenes[0].stage.k,20);
 });

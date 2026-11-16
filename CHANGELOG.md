@@ -1,5 +1,17 @@
 # Cambios · Changelog
 
+## 0.6.0 (2026-11-16)
+- **Medidas reales de cada ficha:** el módulo suponía el mismo margen bajo los pies y la misma parte visible para todas las figuras; ahora lee la transparencia de cada imagen y apoya los pies exactamente en el punto marcado, con la altura de persona prevista. En las fichas de las aventuras el error anterior era de un 8–12 % de altura y de unos 6–23 px en los pies.
+- **Orden por profundidad:** la figura con los pies más abajo (más cerca) se pinta delante de las del fondo, al colocar y al arrastrar.
+- **Horizonte fuera de la imagen:** el horizonte y el punto de fuga pueden estar por encima o por debajo del cuadro (de −3 a 1,5), como en las vistas en picado, donde antes la figura se quedaba en el mínimo. El editor avisa de que no se ve pero se usa.
+- **Calibrar con fichas seleccionadas:** nuevo botón en el menú Figuras. Pon 1 o 2 fichas al tamaño que quieres en su sitio y pulsa: con dos (la de delante, mayor) se deducen el horizonte y la escala de la escena sin abrir el editor; con una se conserva el horizonte y se ajusta la escala. Avisa si seleccionas otro número, si están a la misma profundidad o si la de delante es menor. «Quitar calibración» en el editor.
+- Las escenas y paquetes anteriores siguen igual; `stage.k` es opcional y el esquema sigue en la versión 1.
+- **Real measures per token:** the module assumed the same margin under the feet and the same visible part for every figure; it now reads each image's transparency and plants the feet exactly on the marked point, with the expected person height. On the adventures' tokens the previous error was 8–12 % of height and about 6–23 px at the feet.
+- **Depth order:** the figure with its feet lowest (nearest) is drawn in front of those at the back, when placing and when dragging.
+- **Horizon outside the image:** the horizon and the vanishing point can lie above or below the frame (−3 to 1.5), as in high-angle views, where figures used to stay at the minimum. The editor notes that it is not visible but is used.
+- **Calibrate with the selected tokens:** new button in the Figures menu. Set 1 or 2 tokens to the size you want where they stand and press: with two (the front one, bigger) the scene's horizon and scale are worked out without opening the editor; with one the horizon is kept and the scale adjusted. It warns if you select another number, if they are at the same depth or if the front one is smaller. “Clear calibration” in the editor.
+- Existing scenes and packs work as before; `stage.k` is optional and the schema stays at version 1.
+
 ## 0.5.1 (2026-11-12)
 - **Ejemplo fotográfico con licencias verificables:** se sustituyen los nueve WEBP de la Posada (tres escenas, tres miniaturas y tres tokens) por fotografías humanas de Wikimedia Commons con licencias CC BY / CC BY-SA y créditos completos.
 - **Compatibilidad intacta:** las rutas, los actores, los diarios, el audio y las funciones de la barra permanecen sin cambios. Sigue siendo válido para cualquier sistema y mundo de Foundry v13.

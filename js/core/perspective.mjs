@@ -9,6 +9,8 @@ export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE
 }
 export const depthFactor=(stage,footY,height,o=FIGURE_DEFAULTS)=>figureSize(stage,footY,height,o.base,Infinity,o)/o.base;
 export const STAGE_MODES=Object.freeze(['horizon','vanishing','none']);
+/** El horizonte puede caer fuera de la imagen (cámara en picado: por encima del borde superior, valores negativos). */
+export const EYE_MIN=-3,EYE_MAX=1.5;
 /** Punto de fuga a partir del RECTÁNGULO DE SALIDA `box`=[x0,y0,x1,y1] (fracciones): donde acaba la perspectiva (el fondo de un pasillo, el final de una calle).
  *  Como en un dibujo de perspectiva con un punto de fuga, cada esquina del cuadro (de la imagen) se une con su esquina del rectángulo y las cuatro líneas se cruzan
  *  en el punto de fuga. Si el rectángulo no es exacto las líneas no se cruzan en un solo punto: se toma el punto que minimiza la distancia a las cuatro
@@ -23,7 +25,7 @@ export function vpFromBox(box,aspect=16/9){
   a+=m11;b+=m12;c+=m22;e+=m11*px+m12*py;f+=m12*px+m22*py;
  }
  const det=a*c-b*b;if(Math.abs(det)<1e-6)return null;
- return [clamp((c*e-b*f)/det/aspect,0,1),clamp((a*f-b*e)/det,0,1)].map(v=>+v.toFixed(4));
+ return [clamp((c*e-b*f)/det/aspect,-2,3),clamp((a*f-b*e)/det,EYE_MIN,EYE_MAX)].map(v=>+v.toFixed(4));
 }
 /** Punto de fuga de una escena en modo `vanishing`: el que sale del rectángulo de salida y, sin él, el colocado a mano. */
 export const derivedVp=(st,aspect=16/9)=>st?.mode==='vanishing'?((st.ref&&vpFromBox(st.ref,aspect))||st.vp||null):null;
@@ -33,11 +35,13 @@ export const derivedVp=(st,aspect=16/9)=>st?.mode==='vanishing'?((st.ref&&vpFrom
  *  - none: sin perspectiva (vista cenital): las figuras no cambian de tamaño según dónde estén. */
 export function effectiveStage(st,aspect=16/9){
  if(!st||st.mode==='none')return null;
+ const calibrated=Number.isFinite(st.k)&&st.k>0;       // escala fijada con fichas (calibrate): manda sobre la del rectángulo
  let s=null;
  if(st.mode==='vanishing'){const vp=derivedVp(st,aspect);s=vp?{...st,vp,eye:vp[1]}:null;}
- else if(st.anchors?.length)s=st;
- if(!s||!s.ref)return s;
- const k=refScale(s.eye,s.ref,s.refM);return k?{...s,k}:s;
+ else if(st.anchors?.length||calibrated)s=st;
+ if(!s)return null;
+ const k=calibrated?st.k:(s.ref?refScale(s.eye,s.ref,s.refM):null);
+ return k?{...s,k}:s;
 }
 /** Referencia de escala: un rectángulo dibujado sobre algo de medida conocida (la puerta del fondo, una mesa…), `ref`=[x0,y0,x1,y1] en fracciones.
  *  Con una cámara a nivel, una persona al pie del rectángulo mide PERSON_M/refM de su alto; el resto sigue la regla de (pies − horizonte).
@@ -52,7 +56,7 @@ export function refScale(eye,ref,refM=2.1){
 /** Horizonte a la altura de los ojos (EYE_M) medida sobre la referencia: la línea de los ojos cae a ese tanto de su altura. */
 export function eyeFromRef(ref,refM=2.1){
  const top=Math.min(ref[1],ref[3]),base=Math.max(ref[1],ref[3]);
- return clamp(base-EYE_M/clamp(refM,.3,50)*(base-top),0,1);
+ return clamp(base-EYE_M/clamp(refM,.3,50)*(base-top),EYE_MIN,EYE_MAX);
 }
 /** Puntos de apoyo repartidos a lo largo de rayos que salen del punto de fuga (como figuras alejándose por un pasillo):
  *  cada uno a distinta profundidad, de izquierda a derecha. Se usan cuando la escena tiene punto de fuga pero aún no puntos de apoyo. */
@@ -64,13 +68,14 @@ export function vpAnchors(vp,count,bottom=.94){
  });
 }
 /** Posiciones iniciales sobre los puntos de apoyo; si hay más figuras que puntos se desplazan un poco sin salir del suelo. */
-export function stageLayout(scene,count,start,pixels,stage,bounds={x:0,y:0,width:scene.width,height:scene.height},o=FIGURE_DEFAULTS){
+export function stageLayout(scene,count,start,pixels,stage,bounds={x:0,y:0,width:scene.width,height:scene.height},o=FIGURE_DEFAULTS,per=[]){
  const unit=scene.grid?.size||100,anchors=stage.anchors??[];
  return Array.from({length:count},(_,i)=>{
-  const j=start+i,a=anchors[j%Math.max(1,anchors.length)],jitter=Math.floor(j/Math.max(1,anchors.length))*.035;
+  const oi=per[i]??o,j=start+i,a=anchors[j%Math.max(1,anchors.length)],jitter=Math.floor(j/Math.max(1,anchors.length))*.035; // per[i]: medidas reales de la figura i
   const fx=a?a[0]+jitter:.3+((j*.137)%.5),fy=a?a[1]:.9,feet=fy*scene.height,cx=fx*scene.width;
-  const size=figureSize(stage,feet,scene.height,pixels,bounds.width,o);
-  return {x:clamp(cx-size/2,bounds.x,bounds.x+bounds.width-size),y:clamp(feet-size*(1-o.foot),bounds.y,bounds.y+bounds.height-size),width:size/unit,height:size/unit};
+  const size=figureSize(stage,feet,scene.height,pixels,bounds.width,oi);
+  // `sort`: la figura con los pies más abajo (más cerca) se pinta delante de las del fondo.
+  return {x:clamp(cx-size/2,bounds.x,bounds.x+bounds.width-size),y:clamp(feet-size*(1-oi.foot),bounds.y,bounds.y+bounds.height-size),width:size/unit,height:size/unit,sort:Math.round(feet)};
  });
 }
 /** Reajusta una figura a su profundidad conservando el centro y la línea de los pies. */
@@ -78,7 +83,7 @@ export function depthPatch(scene,token,pixels,stage,pos={},o=FIGURE_DEFAULTS){
  const unit=scene.grid?.size||100,size0=token.width*unit,h0=token.height*unit;
  const x=pos.x??token.x,y=pos.y??token.y,cx=x+size0/2,feet=y+h0*(1-o.foot);
  const size=figureSize(stage,feet,scene.height,pixels,scene.width,o);
- return {width:size/unit,height:size/unit,x:cx-size/2,y:feet-size*(1-o.foot)};
+ return {width:size/unit,height:size/unit,x:cx-size/2,y:feet-size*(1-o.foot),sort:Math.round(feet)};
 }
 /** Sin datos de suelo: fila de figuras al pie de la escena. */
 export function rowLayout(scene,count,start=0,pixels=360,bounds={x:0,y:0,width:scene.width,height:scene.height}){
@@ -107,4 +112,25 @@ export function sizePatch(scene,token,pixels,stage,o=FIGURE_DEFAULTS){
  const unit=scene.grid?.size||100,size=Math.min(pixels,scene.height,scene.width);
  const cx=token.x+token.width*unit/2,feet=token.y+token.height*unit*(1-o.foot);
  return {width:size/unit,height:size/unit,x:clamp(cx-size/2,0,Math.max(0,scene.width-size)),y:clamp(feet-size*(1-o.foot),0,Math.max(0,scene.height-size))};
+}
+/** Calibra horizonte y escala con fichas ya colocadas al tamaño que se quiere. Cada muestra: `y` = pies en fracción del alto de la escena y `h` = altura de la PERSONA en píxeles.
+ *  Con dos muestras salen el horizonte (donde la altura se anula, aunque caiga fuera de la imagen) y la escala; con una se parte del horizonte `eye` que ya hay.
+ *  La altura sigue h = (y − horizonte)·alto·k·(pixels/360), la misma de figureSize. Devuelve {eye,k} o {error: count|same|inverted|eye}. */
+export function calibrate(samples,height,pixels=360,eye=null){
+ const kp=pixels/360,ok=samples.filter(s=>Number.isFinite(s.y)&&s.h>0).sort((p,q)=>p.y-q.y);
+ if(ok.length>=2){
+  const a=ok[0],b=ok[ok.length-1],dy=(b.y-a.y)*height;
+  if(!(dy>1))return {error:'same'};
+  const m=(b.h-a.h)/dy;                                   // píxeles de altura por píxel de profundidad: debe crecer hacia el frente
+  if(!(m>0))return {error:'inverted'};
+  const e=b.y-b.h/m/height;
+  if(!(e<a.y-.005))return {error:'eye'};
+  return {eye:+clamp(e,EYE_MIN,EYE_MAX).toFixed(4),k:+clamp(m/kp,.05,20).toFixed(4)};
+ }
+ if(ok.length===1&&Number.isFinite(eye)){
+  const s=ok[0],d=(s.y-eye)*height;
+  if(!(d>.02*height))return {error:'eye'};
+  return {eye,k:+clamp(s.h/d/kp,.05,20).toFixed(4)};
+ }
+ return {error:'count'};
 }

@@ -1,7 +1,10 @@
-import {ID,sceneConfig} from './store.mjs';
+import {ID,sceneConfig,saveSceneConfig} from './store.mjs';
 import {find} from './refs.mjs';
 import {facingAngle} from './core/geometry.mjs';
-import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast,effectiveStage,vpAnchors} from './core/perspective.mjs';
+import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast,effectiveStage,vpAnchors,calibrate,FIGURE_DEFAULTS} from './core/perspective.mjs';
+import {normalizeSceneConfig} from './core/schema.mjs';
+import {figureMetrics} from './core/metrics.mjs';
+import {metricsOf,ensureMetrics} from './metrics.mjs';
 /** Módulos que ajustan fichas por su cuenta: se les avisa de que estas ya están colocadas para que no las reajusten. */
 const FOREIGN=['mr-trono-de-la-sed'];
 const foreignFlags=()=>Object.fromEntries(FOREIGN.filter(id=>game.modules.get(id)?.active).map(id=>[id,{placed:true}]));
@@ -10,6 +13,9 @@ export const options=()=>figureOptions(game.settings.get(ID,'figures'));
 const stageOf=scene=>{const c=sceneConfig(scene);return c?effectiveStage(c.stage,(scene.width||16)/(scene.height||9)):null;};
 /** Las opciones (giro, línea de desplazamiento, escala por profundidad, tamaño) valen para TODAS las fichas de una escena configurada. */
 const managed=scene=>!!sceneConfig(scene);
+/** Imagen de una ficha (documento de token o actor) y sus medidas reales (pies y parte visible) o, si aún no se midieron, las estándar. */
+const srcOf=t=>t?.texture?.src??t?._source?.texture?.src??t?.prototypeToken?.texture?.src;
+const figOpts=src=>figureMetrics(FIGURE_DEFAULTS,metricsOf(src));
 /** Solo las fichas colocadas por la barra (o de actores de la lista) reciben el tamaño inicial al crearse. */
 const isCast=(scene,token)=>{
  if(token.getFlag?.(ID,'placed')||token._source?.flags?.[ID]?.placed)return true;
@@ -26,7 +32,9 @@ export async function placeActors(scene,actors){
  if(!pending.length)return 0;
  // Con punto de fuga y sin puntos de apoyo, el reparto se escalona a lo largo de rayos que salen del punto de fuga.
  const stage=found&&found.mode==='vanishing'&&!found.anchors.length?{...found,anchors:vpAnchors(found.vp,scene.tokens.size+pending.length)}:found;
- const b=visibleBounds(scene),pos=stage?stageLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,stage,b):rowLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,b);
+ await ensureMetrics(pending.map(srcOf));
+ const per=pending.map(a=>figOpts(srcOf(a)));
+ const b=visibleBounds(scene),pos=stage?stageLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,stage,b,undefined,per):rowLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,b);
  const docs=[];
  for(let i=0;i<pending.length;i++){
   const t=await pending[i].getTokenDocument({...pos[i],lockRotation:o.lockRotation,flags:{...foreignFlags(),[ID]:{placed:true}}});docs.push(t.toObject());
@@ -55,8 +63,23 @@ export function targetTokens(scene,target){
 /** Pone las fichas elegidas a `pixels` (con suelo marcado y escala por profundidad, ese es el tamaño en primer plano). */
 export async function resizeTokens(scene,target,pixels){
  if(!activeGM())return 0;const o=options(),stage=o.depthScale?stageOf(scene):null;
- const ch=targetTokens(scene,target).map(t=>({_id:t.id,...sizePatch(scene,{x:t._source.x,y:t._source.y,width:t._source.width,height:t._source.height},pixels,stage)}));
+ const tokens=targetTokens(scene,target);await ensureMetrics(tokens.map(srcOf));
+ const ch=tokens.map(t=>({_id:t.id,...sizePatch(scene,{x:t._source.x,y:t._source.y,width:t._source.width,height:t._source.height},pixels,stage,figOpts(srcOf(t)))}));
  if(ch.length)await scene.updateEmbeddedDocuments('Token',ch,{mrdDepth:true,animate:false});return ch.length;
+}
+/** Calibra la perspectiva de la escena con 1 o 2 fichas seleccionadas, ya puestas al tamaño que se quiere en su sitio: con dos (la de delante, mayor) salen el horizonte y la escala;
+ *  con una se conserva el horizonte y solo se ajusta la escala. Se guarda en la escena (modo horizonte). Devuelve {eye,k} o {error}. */
+export async function calibrateFromSelection(scene){
+ if(!scene||!activeGM())return {error:'count'};
+ const sel=targetTokens(scene,'selected');if(sel.length<1||sel.length>2)return {error:'count'};
+ await ensureMetrics(sel.map(srcOf));
+ const H=scene.height,unit=scene.grid.size||100,o=options(),cfg=sceneConfig(scene)??normalizeSceneConfig({ref:{uuid:scene.uuid}});
+ const samples=sel.map(t=>{const m=figOpts(srcOf(t)),h=t._source.height*unit;return {y:(t._source.y+h*(1-m.foot))/H,h:h*m.visible};});
+ const cur=effectiveStage(cfg.stage,(scene.width||16)/(scene.height||9));
+ const r=calibrate(samples,H,o.tokenPixels,cur?.eye??cfg.stage.eye);
+ if(r.error)return r;
+ await saveSceneConfig(scene,normalizeSceneConfig({...cfg,stage:{...cfg.stage,mode:'horizon',eye:r.eye,k:r.k}}));
+ return r;
 }
 export const resizeFigures=(scene,selectedOnly=false)=>resizeTokens(scene,selectedOnly?'selected':'all',options().tokenPixels);
 export async function setOption(key,value){
@@ -101,7 +124,7 @@ export function registerFigureHooks(){
   token.updateSource({lockRotation:o.lockRotation});
   const stage=o.depthScale?stageOf(scene):null;if(!stage||token._source.flags?.[ID]?.placed||!isCast(scene,token))return;
   const unit=scene.grid.size||100,n=Math.min(o.tokenPixels,scene.height,scene.width)/unit;
-  token.updateSource(depthPatch(scene,{width:n,height:n,x:token.x,y:token.y},o.tokenPixels,stage));
+  token.updateSource(depthPatch(scene,{width:n,height:n,x:token.x,y:token.y},o.tokenPixels,stage,{},figOpts(srcOf(token))));
  });
  // Al arrastrar una figura hacia el fondo se empequeñece; hacia el frente, crece. En v13 el movimiento fija width/height durante
  // la propia actualización, así que el reajuste es una segunda actualización, hecha por quien movió la ficha.
@@ -110,9 +133,12 @@ export function registerFigureHooks(){
   const scene=token.parent,stage=options().depthScale?stageOf(scene):null;
   if(!stage)return;
   // token.x/y puede ir por detrás (posición animada): la destino está en el cambio y en _source.
-  const patch=depthPatch(scene,token,options().tokenPixels,stage,{x:ch.x??token._source.x,y:ch.y??token._source.y});
-  if(Math.abs(patch.width-token._source.width)<.01)return;
+  const patch=depthPatch(scene,token,options().tokenPixels,stage,{x:ch.x??token._source.x,y:ch.y??token._source.y},figOpts(srcOf(token)));
+  if(Math.abs(patch.width-token._source.width)<.01&&Math.abs(patch.sort-(token._source.sort??0))<2)return;
   token.update(patch,{mrdDepth:true,animate:false}).catch(e=>console.warn(`${ID} | reajuste por profundidad`,e));
  });
+ // Las medidas reales de las imágenes se leen antes de hacer falta: al cargar la escena (fichas y reparto) y al crear una ficha.
+ const warm=()=>{const s=canvas?.scene;if(!s||!managed(s))return;ensureMetrics(s.tokens.map(srcOf));castOf(s).then(a=>ensureMetrics(a.map(srcOf))).catch(()=>{});};
+ Hooks.on('canvasReady',warm);Hooks.on('createToken',t=>{if(managed(t.parent))ensureMetrics([srcOf(t)]);});
  Hooks.on('canvasReady',()=>fitScreen());Hooks.on('canvasPan',()=>fitScreen(false));
 }
