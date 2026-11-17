@@ -305,3 +305,13 @@ test('defaultSilhouettes: sin tocarlas, la calibración devuelve la perspectiva 
  }
  for(const s of defaultSilhouettes(-.5,1,360)){assert.ok(s.h>=.04&&s.h<=.9&&s.y<=1);}   // horizonte fuera de la imagen: alturas acotadas
 });
+import {windowScale} from '../js/core/windows.mjs';
+test('ventanas: escala proporcional a la pantalla, con aire, mínimo y ajuste manual',()=>{
+ const v=(w,h,t=h)=>({width:w,height:h,total:t});
+ assert.equal(windowScale(1000,780,v(1920,950)),1); // monitor 1080p: sin tocar
+ const s=windowScale(1000,780,v(1440,780-0,780));assert.ok(s<1&&s>=.5);assert.ok(780*s<=780*.92+1); // portátil: cabe con aire
+ assert.equal(windowScale(1000,780,v(800,400)),.5); // nunca por debajo del mínimo
+ assert.equal(windowScale(1000,780,v(1280,650),80),.8); // manual manda
+ assert.equal(windowScale(1000,780,v(1280,650),400),1.5);assert.equal(windowScale(0,0,v(1280,650)),1);
+ assert.ok(windowScale(1000,780,v(1366,657))<windowScale(1000,780,v(1536,730))); // más pequeña la pantalla, más pequeña la ventana
+});

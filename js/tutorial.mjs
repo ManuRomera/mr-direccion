@@ -15,6 +15,6 @@ export const startTutorial=()=>game.tours.get(`${ID}.${KEY}`)?.start();
 export async function offerTutorial(){
  if(!game.user.isGM||game.settings.get(ID,'tutorialOffered'))return;
  await game.settings.set(ID,'tutorialOffered',true);
- const yes=await foundry.applications.api.DialogV2.confirm({window:{title:game.i18n.localize('MRDIR.Tour.OfferTitle'),icon:'fa-solid fa-graduation-cap'},content:`<p>${game.i18n.localize('MRDIR.Tour.OfferText')}</p>`,yes:{label:game.i18n.localize('MRDIR.Tour.Start'),icon:'fa-solid fa-graduation-cap'},no:{label:game.i18n.localize('MRDIR.Tour.Later')},rejectClose:false});
+ const yes=await foundry.applications.api.DialogV2.confirm({classes:['mrd-win'],window:{title:game.i18n.localize('MRDIR.Tour.OfferTitle'),icon:'fa-solid fa-graduation-cap',resizable:true},content:`<p>${game.i18n.localize('MRDIR.Tour.OfferText')}</p>`,yes:{label:game.i18n.localize('MRDIR.Tour.Start'),icon:'fa-solid fa-graduation-cap'},no:{label:game.i18n.localize('MRDIR.Tour.Later')},rejectClose:false});
  if(yes)startTutorial();
 }

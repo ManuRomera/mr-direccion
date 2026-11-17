@@ -307,3 +307,10 @@
 .mrd-sil>b{position:absolute;left:100%;bottom:0;margin-left:4px;font-size:11px;color:#fff;text-shadow:0 1px 3px #000}
 .mrd-editor .mrd-floor-bar button.is-on{background:linear-gradient(180deg,#2f8f7d,#1d5f54);border-color:#9fe3d3}
 .mrd-calib-note{margin:2px 0 6px;font-size:12px;color:#9fe3d3}.mrd-calib-note.is-bad{color:#f0a58a}
+/* Ventanas que caben en cualquier pantalla (estándar mr-pantallas): js/windows.mjs pone --mrd-win-scale y la escala; aquí el tope y el scroll interno. */
+.mrd-win.application{max-width:calc((100vw - 8px) / var(--mrd-win-scale,1));max-height:calc((100vh - 1.5 * var(--hotbar-height,52px)) / var(--mrd-win-scale,1))}
+.mrd-win.application .window-content{overflow:auto;min-height:0}
+.mrd-win.application .window-content:has(> form.dialog-form){overflow:hidden}
+.mrd-win.application form.dialog-form{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.mrd-win.application form.dialog-form>.dialog-content{flex:1 1 auto;min-height:0;overflow-y:auto}
+.mrd-win.application form.dialog-form>.form-footer{flex:none}

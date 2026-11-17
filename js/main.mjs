@@ -3,11 +3,12 @@ import {registerSettings} from './settings.mjs';
 import {setupDirector,dispatch} from './director.mjs';
 import {setupMarkers} from './markers.mjs';
 import {registerFigureHooks} from './figures.mjs';
+import {registerWindows} from './windows.mjs';
 import {registerTutorial,offerTutorial} from './tutorial.mjs';
 import {buildApi} from './api.mjs';
 import {DirectionEditor,openEditor,EditorMenu} from './editor.mjs';
 Hooks.once('init',()=>{
- registerSettings(EditorMenu);registerFigureHooks();
+ registerSettings(EditorMenu);registerFigureHooks();registerWindows();
  game.modules.get(ID).api=buildApi(openEditor);
  // @Dir[accion|argumento]{etiqueta}: pista clicable en diarios (solo GM). «@» = escena actual.
  const enrichers=CONFIG.TextEditor?.enrichers;

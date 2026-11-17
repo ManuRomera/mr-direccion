@@ -88,6 +88,8 @@
  "MRDIR.Set.StyleClassic": "Classic",
  "MRDIR.Set.Fade": "Crossfade between tracks (s)",
  "MRDIR.Set.FadeHint": "0 = automatic (the pack value, 3.5 s by default).",
+ "MRDIR.Set.WinScale": "Window size (%)",
+ "MRDIR.Set.WinScaleHint": "0 = automatic: every MR- Dirección window scales in proportion to your screen so it fits whole (the reference is a 1080p monitor). Any other value fixes that scale. If it still doesn't fit, it scrolls inside. Setting for this browser.",
  "MRDIR.Set.Editor": "Direction editor",
  "MRDIR.Set.EditorLabel": "Open editor",
  "MRDIR.Set.EditorHint": "Set up music, motifs, effects, figures, handouts and markers for each scene.",

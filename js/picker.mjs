@@ -9,7 +9,7 @@ export async function pickSound({title}){
  const rows=groups.map(g=>`<section class="mrd-pick-group"><h4>${E(g.name)}</h4>${g.sounds.map(s=>`<div class="mrd-pick-row" data-uuid="${s.uuid}" data-q="${E((g.name+' '+s.name).toLowerCase())}"><button type="button" class="mrd-pick-play" data-path="${E(s.path)}" title="${E(L('Ed.Test'))}" aria-label="${E(L('Ed.Test'))}"><i class="fa-solid fa-play" aria-hidden="true"></i></button><button type="button" class="mrd-pick-name">${E(s.name)}</button></div>`).join('')}</section>`).join('');
  const content=`<div class="mrd-picker"><input type="search" class="mrd-pick-q" placeholder="${E(L('Pick.Search'))}" autofocus><div class="mrd-pick-list">${rows||`<p class="mrd-hint">${E(L('Pick.None'))}</p>`}</div></div>`;
  const result=await DialogV2.wait({
-  window:{title,icon:'fa-solid fa-music'},position:{width:440},content,rejectClose:false,
+  classes:['mrd-win'],window:{title,icon:'fa-solid fa-music',resizable:true},position:{width:440},content,rejectClose:false,
   buttons:[{action:'file',label:L('Pick.File'),icon:'fa-solid fa-folder-open'},{action:'cancel',label:L('Cancel'),icon:'fa-solid fa-xmark',default:true}],
   render:(event,dialog)=>{
    const root=dialog.element;const q=root.querySelector('.mrd-pick-q');

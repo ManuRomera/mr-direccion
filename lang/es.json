@@ -88,6 +88,8 @@
  "MRDIR.Set.StyleClassic": "Clásico",
  "MRDIR.Set.Fade": "Fundido entre pistas (s)",
  "MRDIR.Set.FadeHint": "0 = automático (el del paquete, 3,5 s por defecto).",
+ "MRDIR.Set.WinScale": "Tamaño de las ventanas (%)",
+ "MRDIR.Set.WinScaleHint": "0 = automático: cada ventana de MR- Dirección se escala en proporción a tu pantalla para caber entera (la referencia es un monitor de 1080p). Otro valor fija esa escala. Si no cabe, se desplaza por dentro. Ajuste de este navegador.",
  "MRDIR.Set.Editor": "Editor de dirección",
  "MRDIR.Set.EditorLabel": "Abrir editor",
  "MRDIR.Set.EditorHint": "Configura música, motivos, efectos, figuras, ayudas y marcadores de cada escena.",

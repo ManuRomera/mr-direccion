@@ -23,7 +23,7 @@ export function refFromDrop(data,accept){
 }
 const KIND={sound:'sound',actor:'actor',journal:'journal',handout:'journal'};
 export class DirectionEditor extends ApplicationV2{
- static DEFAULT_OPTIONS={id:'mr-direccion-editor',classes:['mrd-editor'],tag:'div',window:{title:'MRDIR.Ed.Title',icon:'fa-solid fa-pen-ruler',resizable:true},position:{width:1000,height:780}};
+ static DEFAULT_OPTIONS={id:'mr-direccion-editor',classes:['mrd-editor','mrd-win'],tag:'div',window:{title:'MRDIR.Ed.Title',icon:'fa-solid fa-pen-ruler',resizable:true},position:{width:1000,height:780}};
  constructor(options={}){
   const st=game.settings.get(ID,'editorState')??{};
   super(foundry.utils.mergeObject({position:{...(st.left!=null?{left:st.left,top:st.top}:{}),width:st.width??1000,height:st.height??720}},options));

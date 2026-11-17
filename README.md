@@ -56,6 +56,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🪟 **Estilos** | **Cristal líquido** (por defecto) o Clásico, con o sin fondo, compacta o plegada. |
 | ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna; el horizonte se calibra con siluetas), **Autoconfigurar**, copia de otra escena, importa y exporta. |
 | 🎓 **Tutorial guiado** | Tour nativo de Foundry en castellano o inglés; se ofrece la primera vez y se repite desde Configuración → Tours. |
+| 🖥️ **Ventanas para cualquier pantalla** | El editor y los diálogos se **escalan en proporción a tu pantalla** (referencia: monitor 1080p) y nunca se salen ni pierden sus botones; en un portátil de 15″ se ven igual de «grandes» que en un monitor. Se puede fijar a mano en Ajustes → «Tamaño de las ventanas». |
 | ♿ **Accesible** | Roles y `aria-*`, foco visible, `prefers-reduced-motion`, es/en. |
 
 <table>
@@ -176,6 +177,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🪟 **Styles** | **Liquid Glass** (default) or Classic, with or without background, compact or folded. |
 | ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none; the horizon is calibrated with silhouettes), **Auto-configure**, copy from another scene, import and export. |
 | 🎓 **Guided tour** | Native Foundry tour in English or Spanish, offered the first time and repeatable from Settings → Tours. |
+| 🖥️ **Windows for any screen** | The editor and dialogs **scale in proportion to your screen** (reference: a 1080p monitor) and never spill out or lose their buttons; on a 15″ laptop they look as “big” as on a monitor. Can be fixed by hand in Settings → “Window size”. |
 | ♿ **Accessible** | Roles and `aria-*`, visible focus, `prefers-reduced-motion`, English and Spanish. |
 
 <table>

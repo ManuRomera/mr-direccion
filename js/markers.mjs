@@ -15,7 +15,7 @@ async function patch(key,id,value,event=null){
 export const toggleMilestone=id=>patch('milestones',id,!state().milestones?.[id]);
 /** Frase propia para este movimiento (Mayús + clic): null si se cancela. */
 async function askPhrase(c){
- return foundry.applications.api.DialogV2.prompt({window:{title:c.label},content:`<p>${E(L('PhraseAsk'))}</p><input type="text" name="phrase" autofocus placeholder="${E(L('PhrasePlaceholder'))}">`,ok:{label:L('Announce'),callback:(ev,btn)=>btn.form.elements.phrase.value.trim()},rejectClose:false});
+ return foundry.applications.api.DialogV2.prompt({classes:['mrd-win'],window:{title:c.label,resizable:true},content:`<p>${E(L('PhraseAsk'))}</p><input type="text" name="phrase" autofocus placeholder="${E(L('PhrasePlaceholder'))}">`,ok:{label:L('Announce'),callback:(ev,btn)=>btn.form.elements.phrase.value.trim()},rejectClose:false});
 }
 /** Pulsa la casilla `i`. `ask`: el GM pidió avisar con una frase propia (aunque el reloj no avise de por sí). */
 export const setClock=async(id,i,{ask=false}={})=>{

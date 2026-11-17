@@ -1,5 +1,13 @@
 # Cambios · Changelog
 
+## 0.8.0 (2026-11-17)
+- **Ventanas para cualquier pantalla** (estándar de la casa, probado antes en MR- Eat the Reich): el editor, el selector de sonido y los diálogos se escalan en proporción a la pantalla (referencia 1920×950; en pantallas menores, además, con un 8 % de aire) y nunca se salen. Lo que no cabe se desplaza por dentro y los botones de los diálogos quedan fijos y a la vista. En un 1440×780 el editor pasa de ocupar 780 px a un 69 % del alto.
+- **Ajuste «Tamaño de las ventanas (%)»** (de este navegador): 0 = automático; otro valor fija la escala (50–150 %).
+- Los diálogos del módulo ya se pueden redimensionar. Verificado en nueve pantallas (de 1024×640 a 2560×1300) en Foundry 13.351; sin probar en v14.
+- **Windows for any screen** (house standard, first proven in MR- Eat the Reich): the editor, the sound picker and the dialogs scale in proportion to the screen (reference 1920×950; on smaller screens, with an extra 8 % of breathing room) and never spill out. Whatever doesn't fit scrolls inside, and dialog buttons stay pinned and visible. On a 1440×780 the editor goes from filling 780 px to 69 % of the height.
+- **“Window size (%)” setting** (per browser): 0 = automatic; any other value fixes the scale (50–150 %).
+- The module's dialogs are now resizable. Checked on nine screens (1024×640 to 2560×1300) in Foundry 13.351; not tested on v14.
+
 ## 0.7.0 (2026-11-16)
 - **Calibrar con siluetas, desde el editor:** en la pestaña Perspectiva (modo Horizonte), el botón **Calibrar con siluetas** pone dos siluetas de persona sobre la imagen. Arrastra cada una a un sitio donde se pise (una cerca y otra lejos) y estira su cabeza hasta la altura que tendría una persona ahí, fijándote en puertas, mesas o barandillas: el **horizonte y la escala se calculan en vivo** y se guardan al soltar, aunque el horizonte caiga fuera de la imagen. Sin tocarlas, las siluetas parten de la perspectiva actual y no cambian nada.
 - **Silueta fantasma:** una silueta tenue sigue al cursor por la imagen y muestra el tamaño que tendría una persona en cada punto, para comprobar la perspectiva antes de cerrar el editor. Si las dos siluetas están a la misma profundidad o la de delante es menor, avisa y no guarda.
