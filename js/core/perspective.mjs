@@ -3,9 +3,16 @@ export const FIGURE_DEFAULTS=Object.freeze({foot:.055,visible:.885,base:360,min:
 const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
 /** La cabeza de una persona de pie queda en la línea de horizonte (eye): su altura en pantalla es (pies − eye) × alto.
  *  `visible` es la parte útil del token (margen transparente); `pixels` escala todo el reparto a la vez. */
-export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE_DEFAULTS){
- const base=Math.max(.02,footY/height-stage.eye)*height/o.visible*(stage.k??1); // k: calibración por el rectángulo de referencia (1 sin él)
+export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE_DEFAULTS,fx=null){
+ const base=Math.max(.02,footY/height-stage.eye)*height/o.visible*planeK(stage,fx,footY/height); // k: calibración (1 sin ella); en un plano elevado, la del plano
  return Math.min(o.max,width,height,Math.max(o.min,base*(pixels/o.base)));
+}
+/** ¿Está el punto (x,y) —fracciones— dentro del cuadrilátero `q`? */
+export function inQuad(q,x,y){let c=false;for(let i=0,j=q.length-1;i<q.length;j=i++){const [xi,yi]=q[i],[xj,yj]=q[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}return c;}
+/** Escala que corresponde a unos pies en (fx,fy): la del plano elevado (balcón, tarima, escalera) que los contiene o, si no, la de la escena. */
+export function planeK(stage,fx,fy){
+ if(Number.isFinite(fx))for(const p of stage.planes??[])if(p.k>0&&inQuad(p.quad,fx,fy))return p.k;
+ return stage.k??1;
 }
 export const depthFactor=(stage,footY,height,o=FIGURE_DEFAULTS)=>figureSize(stage,footY,height,o.base,Infinity,o)/o.base;
 export const STAGE_MODES=Object.freeze(['horizon','vanishing','none']);
@@ -38,7 +45,7 @@ export function effectiveStage(st,aspect=16/9){
  const calibrated=Number.isFinite(st.k)&&st.k>0;       // escala fijada con fichas (calibrate): manda sobre la del rectángulo
  let s=null;
  if(st.mode==='vanishing'){const vp=derivedVp(st,aspect);s=vp?{...st,vp,eye:vp[1]}:null;}
- else if(st.anchors?.length||calibrated)s=st;
+ else if(st.anchors?.length||calibrated||st.planes?.length)s=st;
  if(!s)return null;
  const k=calibrated?st.k:(s.ref?refScale(s.eye,s.ref,s.refM):null);
  return k?{...s,k}:s;
@@ -82,7 +89,7 @@ export function stageLayout(scene,count,start,pixels,stage,bounds={x:0,y:0,width
 export function depthPatch(scene,token,pixels,stage,pos={},o=FIGURE_DEFAULTS){
  const unit=scene.grid?.size||100,size0=token.width*unit,h0=token.height*unit;
  const x=pos.x??token.x,y=pos.y??token.y,cx=x+size0/2,feet=y+h0*(1-o.foot);
- const size=figureSize(stage,feet,scene.height,pixels,scene.width,o);
+ const size=figureSize(stage,feet,scene.height,pixels,scene.width,o,clamp(cx/scene.width,0,1));
  return {width:size/unit,height:size/unit,x:cx-size/2,y:feet-size*(1-o.foot),sort:Math.round(feet)};
 }
 /** Sin datos de suelo: fila de figuras al pie de la escena. */
@@ -140,4 +147,42 @@ export function defaultSilhouettes(eye,k=1,pixels=360){
  const kp=pixels/360,near=.92;let far=clamp(eye+.15,.5,.7);if(far>=near-.1)far=near-.25;
  const h=y=>+clamp(Math.max(.02,y-eye)*k*kp,.04,.9).toFixed(4);
  return [{x:.35,y:far,h:h(far)},{x:.65,y:near,h:h(near)}];
+}
+
+/** Cruce de dos rectas (cada una por dos puntos): {x,y,sin} (sin = seno del ángulo entre ellas: lo bien definido que está el cruce) o null si son paralelas. */
+function crossing(p1,p2,p3,p4){
+ const d1=[p2[0]-p1[0],p2[1]-p1[1]],d2=[p4[0]-p3[0],p4[1]-p3[1]],n=Math.hypot(...d1)*Math.hypot(...d2),den=d1[0]*d2[1]-d1[1]*d2[0];
+ if(!(n>1e-9)||Math.abs(den)/n<1e-4)return null;
+ const t=((p3[0]-p1[0])*d2[1]-(p3[1]-p1[1])*d2[0])/den;
+ return {x:p1[0]+t*d1[0],y:p1[1]+t*d1[1],sin:Math.abs(den)/n};
+}
+export const quadValid=q=>Array.isArray(q)&&q.length===4&&q.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite));
+/** Calibra con un RECTÁNGULO DE SUELO dibujado sobre la imagen (una baldosa, una alfombra, una mesa, el pasillo…), sin fichas.
+ *  `quad` = [lejos-izq, lejos-der, cerca-der, cerca-izq] en fracciones de la imagen y `widthM` = lo que mide de ancho su borde cercano en metros.
+ *  - Horizonte: con la cámara a nivel, los lados que se alejan convergen en un punto de la línea de horizonte (y los otros dos también, si no son paralelos a ella).
+ *  - Escala: se deshace la perspectiva con cámara a 1 de altura (X = (x−cx)/(y−h), Z = f/(y−h); f sale de los dos puntos de fuga o, si el rectángulo está de frente,
+ *    no hace falta) y la medida real del borde cercano da la altura de la cámara; una persona (PERSON_M) mide ese tanto menos en píxeles → k.
+ *  Con `eye` ya dado (un plano elevado) solo calcula la escala. Devuelve {eye,k,hc} (hc = altura de la cámara en m) o {error: count|inverted|parallel|level|eye|scale}. */
+export function calibrateFloor(quad,widthM,{aspect=16/9,pixels=360,eye=null}={}){
+ if(!quadValid(quad)||!(widthM>0))return {error:'count'};
+ const [A,B,C,D]=quad.map(([x,y])=>[x*aspect,y]),cx=aspect/2;
+ if(!(Math.max(A[1],B[1])<Math.min(C[1],D[1])-.005))return {error:'inverted'};
+ const v1=crossing(A,D,B,C),v2=crossing(A,B,D,C),vs=[v1,v2].filter(v=>v&&v.sin>.01);
+ let e=eye;
+ if(!Number.isFinite(e)){
+  if(!vs.length)return {error:'parallel'};
+  if(vs.length===2&&Math.abs(vs[0].y-vs[1].y)>.08)return {error:'level'};
+  const w=vs.map(v=>v.sin*v.sin);e=vs.reduce((t,v,i)=>t+v.y*w[i],0)/w.reduce((t,x)=>t+x,0);
+ }
+ if(!(e<Math.min(A[1],B[1])-.005))return {error:'eye'};
+ // Distancia focal (en alturas de la imagen) a partir de los dos puntos de fuga ortogonales; de frente no interviene.
+ let f=1;if(vs.length===2){const q=-((vs[0].x-cx)*(vs[1].x-cx)+(vs[0].y-e)*(vs[1].y-e));if(q>.01)f=Math.sqrt(q);}
+ const flat=([x,y])=>[(x-cx)/(y-e),f/(y-e)],P=flat(C),Q=flat(D),len=Math.hypot(P[0]-Q[0],P[1]-Q[1]);
+ const hc=widthM/len;if(!(hc>.2&&hc<500))return {error:'scale'};
+ return {eye:+clamp(e,EYE_MIN,EYE_MAX).toFixed(4),k:+clamp(PERSON_M/hc/(pixels/360),.05,20).toFixed(4),hc:+hc.toFixed(2)};
+}
+/** Rectángulo de suelo de partida, coherente con el horizonte actual (de frente, con las líneas de fondo hacia su centro): sin tocarlo no cambia nada. */
+export function defaultFloorQuad(eye=.4,{near=.9,spread=.3,cx=.5,depth=.45}={}){
+ const far=Math.min(near-.1,clamp(eye+(near-eye)*depth,.2,.8)),t=Math.max(.05,(far-eye)/Math.max(.05,near-eye));
+ return [[cx-spread*t,far],[cx+spread*t,far],[cx+spread,near],[cx-spread,near]].map(p=>p.map(v=>+clamp(v,0,1).toFixed(4)));
 }

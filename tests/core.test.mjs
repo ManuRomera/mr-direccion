@@ -306,6 +306,7 @@ test('defaultSilhouettes: sin tocarlas, la calibración devuelve la perspectiva 
  for(const s of defaultSilhouettes(-.5,1,360)){assert.ok(s.h>=.04&&s.h<=.9&&s.y<=1);}   // horizonte fuera de la imagen: alturas acotadas
 });
 import {windowScale} from '../js/core/windows.mjs';
+import {calibrateFloor,defaultFloorQuad,planeK,inQuad,figureSize as fSize} from '../js/core/perspective.mjs';
 test('ventanas: escala proporcional a la pantalla, con aire, mínimo y ajuste manual',()=>{
  const v=(w,h,t=h)=>({width:w,height:h,total:t});
  assert.equal(windowScale(1000,780,v(1920,950)),1); // monitor 1080p: sin tocar
@@ -314,4 +315,35 @@ test('ventanas: escala proporcional a la pantalla, con aire, mínimo y ajuste ma
  assert.equal(windowScale(1000,780,v(1280,650),80),.8); // manual manda
  assert.equal(windowScale(1000,780,v(1280,650),400),1.5);assert.equal(windowScale(0,0,v(1280,650)),1);
  assert.ok(windowScale(1000,780,v(1366,657))<windowScale(1000,780,v(1536,730))); // más pequeña la pantalla, más pequeña la ventana
+});
+// Proyecta un rectángulo de suelo de w×d metros con una cámara a nivel: altura hc, distancia focal f (en alturas de imagen), horizonte `eye`, giro `yaw`.
+const projectRect=({hc,f,eye,aspect=16/9,yaw=0,w=2,d=3,z0=3,x0=-1})=>{
+ const c=Math.cos(yaw),s=Math.sin(yaw),pt=([X,Z])=>{const Xr=X*c+(Z-z0)*s,Zr=-X*s+(Z-z0)*c+z0;return [(.5*aspect+f*Xr/Zr)/aspect,eye+f*hc/Zr];};
+ return [[x0,z0+d],[x0+w,z0+d],[x0+w,z0],[x0,z0]].map(pt); // lejos-izq, lejos-der, cerca-der, cerca-izq
+};
+test('calibrateFloor: de frente recupera horizonte y escala sin fichas',()=>{
+ const q=projectRect({hc:1.6,f:1.1,eye:.35,x0:-1}),r=calibrateFloor(q,2,{aspect:16/9});
+ assert.ok(!r.error,r.error);assert.ok(Math.abs(r.eye-.35)<.002,`eye ${r.eye}`);assert.ok(Math.abs(r.hc-1.6)<.02,`hc ${r.hc}`);assert.ok(Math.abs(r.k-1.75/1.6)<.01,`k ${r.k}`);
+});
+test('calibrateFloor: en esquina (dos puntos de fuga) también, y respeta el tamaño de las fichas',()=>{
+ for(const yaw of [.3,-.45]){
+  const q=projectRect({hc:2.2,f:1.3,eye:.28,yaw,w:1.5,d:2.5,x0:-.6}),r=calibrateFloor(q,1.5,{aspect:16/9});
+  assert.ok(!r.error,r.error);assert.ok(Math.abs(r.eye-.28)<.01,`yaw ${yaw} eye ${r.eye}`);assert.ok(Math.abs(r.hc-2.2)<.15,`yaw ${yaw} hc ${r.hc}`);
+ }
+ const q=projectRect({hc:1.6,f:1.1,eye:.35}),a=calibrateFloor(q,2,{pixels:360}),b=calibrateFloor(q,2,{pixels:720});
+ assert.ok(Math.abs(a.k/2-b.k)<.002);
+});
+test('calibrateFloor: con el horizonte dado (plano elevado) solo calcula la escala; errores claros',()=>{
+ const q=projectRect({hc:1.6,f:1.1,eye:.35}),r=calibrateFloor(q,2,{eye:.35});
+ assert.ok(Math.abs(r.k-1.75/1.6)<.01);
+ const hi=calibrateFloor(projectRect({hc:.6,f:1.1,eye:.35}),2,{eye:.35});assert.ok(hi.k>r.k*2.5);
+ assert.equal(calibrateFloor(q,0).error,'count');assert.equal(calibrateFloor([...q].reverse(),2).error,'inverted');
+ assert.equal(calibrateFloor([[.2,.5],[.8,.5],[.8,.9],[.2,.9]],2).error,'parallel');
+ assert.equal(calibrateFloor([[.3,.5],[.7,.5],[.9,.9],[.1,.9]],2,{eye:.7}).error,'eye');
+});
+test('defaultFloorQuad: sin tocarlo respeta el horizonte; planeK usa el plano que contiene los pies',()=>{
+ const q=defaultFloorQuad(.4),r=calibrateFloor(q,2);assert.ok(Math.abs(r.eye-.4)<.002,`eye ${r.eye}`);
+ const stage={eye:.4,k:1,planes:[{quad:[[.6,.5],[.9,.5],[.9,.7],[.6,.7]],k:2.5}]};
+ assert.equal(planeK(stage,.75,.6),2.5);assert.equal(planeK(stage,.3,.6),1);assert.equal(planeK(stage,null,.6),1);assert.ok(inQuad(stage.planes[0].quad,.7,.6)&&!inQuad(stage.planes[0].quad,.5,.6));
+ assert.ok(fSize(stage,540,900,360,Infinity,undefined,.75)>2*fSize(stage,540,900,360,Infinity,undefined,.3));
 });

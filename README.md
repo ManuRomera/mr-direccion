@@ -54,7 +54,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🕯️ **Marcadores** | **Hitos** que logra el GM (cada uno se revela a la mesa o se queda secreto) y **relojes** de N segmentos, ocultos o públicos reloj a reloj. Al avanzar un reloj sale un **aviso a la mesa** con su título y una frase opcional (Mayús + clic para escribirla al momento). Insignia arrastrable. |
 | 🖱️ **Se coloca donde quieras** | Toda la barra se arrastra con el **botón derecho**; la posición se recuerda y se restablece. Menús que se cierran al hacer clic fuera. |
 | 🪟 **Estilos** | **Cristal líquido** (por defecto) o Clásico, con o sin fondo, compacta o plegada. |
-| ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna; el horizonte se calibra con siluetas), **Autoconfigurar**, copia de otra escena, importa y exporta. |
+| ✏️ **Editor del GM** | Arrastra desde el directorio, elige la perspectiva (horizonte, punto de fuga o ninguna; el horizonte se calibra marcando un rectángulo de suelo o con siluetas), **Autoconfigurar**, copia de otra escena, importa y exporta. |
 | 🎓 **Tutorial guiado** | Tour nativo de Foundry en castellano o inglés; se ofrece la primera vez y se repite desde Configuración → Tours. |
 | 🖥️ **Ventanas para cualquier pantalla** | El editor y los diálogos se **escalan en proporción a tu pantalla** (referencia: monitor 1080p) y nunca se salen ni pierden sus botones; en un portátil de 15″ se ven igual de «grandes» que en un monitor. Se puede fijar a mano en Ajustes → «Tamaño de las ventanas». |
 | ♿ **Accesible** | Roles y `aria-*`, foco visible, `prefers-reduced-motion`, es/en. |
@@ -69,7 +69,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 <td width="50%"><img src="docs/img/perspectiva.webp" alt="Editor de perspectiva con punto de fuga"><br><sub><b>Perspectiva</b>: marcas el rectángulo de salida y las líneas esquina a esquina, como en un dibujo, fijan el punto de fuga, el horizonte y la escala real de las figuras.</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/img/calibrar.webp" alt="Botón Calibrar con las fichas seleccionadas en el menú Figuras"><br><sub><b>Calibrar con fichas</b>: pon 1 o 2 fichas al tamaño que quieres en su sitio y el módulo deduce el horizonte y la escala de la escena.</sub></td>
+<td width="50%"><img src="docs/img/suelo.webp" alt="Editor con un rectángulo de suelo dibujado en perspectiva sobre la imagen"><br><sub><b>Marcar suelo</b>: dibuja un rectángulo real del suelo (una baldosa, el pasillo…), di cuánto mide y el horizonte y la escala salen solos, sin fichas. Los planos elevados (tarimas, balcones) tienen su propia escala.</sub></td>
 <td width="50%"><img src="docs/img/siluetas.webp" alt="Editor con dos siluetas de calibración y la silueta fantasma"><br><sub><b>Calibrar con siluetas</b>: arrastra dos siluetas y estira sus cabezas; el horizonte y la escala salen solos y una silueta tenue sigue al cursor.</sub></td>
 </tr>
 <tr>
@@ -175,7 +175,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🕯️ **Markers** | **Milestones** the GM achieves (each one is revealed to the table or stays secret) and **clocks** of N segments, hidden or public clock by clock. Advancing a clock shows the table an **announcement** with its title and an optional line (Shift + click to write one on the spot). Draggable badge. |
 | 🖱️ **Put it anywhere** | Drag the whole bar with the **right mouse button**; the position is remembered and can be reset. Menus close when you click outside. |
 | 🪟 **Styles** | **Liquid Glass** (default) or Classic, with or without background, compact or folded. |
-| ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none; the horizon is calibrated with silhouettes), **Auto-configure**, copy from another scene, import and export. |
+| ✏️ **GM editor** | Drag from the sidebar, choose the perspective (horizon, vanishing point or none; the horizon is calibrated by marking a floor rectangle or with silhouettes), **Auto-configure**, copy from another scene, import and export. |
 | 🎓 **Guided tour** | Native Foundry tour in English or Spanish, offered the first time and repeatable from Settings → Tours. |
 | 🖥️ **Windows for any screen** | The editor and dialogs **scale in proportion to your screen** (reference: a 1080p monitor) and never spill out or lose their buttons; on a 15″ laptop they look as “big” as on a monitor. Can be fixed by hand in Settings → “Window size”. |
 | ♿ **Accessible** | Roles and `aria-*`, visible focus, `prefers-reduced-motion`, English and Spanish. |
@@ -190,7 +190,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 <td width="50%"><img src="docs/img/preview.webp" alt="Scene preview after resting the cursor"><br><sub><b>Preview</b> after 1 s on a scene.</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/img/calibrar-en.webp" alt="Calibrate with the selected tokens button in the Figures menu"><br><sub><b>Calibrate with tokens</b>: set 1 or 2 tokens to the size you want where they stand and the module works out the scene's horizon and scale.</sub></td>
+<td width="50%"><img src="docs/img/suelo-en.webp" alt="Editor with a floor rectangle drawn in perspective over the image"><br><sub><b>Mark the floor</b>: draw a real rectangle on the floor (a tile, the corridor…), say how big it is and the horizon and scale come out on their own, no tokens. Raised planes (platforms, balconies) get their own scale.</sub></td>
 <td width="50%"><img src="docs/img/siluetas-en.webp" alt="Editor with two calibration silhouettes and the ghost silhouette"><br><sub><b>Calibrate with silhouettes</b>: drag two silhouettes and stretch their heads; the horizon and scale come out on their own and a faint silhouette follows the cursor.</sub></td>
 </tr>
 <tr>

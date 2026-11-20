@@ -26,6 +26,9 @@ function sceneCfg(s,i,w,ids){
  const p=`scenes[${i}]`;if(!isObj(s)){w.push(`${p}: no es un objeto`);return null;}
  const ref=normalizeRef(s.ref);if(!ref){w.push(`${p}.ref: falta (uuid, flag o name)`);return null;}
  const st=isObj(s.stage)?s.stage:{};
+ const quad=q=>Array.isArray(q)&&q.length===4&&q.every(a=>Array.isArray(a)&&a.length===2&&a.every(Number.isFinite))?q.map(a=>[+num(a[0],.5,0,1).toFixed(4),+num(a[1],.5,0,1).toFixed(4)]):null;
+ const floor=quad(st.floor?.quad)?{quad:quad(st.floor.quad),widthM:num(st.floor.widthM,2,.05,200)}:null;
+ const planes=(Array.isArray(st.planes)?st.planes:[]).slice(0,8).map(p=>quad(p?.quad)?{quad:quad(p.quad),widthM:num(p.widthM,1,.05,200),k:Number(p.k)>0?num(p.k,1,.05,20):null}:null).filter(Boolean);
  const anchors=(Array.isArray(st.anchors)?st.anchors:[]).filter(a=>Array.isArray(a)&&a.length===2&&a.every(Number.isFinite)).map(a=>[num(a[0],.5,0,1),num(a[1],.9,0,1)]);
  if(s.ambient!=null&&!AMBIENT_KEYS.includes(s.ambient))w.push(`${p}.ambient: «${s.ambient}» no válido`);
  return {ref,order:num(s.order,i,-9999,9999),name:str(s.name),reading:normalizeRef(s.reading),music:normalizeRef(s.music),
@@ -37,7 +40,7 @@ function sceneCfg(s,i,w,ids){
   stage:{mode:['horizon','vanishing','none'].includes(st.mode)?st.mode:'horizon',eye:num(st.eye,.5,-3,1.5),
    vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,-2,3),num(st.vp[1],.5,-3,1.5)]:null,
    ref:Array.isArray(st.ref)&&st.ref.length===4&&st.ref.every(Number.isFinite)?(([a,b,c,d])=>[Math.min(a,c),Math.min(b,d),Math.max(a,c),Math.max(b,d)])(st.ref.map(v=>num(v,0,0,1))):null,
-   refM:num(st.refM,2.1,.3,50),k:Number(st.k)>0?num(st.k,1,.05,20):null,anchors}};
+   refM:num(st.refM,2.1,.3,50),k:Number(st.k)>0?num(st.k,1,.05,20):null,floor,planes,anchors}};
 }
 /** Frases de un reloj: una por casilla, en orden; admite lista o texto con una por línea. */
 const phrases=v=>{const a=Array.isArray(v)?v:typeof v==='string'?v.split(/\r?\n/):[];const o=a.slice(0,12).map(x=>String(x??'').trim());while(o.length&&!o[o.length-1])o.pop();return o;};

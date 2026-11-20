@@ -1,7 +1,7 @@
 import {ID,sceneConfig,saveSceneConfig} from './store.mjs';
 import {find} from './refs.mjs';
 import {facingAngle} from './core/geometry.mjs';
-import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast,effectiveStage,vpAnchors,calibrate,FIGURE_DEFAULTS} from './core/perspective.mjs';
+import {figureOptions,stageLayout,rowLayout,depthPatch,sizePatch,coverPosition,missingCast,effectiveStage,vpAnchors,FIGURE_DEFAULTS} from './core/perspective.mjs';
 import {normalizeSceneConfig} from './core/schema.mjs';
 import {figureMetrics} from './core/metrics.mjs';
 import {metricsOf,ensureMetrics} from './metrics.mjs';
@@ -66,20 +66,6 @@ export async function resizeTokens(scene,target,pixels){
  const tokens=targetTokens(scene,target);await ensureMetrics(tokens.map(srcOf));
  const ch=tokens.map(t=>({_id:t.id,...sizePatch(scene,{x:t._source.x,y:t._source.y,width:t._source.width,height:t._source.height},pixels,stage,figOpts(srcOf(t)))}));
  if(ch.length)await scene.updateEmbeddedDocuments('Token',ch,{mrdDepth:true,animate:false});return ch.length;
-}
-/** Calibra la perspectiva de la escena con 1 o 2 fichas seleccionadas, ya puestas al tamaño que se quiere en su sitio: con dos (la de delante, mayor) salen el horizonte y la escala;
- *  con una se conserva el horizonte y solo se ajusta la escala. Se guarda en la escena (modo horizonte). Devuelve {eye,k} o {error}. */
-export async function calibrateFromSelection(scene){
- if(!scene||!activeGM())return {error:'count'};
- const sel=targetTokens(scene,'selected');if(sel.length<1||sel.length>2)return {error:'count'};
- await ensureMetrics(sel.map(srcOf));
- const H=scene.height,unit=scene.grid.size||100,o=options(),cfg=sceneConfig(scene)??normalizeSceneConfig({ref:{uuid:scene.uuid}});
- const samples=sel.map(t=>{const m=figOpts(srcOf(t)),h=t._source.height*unit;return {y:(t._source.y+h*(1-m.foot))/H,h:h*m.visible};});
- const cur=effectiveStage(cfg.stage,(scene.width||16)/(scene.height||9));
- const r=calibrate(samples,H,o.tokenPixels,cur?.eye??cfg.stage.eye);
- if(r.error)return r;
- await saveSceneConfig(scene,normalizeSceneConfig({...cfg,stage:{...cfg.stage,mode:'horizon',eye:r.eye,k:r.k}}));
- return r;
 }
 export const resizeFigures=(scene,selectedOnly=false)=>resizeTokens(scene,selectedOnly?'selected':'all',options().tokenPixels);
 export async function setOption(key,value){
