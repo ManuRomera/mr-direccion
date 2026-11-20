@@ -323,3 +323,22 @@
 .mrd-fq-h{position:absolute;z-index:3;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:2px solid #fff;background:#9a3f58;cursor:grab;box-shadow:0 2px 6px #000a;display:grid;place-items:center;touch-action:none}
 .mrd-fq-h i{font-style:normal;font-size:10px;line-height:1;color:#fff;pointer-events:none}
 .mrd-floor-bar button[data-act="fq-sel"].is-on{background:linear-gradient(180deg,#2f8f7d,#1d5f54);border-color:#9fe3d3}
+/* Perspectiva: selector de método, explicación y parte común */
+.mrd-editor .mrd-methods{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:6px}
+.mrd-editor .mrd-methods .mrd-method{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:6px 4px;height:auto;line-height:1.15;white-space:normal;text-align:center;position:relative}
+.mrd-editor .mrd-method>i{font-size:16px;color:#caa66b}
+.mrd-editor .mrd-method>b{font-size:11.5px}
+.mrd-editor .mrd-method>small{font-size:8.5px;color:#9fe3d3;letter-spacing:.05em;text-transform:uppercase}
+.mrd-editor .mrd-methods .mrd-method.is-on{background:linear-gradient(180deg,#9a3f58,#6f2a3f);border-color:#e0bd83}.mrd-editor .mrd-method.is-on>i{color:#ffe7b5}
+.mrd-editor .mrd-how{margin:0 0 6px;padding:5px 10px;border:1px solid rgba(202,166,107,.3);border-radius:8px;background:rgba(10,9,14,.35);font-size:12px}
+.mrd-editor .mrd-how summary{cursor:pointer;color:#e9dcc0}.mrd-editor .mrd-how summary b{color:#f0d28f}
+.mrd-editor .mrd-how summary span{float:right;font-size:11px;color:#9fe3d3}
+.mrd-editor .mrd-how ol{margin:4px 0 2px;padding-left:20px}.mrd-editor .mrd-how li{margin:1px 0}
+.mrd-editor .mrd-persp .mrd-floor-bar>.mrd-calib-note{flex:1 1 260px;margin:0}
+.mrd-editor .mrd-common{margin-top:8px}.mrd-editor .mrd-common .mrd-floor-bar{margin-bottom:4px}
+.mrd-editor .mrd-common input[type=range]{width:140px;vertical-align:middle}.mrd-editor .mrd-common output{display:inline-block;min-width:44px}
+.mrd-editor .mrd-floor-bar button[data-act=p-plane].is-on{background:linear-gradient(180deg,#2f8f7d,#1d5f54);border-color:#9fe3d3}
+.mrd-editor .mrd-floor-bar button:disabled{opacity:.45;cursor:not-allowed}
+.mrd-horizon.is-fixed{cursor:default;pointer-events:none}
+.mrd-fq-h.is-plane{background:#1d5f54;border-color:#9fe3d3}
+@container (max-width:620px){.mrd-editor .mrd-methods{grid-template-columns:repeat(3,minmax(0,1fr))}}

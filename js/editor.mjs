@@ -1,7 +1,7 @@
 import {ID,sceneConfig,saveSceneConfig,clearSceneConfig,globalSettings,saveGlobal,importPack,exportPack,configuredScenes} from './store.mjs';
 import {normalizeSceneConfig,normalizeSettings,DEFAULT_MOTIFS} from './core/schema.mjs';
 import {proposeConfig} from './core/autoconfig.mjs';
-import {refScale,eyeFromRef,derivedVp,calibrate,calibrateFloor,defaultFloorQuad,defaultSilhouettes,effectiveStage,figureOptions} from './core/perspective.mjs';
+import {PerspectiveTab} from './perspective-tab.mjs';
 import {find,labelOf} from './refs.mjs';
 import {playRef,playEffect} from './audio.mjs';
 import {installExample} from './example.mjs';
@@ -54,115 +54,6 @@ export class DirectionEditor extends ApplicationV2{
   <fieldset class="wide"><legend>${E(L('Ed.Notes'))}</legend><textarea data-path="notes" rows="3">${E(c.notes)}</textarea></fieldset>
   <fieldset class="wide mrd-tools"><legend>${E(L('Ed.Tools'))}</legend><button type="button" data-act="auto"><i class="fa-solid fa-wand-magic-sparkles"></i> ${E(L('Ed.Auto'))}</button> ${others.length?`<select class="copy-from">${others.map(x=>`<option value="${x.scene.id}">${E(x.scene.name)}</option>`).join('')}</select><button type="button" data-act="copy"><i class="fa-solid fa-copy"></i> ${E(L('Ed.Copy'))}</button>`:''} <button type="button" data-act="unconfig" class="danger"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.Unconfig'))}</button></fieldset></div>`;
  }
- /** Siluetas de calibración (pies en `y`, cabeza a `y−h`) y la silueta fantasma que sigue al cursor. */
- silHtml(){
-  const svg='<svg viewBox="0 0 40 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="20" cy="8" r="7"/><path d="M12 17h16l5 30-4 2-3-18v22l3 30h-7l-3-28-3 28h-7l3-30V31l-3 18-4-2z"/></svg>';
-  return this.sil.map((s,i)=>`<div class="mrd-sil ${i?'is-near':'is-far'}" data-i="${i}" style="left:${s.x*100}%;top:${(s.y-s.h)*100}%;height:${s.h*100}%">${svg}<span class="mrd-sil-head" aria-label="${E(L('Ed.CalibHead'))}"></span><b>${i+1}</b></div>`).join('')+this.ghostHtml();
- }
- ghostHtml(){return `<div class="mrd-sil is-ghost" hidden><svg viewBox="0 0 40 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="20" cy="8" r="7"/><path d="M12 17h16l5 30-4 2-3-18v22l3 30h-7l-3-28-3 28h-7l3-30V31l-3 18-4-2z"/></svg></div>`;}
- /* ---------- Calibrar con un rectángulo de suelo (sin fichas) ---------- */
- /** Prepara el rectángulo en edición: `sel` = 'f' (suelo principal) o el índice de un plano elevado. Sin tocarlo no cambia nada: el de partida sigue el horizonte y la escala actuales. */
- fqInit(sel='f'){
-  const st=this.cfg.stage,s=this.scene,aspect=(s.width||16)/(s.height||9),kp=figureOptions(game.settings.get(ID,'figures')).tokenPixels/360;
-  this.calibResult=null;this.fqScene=s.id;
-  if(sel==='f'){
-   let q=st.floor?.quad,w=st.floor?.widthM;
-   if(!q){q=defaultFloorQuad(st.eye);const r=calibrateFloor(q,1,{aspect});w=r.error?2:+Math.max(.05,(1.75/((st.k>0?st.k:1)*kp))/r.hc).toFixed(2);}
-   this.fqWork={sel,quad:structuredClone(q),widthM:w};
-  }else{const p=st.planes[sel];this.fqWork={sel,quad:structuredClone(p.quad),widthM:p.widthM};}
- }
- /** Capa del rectángulo: polígonos (el elegido resaltado) y, para él, sus lados prolongados hasta el horizonte. */
- fqSvg(eye){
-  const st=this.cfg.stage,w=this.fqWork,f=v=>+(v*100).toFixed(2),pts=q=>q.map(p=>f(p[0])+','+f(p[1])).join(' '),shapes=[];
-  const main=w.sel==='f'?w.quad:st.floor?.quad;if(main)shapes.push([main,w.sel==='f']);
-  st.planes.forEach((p,i)=>shapes.push([w.sel===i?w.quad:p.quad,w.sel===i,true]));
-  let g=shapes.map(([q,on,pl])=>`<polygon class="${on?'on':''} ${pl?'plane':''}" points="${pts(q)}"/>`).join('');
-  const [A,B,C,D]=w.quad;
-  for(const [P,Q] of [[A,D],[B,C]])if(eye<P[1]-.005&&Q[1]>P[1])g+=`<line x1="${f(Q[0])}" y1="${f(Q[1])}" x2="${f(P[0]+(P[0]-Q[0])*(P[1]-eye)/(Q[1]-P[1]))}" y2="${f(eye)}"/>`;
-  return g;
- }
- fqLayer(){
-  const w=this.fqWork;
-  return `<svg class="mrd-fq-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${this.fqSvg(this.cfg.stage.eye)}</svg>`+w.quad.map((p,i)=>`<span class="mrd-fq-h" data-c="${i}" style="left:${p[0]*100}%;top:${p[1]*100}%"><i>${i+1}</i></span>`).join('');
- }
- fqPanel(st){
-  const w=this.fqWork,chip=(sel,label)=>`<button type="button" data-act="fq-sel" data-sel="${sel}" class="${w.sel===sel?'is-on':''}" aria-pressed="${w.sel===sel}">${E(label)}</button>`;
-  return `<span class="mrd-sep" aria-hidden="true"></span>${chip('f',L('Ed.FqMain'))}${st.planes.map((p,i)=>chip(i,L('Ed.FqPlane',{n:i+1}))).join('')}${st.planes.length<8?`<button type="button" data-act="fq-add" title="${E(L('Ed.FqAddTip'))}"><i class="fa-solid fa-plus" aria-hidden="true"></i> ${E(L('Ed.FqAdd'))}</button>`:''}<span class="mrd-sep" aria-hidden="true"></span><label>${E(L('Ed.FqWidth'))} <input type="number" step=".05" min=".05" max="200" data-fw value="${w.widthM}"> m</label>${w.sel!=='f'?`<button type="button" data-act="fq-del" class="danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> ${E(L('Ed.FqDel'))}</button>`:''}`;
- }
- /** Recalcula en vivo con el rectángulo en edición, mueve el horizonte y la capa, y deja el resultado para la silueta fantasma. */
- fqLive(floor){
-  const s=this.scene,st=this.cfg.stage,w=this.fqWork,aspect=(s.width||16)/(s.height||9),px=figureOptions(game.settings.get(ID,'figures')).tokenPixels;
-  const r=this.calibResult=calibrateFloor(w.quad,w.widthM,{aspect,pixels:px,eye:w.sel==='f'?null:st.eye});
-  const note=floor.parentElement.querySelector('.mrd-calib-note'),hz=floor.querySelector('.mrd-horizon');
-  if(note){note.textContent=r.error?L('FloorErr_'+r.error):L(w.sel==='f'?'Ed.FqLive':'Ed.FqLivePlane',{eye:r.eye.toFixed(2),k:r.k,hc:r.hc})+(w.sel==='f'&&(r.eye<0||r.eye>1)?' '+L('Ed.CalibOff'):'');note.classList.toggle('is-bad',!!r.error);}
-  if(hz&&!r.error&&w.sel==='f')hz.style.top=r.eye*100+'%';
-  const svg=floor.querySelector('.mrd-fq-svg');if(svg)svg.innerHTML=this.fqSvg(r.error?st.eye:r.eye);
-  for(const h of floor.querySelectorAll('.mrd-fq-h')){const p=w.quad[h.dataset.c];h.style.left=p[0]*100+'%';h.style.top=p[1]*100+'%';}
-  return r;
- }
- /** Guarda el rectángulo y su resultado: el principal fija horizonte y escala (y reajusta los planos elevados al nuevo horizonte); un plano, solo su escala. */
- async fqSave(){
-  const w=this.fqWork,r=this.calibResult;if(!r||r.error)return;
-  const aspect=(this.scene.width||16)/(this.scene.height||9),px=figureOptions(game.settings.get(ID,'figures')).tokenPixels,quad=w.quad.map(p=>[...p]);
-  await this.commit(c=>{
-   if(w.sel==='f'){c.stage.mode='horizon';c.stage.eye=r.eye;c.stage.k=r.k;c.stage.floor={quad,widthM:w.widthM};
-    for(const p of c.stage.planes){const q=calibrateFloor(p.quad,p.widthM,{aspect,pixels:px,eye:r.eye});if(!q.error)p.k=q.k;}}
-   else{const p=c.stage.planes[w.sel];if(p)Object.assign(p,{quad,widthM:w.widthM,k:r.k});}
-  });
- }
- /** Recalcula en vivo horizonte y escala con las dos siluetas y mueve la línea de horizonte. */
- calibLive(floor){
-  const s=this.scene,H=s.height||900,px=figureOptions(game.settings.get(ID,'figures')).tokenPixels;
-  const r=this.calibResult=calibrate(this.sil.map(v=>({y:v.y,h:v.h*H})),H,px);
-  const note=floor.parentElement.querySelector('.mrd-calib-note'),hz=floor.querySelector('.mrd-horizon');
-  if(note)note.textContent=r.error?L('CalErr_'+r.error):L('Ed.CalibLive',{eye:r.eye.toFixed(2),k:r.k})+((r.eye<0||r.eye>1)?' '+L('Ed.CalibOff'):'');
-  if(note)note.classList.toggle('is-bad',!!r.error);
-  if(hz&&!r.error)hz.style.top=r.eye*100+'%';
-  return r;
- }
- floorTab(c){
-  const s=this.scene,src=s.background?.src,st=c.stage,mode=st.mode,ref=st.ref,W=s.width||1600,H=s.height||900,exit=mode==='vanishing';
-  // Con rectángulo de salida el punto de fuga sale de las cuatro líneas esquina→esquina; sin él es el punto que se coloca a mano.
-  const vp=exit?derivedVp(st,W/H):null,derived=!!(vp&&ref),eye=vp?vp[1]:st.eye,k=st.k>0?st.k:(ref?(refScale(eye,ref,st.refM)??1):1);
-  const picker=`<div class="mrd-modes" role="radiogroup" aria-label="${E(L('Ed.Mode'))}">${['horizon','vanishing','none'].map(m=>`<button type="button" role="radio" aria-checked="${mode===m}" class="${mode===m?'is-on':''}" data-act="mode" data-mode="${m}" title="${E(L('Ed.ModeHint_'+m))}"><b>${E(L('Ed.Mode_'+m))}</b></button>`).join('')}</div>`;
-  if(mode==='none')return picker+`<p class="mrd-hint">${E(L('Ed.NoneHint'))}</p>`;
-  if(!src)return picker+`<p>${E(L('Ed.NoBackground'))}</p>`;
-  const fcOn=!exit&&this.floorCal;
-  const clearAnchors=`<button type="button" data-act="clear-anchors"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearAnchors'))}</button>`;
-  const modeCtl=exit?(ref?'':`<button type="button" data-act="clear-vp"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearVP'))}</button>`)+clearAnchors
-   :(this.floorCal?'':`<label>${E(L('Ed.Eye'))} <input type="number" step=".01" min="-3" max="1.5" data-path="stage.eye" data-num value="${eye}"></label>`+clearAnchors)+`<button type="button" data-act="fq-toggle" class="${this.floorCal?'is-on':''}" aria-pressed="${!!this.floorCal}" title="${E(L('Ed.FloorCalTip'))}"><i class="fa-solid fa-border-all" aria-hidden="true"></i> ${E(L('Ed.FloorCalToggle'))}</button><button type="button" data-act="calib-toggle" class="${this.calib?'is-on':''}" aria-pressed="${!!this.calib}" title="${E(L('Ed.CalibHint'))}"><i class="fa-solid fa-person" aria-hidden="true"></i> ${E(L('Ed.CalibToggle'))}</button>`;
-  // Rectángulo: en «punto de fuga» es el de salida (fija el punto de fuga); en «horizonte», una referencia de escala (puerta, mesa…).
-  const refCtl=`<span class="mrd-sep" aria-hidden="true"></span><label title="${E(L('Ed.RefHeightTip'))}">${E(L('Ed.RefHeight'))} <input type="number" step=".05" min=".3" max="50" data-path="stage.refM" data-num value="${st.refM}"> m</label>${ref
-   ?(exit?'':`<button type="button" data-act="ref-eye"><i class="fa-solid fa-eye" aria-hidden="true"></i> ${E(L('Ed.RefEye'))}</button>`)+`<button type="button" data-act="clear-ref"><i class="fa-solid fa-eraser"></i> ${E(L(exit?'Ed.ExitClear':'Ed.ClearRef'))}</button>`
-   :`<button type="button" data-act="ref-draw" class="${this.refDraw?'is-on':''}" aria-pressed="${!!this.refDraw}" title="${E(L(exit?'Ed.ExitHintNone':'Ed.RefHintNone'))}"><i class="fa-solid fa-vector-square" aria-hidden="true"></i> ${E(L(exit?'Ed.ExitDraw':'Ed.RefDraw'))}</button>`}`;
-  const calOn=!exit&&(this.calib||this.floorCal);
-  if(fcOn&&(!this.fqWork||this.fqScene!==s.id))this.fqInit('f');
-  if(!exit&&this.calib&&(!this.sil||this.silScene!==s.id)){this.sil=defaultSilhouettes(eye,st.k>0?st.k:k,figureOptions(game.settings.get(ID,'figures')).tokenPixels);this.silScene=s.id;}
-  const hint=exit?(ref?'Ed.ExitHint':this.refDraw?'Ed.ExitDrawing':'Ed.ExitHintNone'):(fcOn?'Ed.FloorCalHint':calOn?'Ed.CalibHint':'Ed.FloorHint');
-  // El horizonte (o el punto de fuga) puede caer fuera de la imagen (vistas en picado): se avisa porque no se ve.
-  const outside=vp?(vp[0]<0||vp[0]>1||vp[1]<0||vp[1]>1):(eye<0||eye>1);
-  const offNote=outside?`<p class="mrd-hint">${E(L('Ed.OffImage',{y:(+eye).toFixed(2)}))}</p>`:'';
-  const calib=st.k!=null?`<div class="mrd-floor-bar"><span>${E(L('Ed.CalibNote',{k:st.k}))}</span><button type="button" data-act="clear-calib"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.ClearCalib'))}</button></div>`:'';
-  const bar=`<p class="mrd-hint">${E(L(hint))}</p><div class="mrd-floor-bar">${modeCtl}${fcOn?this.fqPanel(st):''}${calOn?'':refCtl}</div>${calOn?`<p class="mrd-calib-note" role="status"></p>`:calib}${offNote}${!exit&&!calOn&&(ref||this.refDraw)?`<p class="mrd-hint">${E(L(ref?'Ed.RefHint':'Ed.RefDrawing'))}</p>`:''}`;
-  const box=ref?`<div class="mrd-ref-box" style="left:${ref[0]*100}%;top:${ref[1]*100}%;width:${(ref[2]-ref[0])*100}%;height:${(ref[3]-ref[1])*100}%"><em>${E(L(exit?'Ed.ExitLabel':'Ed.RefLabel',{m:st.refM}))}</em><span class="mrd-ref-h" data-corner="0"></span><span class="mrd-ref-h" data-corner="1"></span></div>`:'';
-  // Líneas de perspectiva. Con rectángulo de salida: de cada esquina de la imagen a la suya del rectángulo (trazo fuerte), una malla de suelo/techo/paredes
-  // entre ambos y la prolongación discontinua hasta el punto de fuga. Sin él: abanico desde el punto. Siempre: la línea de horizonte y un rayo por cada apoyo.
-  const f=v=>+(v*100).toFixed(2),ln=(x1,y1,x2,y2,cls='')=>`<line${cls?` class="${cls}"`:''} x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}"/>`;
-  let g='';
-  if(exit&&vp){
-   g+=ln(0,vp[1],1,vp[1],'h');
-   if(ref){
-    const [x0,y0,x1,y1]=ref,w=x1-x0,h=y1-y0;
-    for(const u of [.25,.5,.75])g+=ln(u,1,x0+u*w,y1,'g')+ln(u,0,x0+u*w,y0,'g')+ln(0,u,x0,y0+u*h,'g')+ln(1,u,x1,y0+u*h,'g');
-    g+=ln(0,0,x0,y0,'c')+ln(1,0,x1,y0,'c')+ln(0,1,x0,y1,'c')+ln(1,1,x1,y1,'c');
-    for(const [cx,cy] of [[x0,y0],[x1,y0],[x0,y1],[x1,y1]])g+=ln(cx,cy,vp[0],vp[1],'x');
-   }else g+=[0,.2,.4,.6,.8,1].map(x=>ln(vp[0],vp[1],x,1)).join('');
-   g+=st.anchors.filter(([,y])=>y>vp[1]+.01).map(([x,y])=>ln(vp[0],vp[1],vp[0]+(x-vp[0])*(1-vp[1])/(y-vp[1]),1,'a')).join('');
-  }
-  const rays=g?`<svg class="mrd-rays" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${g}</svg>`:'';
-  const mark=exit?(vp?`<div class="mrd-vp ${derived?'is-derived':''}" style="left:${vp[0]*100}%;top:${vp[1]*100}%" title="${E(L('Ed.VP'))}"><span>${E(L('Ed.VP'))}</span></div>`:''):`<div class="mrd-horizon" style="top:${eye*100}%"><span>${E(L('Ed.Horizon'))}</span></div>`;
-  return picker+bar+`<div class="mrd-floor ${this.refDraw?'is-drawing':''}" style="aspect-ratio:${W}/${H}"><img src="${E(src)}" alt="" draggable="false">${rays}${box}${mark}${fcOn?this.fqLayer()+this.ghostHtml():''}${!exit&&this.calib?this.silHtml():''}${st.anchors.map(([x,y],i)=>`<div class="mrd-anchor" data-i="${i}" style="left:${x*100}%;top:${y*100}%"><div class="mrd-anchor-fig" style="height:${Math.max(0,(y-eye)*k*100)}cqh"></div><b>${i+1}</b></div>`).join('')}</div>`;
- }
  globalTab(g){
   const row=(kind,i,it,extra='')=>`<div class="mrd-row"><input data-gpath="${kind}.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(it.label)}">${extra}<button type="button" data-act="gdel" data-list="${kind}" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`;
   const flag=(path,on,key)=>`<label class="mrd-flag"><input type="checkbox" data-gpath="${path}" data-bool ${on?'checked':''}> ${E(L(key))}</label>`;
@@ -200,9 +91,7 @@ export class DirectionEditor extends ApplicationV2{
   }
   // El buscador filtra la lista en el sitio, sin rehacer la ventana en cada tecla.
   root.querySelector('.mrd-filter')?.addEventListener('input',e=>{this.filter=e.target.value;const q=this.filter.toLowerCase();for(const b of root.querySelectorAll('.mrd-ed-item'))b.hidden=!!q&&!b.textContent.toLowerCase().includes(q);});
-  this.bindFloor(root.querySelector('.mrd-floor'));
-  if(this.calib&&this.sil&&root.querySelector('.mrd-floor'))this.calibLive(root.querySelector('.mrd-floor'));
-  if(root.querySelector('.mrd-fq-svg'))this.fqLive(root.querySelector('.mrd-floor'));
+  this.bindFloor(root);
  }
  async onDrop(e){
   const z=e.target.closest('[data-drop],[data-drop-add]');if(!z)return;e.preventDefault();z.classList.remove('over');
@@ -217,7 +106,7 @@ export class DirectionEditor extends ApplicationV2{
   const t=e.target;
   if(t.matches('[data-motif]'))return this.commit(c=>{const all=globalSettings().motifs.map(m=>m.id),on=new Set(c.motifs??all);t.checked?on.add(t.dataset.motif):on.delete(t.dataset.motif);c.motifs=all.every(x=>on.has(x))?null:[...on];},{rerender:false});
   if(t.matches('[data-gpath]')){const v=t.dataset.bool!==undefined?t.checked:t.dataset.lines!==undefined?t.value.split(/\r?\n/):t.dataset.num!==undefined?Number(t.value):t.value;return this.commitGlobal(g=>setPath(g,t.dataset.gpath,v),{rerender:false});}
-  if(t.matches('[data-fw]')){this.fqWork.widthM=Math.max(.05,Math.min(200,Number(t.value)||2));this.fqLive(this.element.querySelector('.mrd-floor'));return this.fqSave();}
+  if(this.tab==='floor'&&this.perspChange(t))return;
   if(t.matches('[data-path]')){
    const p=t.dataset.path;
    if(t.dataset.src!==undefined)return this.commit(c=>setPath(c,p,t.value.trim()?{src:t.value.trim()}:null));
@@ -230,6 +119,7 @@ export class DirectionEditor extends ApplicationV2{
   if(b.dataset.scene){this.sceneId=b.dataset.scene;return this.render();}
   if(b.dataset.tab){this.tab=b.dataset.tab;return this.render();}
   const a=b.dataset.act;if(!a)return;
+  if(a.startsWith('p-'))return this.perspAction(a,b);
   const refAt=p=>p.startsWith('g:')?getPath(globalSettings(),p.slice(2)):getPath(this.cfg,p);
   switch(a){
    case 'clear':{const p=b.dataset.path;return p.startsWith('g:')?this.commitGlobal(g=>setPath(g,p.slice(2),null)):this.commit(c=>setPath(c,p,null));}
@@ -240,21 +130,7 @@ export class DirectionEditor extends ApplicationV2{
    case 'auto':return this.autoconfigure();
    case 'copy':{const src=sceneConfig(game.scenes.get(this.element.querySelector('.copy-from').value));if(!src)return;return this.commit(c=>{Object.assign(c,structuredClone({...src,ref:c.ref,thumb:c.thumb,name:c.name}));});}
    case 'unconfig':await clearSceneConfig(this.scene);return this.render();
-   case 'clear-anchors':return this.commit(c=>{c.stage.anchors=[];});
-   // Al pasar a punto de fuga sin rectángulo de salida, el siguiente arrastre sobre la imagen lo dibuja.
-   case 'mode':{this.refDraw=b.dataset.mode==='vanishing'&&!this.cfg.stage.ref;return this.commit(c=>{c.stage.mode=b.dataset.mode;if(b.dataset.mode==='vanishing'&&!c.stage.vp&&!c.stage.ref)c.stage.vp=[.5,c.stage.eye];});}
-   case 'clear-vp':return this.commit(c=>{c.stage.vp=null;});
-   case 'calib-toggle':this.calib=!this.calib;this.floorCal=false;this.calibResult=null;return this.render();
-   case 'fq-toggle':this.floorCal=!this.floorCal;this.calib=false;this.fqWork=null;this.calibResult=null;return this.render();
-   case 'fq-sel':this.fqInit(b.dataset.sel==='f'?'f':Number(b.dataset.sel));return this.render();
-   case 'fq-add':{
-    const st=this.cfg.stage,aspect=(this.scene.width||16)/(this.scene.height||9),px=figureOptions(game.settings.get(ID,'figures')).tokenPixels,quad=defaultFloorQuad(st.eye,{near:.78,spread:.14,cx:.72,depth:.4}),r=calibrateFloor(quad,1,{aspect,pixels:px,eye:st.eye});
-    const i=st.planes.length;await this.commit(c=>{c.stage.planes.push({quad,widthM:1,k:r.error?null:r.k});},{rerender:false});this.fqInit(i);return this.render();}
-   case 'fq-del':{const i=this.fqWork.sel;if(i==='f')return;await this.commit(c=>{c.stage.planes.splice(i,1);},{rerender:false});this.fqInit('f');return this.render();}
-   case 'clear-calib':return this.commit(c=>{c.stage.k=null;c.stage.floor=null;});
-   case 'ref-draw':this.refDraw=!this.refDraw;return this.render();
-   case 'clear-ref':{const a=(this.scene.width||16)/(this.scene.height||9);this.refDraw=false;return this.commit(c=>{if(c.stage.mode==='vanishing')c.stage.vp=derivedVp(c.stage,a);c.stage.ref=null;});}
-   case 'ref-eye':return this.commit(c=>{const y=+eyeFromRef(c.stage.ref,c.stage.refM).toFixed(3);if(c.stage.mode==='vanishing'&&c.stage.vp)c.stage.vp=[c.stage.vp[0],y];else c.stage.eye=y;});
+   case 'clear-anchors':return this.stageCommit(s=>{s.anchors=[];});
    case 'gadd-motif':return this.commitGlobal(g=>g.motifs.push({id:'m'+Date.now().toString(36),label:L('Ed.NewMotif'),icon:'music',music:null}));
    case 'gdefault-motifs':return this.commitGlobal(g=>{const have=new Set(g.motifs.map(m=>m.id));for(const [id,es,en,icon] of DEFAULT_MOTIFS)if(!have.has(id))g.motifs.push({id,label:game.i18n.lang==='es'?es:en,icon,music:null});});
    case 'gadd-milestone':return this.commitGlobal(g=>g.markers.milestones.push({id:'h'+Date.now().toString(36),label:L('Ed.NewMilestone'),public:true}));
@@ -274,56 +150,6 @@ export class DirectionEditor extends ApplicationV2{
   await this.commit(c=>{if(!c.music&&prop.music)c.music=prop.music;if(!c.reading&&prop.reading)c.reading=prop.reading;if(!c.figures.length)c.figures=prop.figures;});
   ui.notifications.info(L('Ed.AutoDone',{m:prop.found.music?'✓':'✗',r:prop.found.reading?'✓':'✗',f:prop.found.figures}));
  }
- bindFloor(floor){
-  if(!floor)return;let drag=null;
-  const frac=e=>{const r=floor.getBoundingClientRect();return [Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))];};
-  floor.addEventListener('pointerdown',e=>{
-   if(e.button===2){const a=e.target.closest('.mrd-anchor');if(a){e.preventDefault();this.commit(c=>c.stage.anchors.splice(Number(a.dataset.i),1));}return;}
-   if(e.button!==0)return;
-   const sil=e.target.closest('.mrd-sil:not(.is-ghost)');
-   if(sil&&this.sil){const i=Number(sil.dataset.i),s=this.sil[i],[x0,y0]=frac(e);drag={kind:e.target.closest('.mrd-sil-head')?'sh':'sf',i,dx:x0-s.x,dy:y0-s.y};try{floor.setPointerCapture(e.pointerId);}catch{}e.preventDefault();return;}
-   const qh=this.floorCal?e.target.closest('.mrd-fq-h'):null;
-   if(qh){drag={kind:'q',c:Number(qh.dataset.c)};try{floor.setPointerCapture(e.pointerId);}catch{}e.preventDefault();return;}
-   const a=e.target.closest('.mrd-anchor'),h=this.floorCal?null:e.target.closest('.mrd-horizon'),v=e.target.closest('.mrd-vp'),rh=e.target.closest('.mrd-ref-h');
-   if(rh)drag={kind:'r',corner:Number(rh.dataset.corner),box:rh.parentElement};
-   else if(this.refDraw&&!a&&!v&&!h)drag={kind:'rn',o:frac(e),box:null};
-   else if(a)drag={kind:'a',i:Number(a.dataset.i),el:a};else if(v)drag={kind:'v',el:v};else if(h)drag={kind:'h',el:h};
-   else{if(this.calib||this.floorCal)return;const [x,y]=frac(e),st=this.cfg.stage;
-    // En modo punto de fuga, el primer clic lo coloca; los siguientes marcan puntos de apoyo.
-    if(st.mode==='vanishing'&&!st.vp)return void this.commit(c=>{c.stage.vp=[+x.toFixed(3),+y.toFixed(3)];});
-    return void this.commit(c=>c.stage.anchors.push([+x.toFixed(3),+y.toFixed(3)]));}
-   try{floor.setPointerCapture(e.pointerId);}catch{}e.preventDefault();
-  });
-  floor.addEventListener('contextmenu',e=>e.preventDefault());
-  // Silueta fantasma: sigue al cursor con el tamaño que tendría una persona en ese punto según la calibración en curso.
-  floor.addEventListener('pointermove',e=>{
-   const gh=floor.querySelector('.mrd-sil.is-ghost');if(!gh||drag||!(this.floorCal||(this.calib&&this.sil)))return;
-   const [x,y]=frac(e),r=this.calibResult&&!this.calibResult.error?this.calibResult:!this.calib?{error:'count'}:calibrate(this.sil.map(v=>({y:v.y,h:v.h*(this.scene.height||900)})),this.scene.height||900,figureOptions(game.settings.get(ID,'figures')).tokenPixels);
-   if(r.error||y<=r.eye+.01){gh.hidden=true;return;}
-   const h=Math.min(.95,(y-r.eye)*r.k*figureOptions(game.settings.get(ID,'figures')).tokenPixels/360);
-   Object.assign(gh.style,{left:x*100+'%',top:(y-h)*100+'%',height:h*100+'%'});gh.hidden=false;});
-  floor.addEventListener('pointerleave',()=>{const gh=floor.querySelector('.mrd-sil.is-ghost');if(gh)gh.hidden=true;});
-  floor.addEventListener('pointermove',e=>{if(!drag)return;const [x,y]=frac(e);drag.v=[+x.toFixed(3),+y.toFixed(3)];
-   if(drag.kind==='q'){this.fqWork.quad[drag.c]=[+x.toFixed(4),+y.toFixed(4)];this.fqLive(floor);return;}
-   if(drag.kind==='sf'||drag.kind==='sh'){
-    const s=this.sil[drag.i];
-    if(drag.kind==='sh')s.h=Math.max(.02,Math.min(s.y-.01,s.y-y));else{s.x=Math.min(1,Math.max(0,x-drag.dx));s.y=Math.min(1,Math.max(s.h+.01,y-drag.dy));}
-    const el=floor.querySelector(`.mrd-sil[data-i="${drag.i}"]`);Object.assign(el.style,{left:s.x*100+'%',top:(s.y-s.h)*100+'%',height:s.h*100+'%'});
-    this.calibLive(floor);return;
-   }
-   if(drag.kind==='r'||drag.kind==='rn'){
-    const r=this.cfg.stage.ref,o=drag.kind==='rn'?drag.o:(drag.corner===0?[r[2],r[3]]:[r[0],r[1]]);
-    drag.ref=[Math.min(o[0],x),Math.min(o[1],y),Math.max(o[0],x),Math.max(o[1],y)].map(n=>+n.toFixed(3));
-    if(!drag.box){drag.box=document.createElement('div');drag.box.className='mrd-ref-box is-new';floor.append(drag.box);}
-    const b=drag.ref;Object.assign(drag.box.style,{left:b[0]*100+'%',top:b[1]*100+'%',width:(b[2]-b[0])*100+'%',height:(b[3]-b[1])*100+'%'});return;
-   }
-   if(drag.kind==='a'||drag.kind==='v'){drag.el.style.left=x*100+'%';drag.el.style.top=y*100+'%';}else drag.el.style.top=y*100+'%';});
-  floor.addEventListener('pointerup',()=>{const d=drag;drag=null;if(!d?.v)return;
-   if(d.kind==='q')return void this.fqSave();
-   if(d.kind==='sf'||d.kind==='sh'){const r=this.calibLive(floor);if(r.error)return;return void this.commit(c=>{c.stage.mode='horizon';c.stage.eye=r.eye;c.stage.k=r.k;});}
-   if(d.kind==='r'||d.kind==='rn'){if(d.kind==='rn')this.refDraw=false;if(!d.ref||d.ref[2]-d.ref[0]<.01||d.ref[3]-d.ref[1]<.01)return void this.render();return void this.commit(c=>{c.stage.ref=d.ref;if(c.stage.mode==='vanishing'&&c.stage.refM===2.1)c.stage.refM=2.7;});}
-   this.commit(c=>{if(d.kind==='a')c.stage.anchors[d.i]=d.v;else if(d.kind==='v')c.stage.vp=d.v;else c.stage.eye=d.v[1];});});
- }
  async importFile(file){
   try{const r=await importPack(await file.text());ui.notifications.info(L('Ed.Imported',{n:r.done.length,m:r.missing.length}));if(r.missing.length)console.warn(`${ID} | escenas sin encontrar`,r.missing);this.render();}
   catch(err){ui.notifications.error(L('Ed.ImportError',{e:err.message}));}
@@ -340,3 +166,4 @@ export class EditorMenu extends ApplicationV2{
  static DEFAULT_OPTIONS={id:'mr-direccion-menu',window:{title:'MRDIR.Ed.Title'},position:{width:10,height:10}};
  async render(){openEditor();return this;}
 }
+Object.assign(DirectionEditor.prototype,PerspectiveTab);

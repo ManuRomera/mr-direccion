@@ -4,7 +4,7 @@ const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
 /** La cabeza de una persona de pie queda en la línea de horizonte (eye): su altura en pantalla es (pies − eye) × alto.
  *  `visible` es la parte útil del token (margen transparente); `pixels` escala todo el reparto a la vez. */
 export function figureSize(stage,footY,height,pixels=360,width=Infinity,o=FIGURE_DEFAULTS,fx=null){
- const base=Math.max(.02,footY/height-stage.eye)*height/o.visible*planeK(stage,fx,footY/height); // k: calibración (1 sin ella); en un plano elevado, la del plano
+ const base=Math.max(.02,footY/height-stage.eye)*height/o.visible*planeK(stage,fx,footY/height)*(stage.fine??1); // k: calibración (1 sin ella); en un plano elevado, la del plano; fine: ajuste fino
  return Math.min(o.max,width,height,Math.max(o.min,base*(pixels/o.base)));
 }
 /** ¿Está el punto (x,y) —fracciones— dentro del cuadrilátero `q`? */
@@ -36,19 +36,39 @@ export function vpFromBox(box,aspect=16/9){
 }
 /** Punto de fuga de una escena en modo `vanishing`: el que sale del rectángulo de salida y, sin él, el colocado a mano. */
 export const derivedVp=(st,aspect=16/9)=>st?.mode==='vanishing'?((st.ref&&vpFromBox(st.ref,aspect))||st.vp||null):null;
-/** Perspectiva efectiva de una escena (la que usa el resto del módulo, que solo conoce `eye` y `anchors`), o null si no hay que escalar por profundidad.
- *  - horizon: línea de horizonte (`eye`); cuenta como configurada cuando hay puntos de apoyo.
- *  - vanishing: punto de fuga (del rectángulo de salida o a mano); con la cámara a nivel cae en el horizonte, así que su altura (`vp[1]`) hace de `eye`.
- *  - none: sin perspectiva (vista cenital): las figuras no cambian de tamaño según dónde estén. */
+/** Métodos de calibración de la perspectiva (uno por escena, `stage.method`):
+ *  none = sin perspectiva (mapa cenital) · floor = rectángulo de suelo · exit = pasillo o calle (rectángulo de salida → punto de fuga) ·
+ *  people = dos siluetas de persona · ref = objeto de medida conocida (puerta, pared) · manual = horizonte y escala a mano. */
+export const METHODS=Object.freeze(['floor','exit','people','ref','manual','none']);
+/** Método de una escena guardada antes de que existieran los métodos (deducido de lo que tenía). */
+export function stageMethod(st){
+ if(METHODS.includes(st?.method))return st.method;
+ if(!st||st.mode==='none')return 'none';
+ if(st.mode==='vanishing')return 'exit';
+ if(st.floor)return 'floor';
+ if(Number(st.k)>0)return 'people';
+ if(st.ref)return 'ref';
+ return st.anchors?.length?'manual':'none';
+}
+/** Perspectiva efectiva de una escena según su método ({eye,k,vp?,anchors,planes,fine}), o null si no hay que escalar por profundidad
+ *  (sin perspectiva, o el método aún no tiene lo que necesita). Con la cámara a nivel el punto de fuga cae en el horizonte: su altura hace de `eye`. */
 export function effectiveStage(st,aspect=16/9){
- if(!st||st.mode==='none')return null;
- const calibrated=Number.isFinite(st.k)&&st.k>0;       // escala fijada con fichas (calibrate): manda sobre la del rectángulo
- let s=null;
- if(st.mode==='vanishing'){const vp=derivedVp(st,aspect);s=vp?{...st,vp,eye:vp[1]}:null;}
- else if(st.anchors?.length||calibrated||st.planes?.length)s=st;
- if(!s)return null;
- const k=calibrated?st.k:(s.ref?refScale(s.eye,s.ref,s.refM):null);
- return k?{...s,k}:s;
+ if(!st)return null;
+ const m=stageMethod(st),k0=Number(st.k)>0?st.k:null;
+ switch(m){
+  case 'none':return null;
+  case 'exit':{const vp=(st.ref&&vpFromBox(st.ref,aspect))||st.vp;if(!vp)return null;return {...st,method:m,vp,eye:vp[1],k:(st.ref&&refScale(vp[1],st.ref,st.refM))||k0||1};}
+  case 'ref':return st.ref?{...st,method:m,k:refScale(st.eye,st.ref,st.refM)||1}:null;
+  case 'floor':case 'people':return k0?{...st,method:m,k:k0}:null;
+  default:return {...st,method:m,k:k0||1};
+ }
+}
+/** Altura de una persona (fracción del alto de la imagen) con los pies en (x,y): la que muestran la silueta de prueba y los puntos de colocación. */
+export const personHeight=(stage,x,y,pixels=360)=>stage?Math.max(0,y-stage.eye)*planeK(stage,x,y)*(stage.fine??1)*pixels/360:0;
+/** Escala de cada plano elevado con el horizonte de la escena (al cambiar el horizonte hay que recalcularlas). */
+export function syncPlanes(st,aspect=16/9,pixels=360){
+ const s=effectiveStage(st,aspect);if(!s)return st.planes;
+ return (st.planes??[]).map(p=>{const r=calibrateFloor(p.quad,p.widthM,{aspect,pixels,eye:s.eye});return {...p,k:r.error?p.k:r.k};});
 }
 /** Referencia de escala: un rectángulo dibujado sobre algo de medida conocida (la puerta del fondo, una mesa…), `ref`=[x0,y0,x1,y1] en fracciones.
  *  Con una cámara a nivel, una persona al pie del rectángulo mide PERSON_M/refM de su alto; el resto sigue la regla de (pies − horizonte).
@@ -80,7 +100,7 @@ export function stageLayout(scene,count,start,pixels,stage,bounds={x:0,y:0,width
  return Array.from({length:count},(_,i)=>{
   const oi=per[i]??o,j=start+i,a=anchors[j%Math.max(1,anchors.length)],jitter=Math.floor(j/Math.max(1,anchors.length))*.035; // per[i]: medidas reales de la figura i
   const fx=a?a[0]+jitter:.3+((j*.137)%.5),fy=a?a[1]:.9,feet=fy*scene.height,cx=fx*scene.width;
-  const size=figureSize(stage,feet,scene.height,pixels,bounds.width,oi);
+  const size=figureSize(stage,feet,scene.height,pixels,bounds.width,oi,clamp(fx,0,1));
   // `sort`: la figura con los pies más abajo (más cerca) se pinta delante de las del fondo.
   return {x:clamp(cx-size/2,bounds.x,bounds.x+bounds.width-size),y:clamp(feet-size*(1-oi.foot),bounds.y,bounds.y+bounds.height-size),width:size/unit,height:size/unit,sort:Math.round(feet)};
  });

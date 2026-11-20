@@ -1,3 +1,4 @@
+import {stageMethod} from './perspective.mjs';
 /** Paquete de dirección: JSON versionado con validación y normalización. Lógica pura. */
 export const SCHEMA=1;
 export const AMBIENT_KEYS=['light','dim','dark'];
@@ -29,6 +30,7 @@ function sceneCfg(s,i,w,ids){
  const quad=q=>Array.isArray(q)&&q.length===4&&q.every(a=>Array.isArray(a)&&a.length===2&&a.every(Number.isFinite))?q.map(a=>[+num(a[0],.5,0,1).toFixed(4),+num(a[1],.5,0,1).toFixed(4)]):null;
  const floor=quad(st.floor?.quad)?{quad:quad(st.floor.quad),widthM:num(st.floor.widthM,2,.05,200)}:null;
  const planes=(Array.isArray(st.planes)?st.planes:[]).slice(0,8).map(p=>quad(p?.quad)?{quad:quad(p.quad),widthM:num(p.widthM,1,.05,200),k:Number(p.k)>0?num(p.k,1,.05,20):null}:null).filter(Boolean);
+ const method=stageMethod(st),sil=v=>Array.isArray(v)&&v.length===2&&v.every(o=>[o?.x,o?.y,o?.h].every(Number.isFinite))?v.map(o=>({x:num(o.x,.5,0,1),y:num(o.y,.9,0,1),h:num(o.h,.2,.01,.95)})):null;
  const anchors=(Array.isArray(st.anchors)?st.anchors:[]).filter(a=>Array.isArray(a)&&a.length===2&&a.every(Number.isFinite)).map(a=>[num(a[0],.5,0,1),num(a[1],.9,0,1)]);
  if(s.ambient!=null&&!AMBIENT_KEYS.includes(s.ambient))w.push(`${p}.ambient: «${s.ambient}» no válido`);
  return {ref,order:num(s.order,i,-9999,9999),name:str(s.name),reading:normalizeRef(s.reading),music:normalizeRef(s.music),
@@ -37,7 +39,7 @@ function sceneCfg(s,i,w,ids){
   figures:(Array.isArray(s.figures)?s.figures:[]).map(f=>({ref:normalizeRef(f?.ref??f),label:str(f?.label)})).filter(f=>f.ref),
   handouts:(Array.isArray(s.handouts)?s.handouts:[]).map(h=>({ref:normalizeRef(h?.ref??h),label:str(h?.label)})).filter(h=>h.ref),
   notes:str(s.notes),thumb:str(s.thumb),
-  stage:{mode:['horizon','vanishing','none'].includes(st.mode)?st.mode:'horizon',eye:num(st.eye,.5,-3,1.5),
+  stage:{method,mode:method==='none'?'none':method==='exit'?'vanishing':'horizon',fine:num(st.fine,1,.5,2),people:sil(st.people),eye:num(st.eye,.5,-3,1.5),
    vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,-2,3),num(st.vp[1],.5,-3,1.5)]:null,
    ref:Array.isArray(st.ref)&&st.ref.length===4&&st.ref.every(Number.isFinite)?(([a,b,c,d])=>[Math.min(a,c),Math.min(b,d),Math.max(a,c),Math.max(b,d)])(st.ref.map(v=>num(v,0,0,1))):null,
    refM:num(st.refM,2.1,.3,50),k:Number(st.k)>0?num(st.k,1,.05,20):null,floor,planes,anchors}};

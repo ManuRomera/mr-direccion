@@ -30,8 +30,8 @@ export function visibleBounds(scene){
 export async function placeActors(scene,actors){
  const o=options(),found=o.depthScale?stageOf(scene):null,pending=missingCast(scene.tokens.contents,actors);
  if(!pending.length)return 0;
- // Con punto de fuga y sin puntos de apoyo, el reparto se escalona a lo largo de rayos que salen del punto de fuga.
- const stage=found&&found.mode==='vanishing'&&!found.anchors.length?{...found,anchors:vpAnchors(found.vp,scene.tokens.size+pending.length)}:found;
+ // Sin puntos de colocación, el reparto se escalona a lo largo de rayos que salen del punto de fuga (o del centro del horizonte).
+ const stage=found&&!found.anchors?.length?{...found,anchors:vpAnchors(found.vp??[.5,found.eye],scene.tokens.size+pending.length)}:found;
  await ensureMetrics(pending.map(srcOf));
  const per=pending.map(a=>figOpts(srcOf(a)));
  const b=visibleBounds(scene),pos=stage?stageLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,stage,b,undefined,per):rowLayout(scene,pending.length,scene.tokens.size,o.tokenPixels,b);

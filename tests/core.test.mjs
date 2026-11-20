@@ -157,7 +157,8 @@ test('vpAnchors: apoyos sobre rayos del punto de fuga, bajo el horizonte y dentr
 test('esquema: stage.mode y stage.vp se normalizan y lo antiguo sigue siendo horizonte',()=>{
  const n=st=>validatePack({id:'p',scenes:[{ref:{name:'S'},stage:st}]}).pack.scenes[0].stage;
  assert.equal(n({eye:.4,anchors:[[.5,.9]]}).mode,'horizon');
- assert.equal(n({mode:'raro'}).mode,'horizon');
+ assert.equal(n({mode:'raro'}).mode,'none'); // sin nada que la calibre, una escena antigua no escala por profundidad (como antes)
+ assert.equal(n({eye:.4,anchors:[[.5,.9]]}).method,'manual');assert.equal(n({mode:'vanishing'}).method,'exit');assert.equal(n({method:'floor'}).mode,'horizon');
  assert.deepEqual(n({mode:'vanishing',vp:[2,-1]}).vp,[2,-1]);assert.deepEqual(n({mode:'vanishing',vp:[9,-9]}).vp,[3,-3]);
  assert.equal(n({mode:'vanishing',vp:['x',1]}).vp,null);
  assert.equal(n({mode:'none'}).mode,'none');
@@ -175,9 +176,9 @@ test('referencia de escala: una persona al pie de la puerta mide PERSON/puerta d
 });
 test('referencia: sin referencia o inválida el modelo base no cambia (k=1)',()=>{
  const base={mode:'horizon',eye:.45,anchors:[[.5,.9]]};
- assert.equal(effectiveStage(base).k,undefined);
- assert.equal(effectiveStage({...base,ref:[.1,.5,.2,.5],refM:2.1}).k,undefined);              // sin altura
- assert.equal(effectiveStage({...base,ref:[.1,.2,.2,.4],refM:2.1}).k,undefined);              // base por encima del horizonte
+ assert.equal(effectiveStage(base).k,1);
+ assert.equal(effectiveStage({...base,ref:[.1,.5,.2,.5],refM:2.1}).k,1);              // sin altura
+ assert.equal(effectiveStage({...base,ref:[.1,.2,.2,.4],refM:2.1}).k,1);              // base por encima del horizonte
  assert.equal(refScale(.5,null),null);
 });
 test('eyeFromRef: el horizonte cae a la altura de los ojos medida sobre la puerta',()=>{
@@ -306,7 +307,7 @@ test('defaultSilhouettes: sin tocarlas, la calibración devuelve la perspectiva 
  for(const s of defaultSilhouettes(-.5,1,360)){assert.ok(s.h>=.04&&s.h<=.9&&s.y<=1);}   // horizonte fuera de la imagen: alturas acotadas
 });
 import {windowScale} from '../js/core/windows.mjs';
-import {calibrateFloor,defaultFloorQuad,planeK,inQuad,figureSize as fSize} from '../js/core/perspective.mjs';
+import {calibrateFloor,defaultFloorQuad,planeK,inQuad,personHeight,syncPlanes,figureSize as fSize} from '../js/core/perspective.mjs';
 test('ventanas: escala proporcional a la pantalla, con aire, mínimo y ajuste manual',()=>{
  const v=(w,h,t=h)=>({width:w,height:h,total:t});
  assert.equal(windowScale(1000,780,v(1920,950)),1); // monitor 1080p: sin tocar
@@ -346,4 +347,25 @@ test('defaultFloorQuad: sin tocarlo respeta el horizonte; planeK usa el plano qu
  const stage={eye:.4,k:1,planes:[{quad:[[.6,.5],[.9,.5],[.9,.7],[.6,.7]],k:2.5}]};
  assert.equal(planeK(stage,.75,.6),2.5);assert.equal(planeK(stage,.3,.6),1);assert.equal(planeK(stage,null,.6),1);assert.ok(inQuad(stage.planes[0].quad,.7,.6)&&!inQuad(stage.planes[0].quad,.5,.6));
  assert.ok(fSize(stage,540,900,360,Infinity,undefined,.75)>2*fSize(stage,540,900,360,Infinity,undefined,.3));
+});
+
+test('métodos: cada uno resuelve la escena con lo suyo; el ajuste fino y los planos se aplican siempre',()=>{
+ const A=16/9;
+ assert.equal(effectiveStage({method:'none',eye:.4,k:2}),null);
+ assert.equal(effectiveStage({method:'floor',eye:.4}),null);                     // sin calibrar todavía
+ assert.deepEqual(['eye','k'].map(k=>effectiveStage({method:'floor',eye:.4,k:1.2})[k]),[.4,1.2]);
+ const ex=effectiveStage({method:'exit',ref:[.4,.3,.6,.55],refM:2.7},A);assert.ok(ex.vp&&Math.abs(ex.eye-ex.vp[1])<1e-9&&ex.k>0);
+ assert.equal(effectiveStage({method:'exit'}),null);
+ assert.ok(Math.abs(effectiveStage({method:'ref',eye:.4,ref:[.4,.3,.5,.7],refM:2.1}).k-refScale(.4,[.4,.3,.5,.7],2.1))<1e-9);
+ assert.equal(effectiveStage({method:'manual',eye:.4}).k,1);
+ const st={method:'manual',eye:.4,k:1,fine:1.5,planes:[{quad:[[.6,.5],[.9,.5],[.9,.7],[.6,.7]],k:2}]};
+ assert.ok(Math.abs(personHeight(st,.3,.9)-.5*1.5)<1e-9);assert.ok(Math.abs(personHeight(st,.75,.6)-.2*2*1.5)<1e-9);
+ assert.ok(Math.abs(fSize(st,810,900,360,Infinity,undefined,.3)-fSize({...st,fine:1},810,900,360,Infinity,undefined,.3)*1.5)<1e-6);
+ // los planos siguen al horizonte de la escena
+ const pl=syncPlanes({method:'manual',eye:.3,k:1,planes:[{quad:defaultFloorQuad(.3,{near:.8,spread:.1,cx:.7}),widthM:1,k:9}]},A);assert.ok(pl[0].k!==9&&pl[0].k>0);
+});
+
+test('stageLayout: una figura colocada sobre un plano elevado usa la escala del plano',()=>{
+ const sc={width:1600,height:900,grid:{size:100}},st={method:'manual',eye:.35,k:1,anchors:[[.75,.65],[.2,.65]],planes:[{quad:[[.65,.5],[.85,.5],[.9,.8],[.6,.8]],k:2}]};
+ const [a,b]=stageLayout(sc,2,0,360,st);assert.ok(Math.abs(a.height/b.height-2)<.01,`${a.height} ${b.height}`);
 });

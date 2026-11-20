@@ -1,5 +1,15 @@
 # Cambios · Changelog
 
+## 0.10.0 (2026-11-20)
+- **Todos los métodos de calibración en la pestaña Perspectiva, con un selector.** Seis métodos: **rectángulo de suelo** (recomendado), **pasillo o calle** (punto de fuga), **dos personas**, **objeto de medida conocida**, **a mano** y **sin perspectiva**. Cada uno dice para qué sirve y trae sus pasos numerados de uso, y solo muestra sus herramientas. Las escenas guardadas antes conservan su método.
+- **Funciona igual con todos:** resultado en vivo (horizonte, escala y lo que mide una persona en primer plano), **silueta de prueba** que sigue al cursor, **ajuste fino del tamaño** (50–200 %), **puntos de colocación** y **planos elevados** (tarimas, balcones, escaleras), que ya no dependen del método y se recalculan al cambiar el horizonte. Sin puntos de colocación, las figuras se reparten solas siguiendo la perspectiva.
+- Las siluetas del método «dos personas» se guardan con la escena; elegir «suelo» o «dos personas» en una escena sin calibrar deja ya una escala de partida.
+- Corregido: una figura colocada sobre un plano elevado salía con la escala del suelo hasta que se movía.
+- **Every calibration method in the Perspective tab, with a picker.** Six methods: **floor rectangle** (recommended), **corridor or street** (vanishing point), **two people**, **object of known size**, **by hand** and **no perspective**. Each one says what it is for and brings its numbered steps, and only shows its own tools. Scenes saved before keep their method.
+- **Works the same with all of them:** live result (horizon, scale and how tall a person in the foreground is), a **test silhouette** that follows the cursor, **fine size adjustment** (50–200 %), **placement points** and **raised planes** (platforms, balconies, stairs), which no longer depend on the method and are recomputed when the horizon changes. With no placement points, figures spread out on their own following the perspective.
+- The “two people” silhouettes are saved with the scene; choosing “floor” or “two people” in an uncalibrated scene already leaves a starting scale.
+- Fixed: a figure placed on a raised plane got the floor’s scale until it was moved.
+
 ## 0.9.0 (2026-11-20)
 - **Calibrar sin fichas: «Marcar suelo».** Sustituye al botón «Calibrar con las fichas seleccionadas» (había que colocar fichas antes y el resultado dependía de su arte y de dónde las pusieras). En la pestaña Perspectiva, arrastra las 4 esquinas hasta cubrir un rectángulo real del suelo (una baldosa, una alfombra, una mesa, el pasillo…) y escribe cuánto mide de ancho su borde de abajo: el módulo saca solo el horizonte y la escala, en vivo, con los lados prolongados hasta la línea de horizonte para que veas si cuadran. Funciona de frente y en esquina (dos puntos de fuga) y admite horizontes fuera de la imagen. Sin tocarlo no cambia nada.
 - **Planos elevados** (tarimas, balcones, escaleras): añade un plano con su propio rectángulo y medida; las figuras que pisan ese rectángulo usan su propia escala. Se reajustan si cambias el horizonte del suelo.
