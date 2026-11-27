@@ -1,12 +1,13 @@
 import {ID,configuredScenes,sceneConfig,globalSettings,saveSceneConfig,saveGlobal} from './store.mjs';
-import {find,labelOf,soundInfo,isPlaying} from './refs.mjs';
+import {find,labelOf,soundInfo,isPlaying,imageSrc} from './refs.mjs';
+import {imageRect,IMAGE_POS} from './core/images.mjs';
 import {pickSound} from './picker.mjs';
 import {DEFAULT_MOTIFS} from './core/schema.mjs';
 import {E} from './core/ids.mjs';
 import {previewPlace} from './core/geometry.mjs';
 import {AMBIENTS} from './core/crossfade.mjs';
 import {mix,applyMix,playRef,stopAudio,stopEffects,playEffect,setAmbient,quiesceNative,fadeSeconds} from './audio.mjs';
-import {options,placeActors,castOf,resolveActors,resizeTokens,targetTokens,setOption,fitScreen} from './figures.mjs';
+import {options,placeActors,castOf,resolveActors,resizeTokens,targetTokens,setOption,fitScreen,visibleBounds} from './figures.mjs';
 import {L,enableRightDrag,closeOnOutside} from './ui.mjs';
 import {toggleMarkersPanel,toggleMilestone,setClock} from './markers.mjs';
 const MARK=`modules/${ID}/brand/MR_09_Monograma_Marfil_Transparente.png`;
@@ -40,6 +41,9 @@ export async function dispatch(action,arg=''){
   case 'view':if(scene){selectedId=scene.id;await scene.view();refresh();}return true;
   case 'read':{const d=find(sceneConfig(scene)?.reading,'journal',scene);if(!d)return warn('NoReading'),false;
    const doc=d.sheet||d.parent?.sheet?d:await fromUuid(d.uuid);if(!doc)return warn('NoReading'),false;const page=doc.documentName==='JournalEntryPage'?doc:null,j=page?page.parent:doc;await j.sheet.render(true,page?{pageId:page.id}:{});return true;}
+  case 'image':{const [,i,pos]=arg.split('~');return showImage(scene,Number(i),pos);}
+  case 'image-hide':{const [,i]=arg.split('~');await scene?.deleteEmbeddedDocuments('Tile',imageTiles(scene,Number(i)).map(t=>t.id));return true;}
+  case 'images-clear':await scene?.deleteEmbeddedDocuments('Tile',imageTiles(scene).map(t=>t.id));return true;
   case 'handout':{const idx=Number(arg.split('~')[1]),h=sceneConfig(scene)?.handouts[idx];if(h)await showHandout(h.ref,scene);return !!h;}
   case 'assign':return assign(arg);
   case 'size-target':await game.settings.set(ID,'sizeTarget',arg==='selected'?'selected':'all');refresh();return true;
@@ -91,6 +95,21 @@ async function assign(arg){
  else if(kind==='geffect')await saveGlobal({effects:g.effects.map(e=>e.id===a?{...e,sound:ref}:e)});
  else return false;
  ui.notifications.info(L('Assigned'));refresh();return true;
+}
+/** Baldosas que ha puesto el módulo para las imágenes de la escena (todas o la de un índice). */
+const imageTiles=(scene,i=null)=>scene?scene.tiles.filter(t=>{const v=t.flags?.[ID]?.image;return v!==undefined&&(i===null||v===i);}):[];
+/** Pone (o mueve) una imagen de la escena como baldosa en el centro o en un cuadrante de lo que se ve; todos la ven y el GM la estira por las esquinas. */
+async function showImage(scene,i,pos){
+ const im=sceneConfig(scene)?.images[i];if(!im)return false;
+ const src=await imageSrc(im.ref,scene);if(!src)return warn('NoImage'),false;
+ let ratio=16/9;try{const img=new Image();img.src=src;await img.decode();ratio=img.naturalWidth/img.naturalHeight;}catch(e){console.warn(`${ID} | imagen`,e);}
+ const b=visibleBounds(scene)??{x:0,y:0,width:scene.width,height:scene.height},d=scene.dimensions,r=imageRect(ratio,b,IMAGE_POS.includes(pos)?pos:im.pos);
+ const data={texture:{src},x:r.x+(d?.sceneX??0),y:r.y+(d?.sceneY??0),width:r.width,height:r.height,elevation:1,hidden:false,flags:{[ID]:{image:i}}};
+ const [old]=imageTiles(scene,i);
+ const doc=old?(await old.update(data),old):(await scene.createEmbeddedDocuments('Tile',[data]))[0];
+ // En la escena que se está viendo, la baldosa queda seleccionada para estirarla por las esquinas al momento.
+ if(canvas?.scene?.id===scene.id&&doc?.object){canvas.tiles?.activate();doc.object.control({releaseOthers:true});}
+ return true;
 }
 async function showHandout(ref,scene){
  let d=find(ref,'journal',scene)??find(ref,'actor',scene);
@@ -161,6 +180,9 @@ function render(){
  const noAudio=L('NoAudioHint');
  const motifMenu=`<details data-menu="motifs"><summary class="mrd-btn"><i class="fa-solid fa-wave-square" aria-hidden="true"></i><span>${E(L('Motifs'))}</span></summary><div class="mrd-menu mrd-motifs-menu"><p><strong>${E(L('Motifs'))}</strong></p><p class="mrd-status">${E(L('MotifsHelp'))}</p>${motifs.length?`<div class="mrd-motif-grid">${motifs.map(x=>soundInfo(x.music)?btn('motif',x.id+'~'+sel.id,x.label,isPlaying(x.music,'music')?'volume-high':x.icon||'music',pressed(0,isPlaying(x.music,'music')),'mrd-motif'+(isPlaying(x.music,'music')?' is-on':'')):btn('assign','motif~'+x.id,x.label,x.icon||'music',`aria-disabled="true"`,'mrd-motif mrd-off').replace(/title="[^"]*"/,`title="${E(x.label+' · '+noAudio)}"`)).join('')}</div>`:`<p class="mrd-status">${E(L('NoMotifsYet'))}</p><p>${btn('default-motifs','',L('AddMotifs'),'plus')}</p>`}</div></details>`;
  const handouts=cfg.handouts.length?`<details data-menu="handouts"><summary class="mrd-btn mrd-icon" aria-label="${E(L('Handouts'))}" title="${E(L('Handouts'))}"><i class="fa-solid fa-file-image" aria-hidden="true"></i></summary><div class="mrd-menu"><p><strong>${E(L('Handouts'))}</strong></p><p class="mrd-status">${E(L('HandoutsHelp'))}</p>${cfg.handouts.map((h,i)=>btn('handout',sel.id+'~'+i,h.label||labelOf(h.ref,'journal',sel)||`#${i+1}`,'share-from-square')).join('')}</div></details>`:'';
+ const shownImg=new Set(imageTiles(sel).map(t=>t.flags[ID].image));
+ const posBtn=(i,p,def)=>`<button type="button" class="mrd-pos ${def?'is-def':''}" data-pos="${p}" data-mrd-action="image" data-mrd-arg="${E(sel.id+'~'+i+'~'+p)}" title="${E(L('Pos_'+p))}" aria-label="${E(L('Pos_'+p))}"><span></span></button>`;
+ const images=cfg.images.length?`<details data-menu="images"><summary class="mrd-btn mrd-icon" aria-label="${E(L('Images'))}" title="${E(L('Images'))}"><i class="fa-solid fa-image" aria-hidden="true"></i></summary><div class="mrd-menu mrd-images-menu"><p><strong>${E(L('Images'))}</strong></p><p class="mrd-status">${E(L('ImagesHelp'))}</p>${cfg.images.map((im,i)=>{const on=shownImg.has(i),name=im.label||labelOf(im.ref,'journal',sel)||`#${i+1}`;return `<div class="mrd-img-row">${btn(on?'image-hide':'image',sel.id+'~'+i+(on?'':'~'+im.pos),name,on?'eye':'eye-slash',pressed(0,on),'mrd-img-name'+(on?' is-on':''))}<span class="mrd-pos-grid" role="group" aria-label="${E(L('ImagePos'))}">${IMAGE_POS.map(p=>posBtn(i,p,p===im.pos)).join('')}</span></div>`;}).join('')}${shownImg.size?`<p>${btn('images-clear',sel.id,L('ImagesClear'),'xmark')}</p>`:''}</div></details>`:'';
  const notes=cfg.notes?`<details data-menu="notes"><summary class="mrd-btn mrd-icon" aria-label="${E(L('Notes'))}" title="${E(L('Notes'))}"><i class="fa-solid fa-note-sticky" aria-hidden="true"></i></summary><div class="mrd-menu"><p><strong>${E(L('Notes'))}</strong></p><p class="mrd-notes">${E(cfg.notes)}</p></div></details>`:'';
  const target=sizeTarget(),maxPx=sizeMax(),nTok=targetTokens(sel,target).length;
  const seg=t=>`<button type="button" class="mrd-segbtn ${target===t?'is-on':''}" data-mrd-action="size-target" data-mrd-arg="${t}" aria-pressed="${target===t}">${E(L('Target_'+t))}</button>`;
@@ -170,7 +192,7 @@ function render(){
  const chips=[...cfg.cues.map((c,i)=>cueBtn(!!soundInfo(c.sound,sel),sel.id+'~'+i,'cue~'+sel.id+'~'+i,c.label||find(c.sound,'sound',sel)?.name||'—',c.icon||'wave-square',isPlaying(c.sound,'fx',sel))),
   ...g.effects.map(e=>cueBtn(!!soundInfo(e.sound,sel),'g~'+e.id,'geffect~'+e.id,e.label||find(e.sound,'sound',sel)?.name||'—',e.icon||'wave-square',isPlaying(e.sound,'fx',sel))),
   btn('assign','cue~'+sel.id+'~new',L('AddEffect'),'plus','','mrd-chip mrd-add')].join('');
- bar.innerHTML=`<div class="mrd-head">${grip}${sceneMenu(list,sel)}<div class="mrd-grp">${btn('read',sel.id,L('Read'),'book-open')}${btn('activate',sel.id,L('Show'),'panorama','','is-primary')}</div><div class="mrd-grp mrd-secondary">${hasMusic?btn('music',sel.id,L(playing?'Resume':'Music'),'music'):btn('assign','music~'+sel.id,L('Music'),'music','aria-disabled="true"','mrd-off').replace(/title="[^"]*"/,`title="${E(L('Music')+' · '+noAudio)}"`)}${motifMenu}${btn('quiet',sel.id,L('Quiet'),'volume-low',pressed(0,m.quiet))}${btn('stop',sel.id,L('Stop'),'volume-xmark')}</div><div class="mrd-grp mrd-secondary">${btn('fit',sel.id,L('Fit'),'expand')}${figs}${handouts}${notes}${mixMenu}</div>${collapse}</div><div class="mrd-cues">${chips}</div>`;
+ bar.innerHTML=`<div class="mrd-head">${grip}${sceneMenu(list,sel)}<div class="mrd-grp">${btn('read',sel.id,L('Read'),'book-open')}${btn('activate',sel.id,L('Show'),'panorama','','is-primary')}</div><div class="mrd-grp mrd-secondary">${hasMusic?btn('music',sel.id,L(playing?'Resume':'Music'),'music'):btn('assign','music~'+sel.id,L('Music'),'music','aria-disabled="true"','mrd-off').replace(/title="[^"]*"/,`title="${E(L('Music')+' · '+noAudio)}"`)}${motifMenu}${btn('quiet',sel.id,L('Quiet'),'volume-low',pressed(0,m.quiet))}${btn('stop',sel.id,L('Stop'),'volume-xmark')}</div><div class="mrd-grp mrd-secondary">${btn('fit',sel.id,L('Fit'),'expand')}${figs}${images}${handouts}${notes}${mixMenu}</div>${collapse}</div><div class="mrd-cues">${chips}</div>`;
  for(const d of bar.querySelectorAll('details[data-menu]'))d.open=open.has(d.dataset.menu);
  const fl=bar.querySelector('.mrd-scene-filter');if(fl&&filterText)filterScenes(fl);
  for(const b of bar.querySelectorAll('.mrd-btn:not([title])')){const t=b.textContent.trim();if(t)b.title=t;}
@@ -235,7 +257,7 @@ async function commitSize(px){
 const fail=e=>{console.error(`${ID} | director`,e);ui.notifications.error(`${L('Error')} ${e?.message??''}`.trim());};
 export function setupDirector(){
  refresh();
- for(const h of ['controlToken','canvasReady','updateScene','createScene','deleteScene','updatePlaylist','updatePlaylistSound','createPlaylist','mrDireccion.packRegistered','mrDireccion.packImported'])Hooks.on(h,refresh);
+ for(const h of ['controlToken','canvasReady','createTile','deleteTile','updateScene','createScene','deleteScene','updatePlaylist','updatePlaylistSound','createPlaylist','mrDireccion.packRegistered','mrDireccion.packImported'])Hooks.on(h,refresh);
  // El volumen de lectura también se sincroniza cuando la escena arranca su música por enlace nativo.
  Hooks.on('updateScene',(scene,ch)=>{const cfg=sceneConfig(scene);if(ch.active&&cfg?.music&&activeGM()&&!scene.playlist&&!activating.has(scene.id))dispatch('music',scene.id).catch(fail);});
 }

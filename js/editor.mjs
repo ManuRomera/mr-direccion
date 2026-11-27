@@ -6,6 +6,7 @@ import {find,labelOf} from './refs.mjs';
 import {playRef,playEffect} from './audio.mjs';
 import {installExample} from './example.mjs';
 import {E} from './core/ids.mjs';
+import {IMAGE_POS} from './core/images.mjs';
 import {L} from './ui.mjs';
 const {ApplicationV2}=foundry.applications.api;
 const getPath=(o,p)=>p.split('.').reduce((a,k)=>a?.[k],o);
@@ -13,15 +14,17 @@ const setPath=(o,p,v)=>{const ks=p.split('.'),last=ks.pop();ks.reduce((a,k)=>a[k
 const dragData=e=>{try{return foundry.applications.ux.TextEditor.implementation.getDragEventData(e);}catch{try{return JSON.parse(e.dataTransfer.getData('text/plain'));}catch{return null;}}};
 /** Convierte lo arrastrado en una ref según lo que acepta la zona. */
 export function refFromDrop(data,accept){
+ if(accept==='image'&&data?.texture?.src)return {src:data.texture.src}; // baldosa arrastrada desde el explorador de archivos
  if(!data?.uuid&&!data?.src)return null;if(data.src)return {src:data.src};
  const t=data.type;
  if(accept==='sound'){if(t==='PlaylistSound')return {uuid:data.uuid};if(t==='Playlist'){const p=fromUuidSync(data.uuid);const s=p?.sounds?.contents[0];return s?{uuid:s.uuid}:null;}return null;}
  if(accept==='actor')return t==='Actor'?{uuid:data.uuid}:null;
  if(accept==='journal')return ['JournalEntry','JournalEntryPage'].includes(t)?{uuid:data.uuid}:null;
+ if(accept==='image')return ['JournalEntry','JournalEntryPage','Actor'].includes(t)?{uuid:data.uuid}:null;
  if(accept==='handout')return ['JournalEntry','JournalEntryPage','Actor'].includes(t)?{uuid:data.uuid}:null;
  return null;
 }
-const KIND={sound:'sound',actor:'actor',journal:'journal',handout:'journal'};
+const KIND={sound:'sound',actor:'actor',journal:'journal',handout:'journal',image:'journal'};
 export class DirectionEditor extends ApplicationV2{
  static DEFAULT_OPTIONS={id:'mr-direccion-editor',classes:['mrd-editor','mrd-win'],tag:'div',window:{title:'MRDIR.Ed.Title',icon:'fa-solid fa-pen-ruler',resizable:true},position:{width:1000,height:780}};
  constructor(options={}){
@@ -38,7 +41,7 @@ export class DirectionEditor extends ApplicationV2{
  /* ---------- HTML ---------- */
  refField(path,accept,ref,{test=null}={}){
   const name=labelOf(ref,KIND[accept],this.scene),src=ref?.src??'';
-  return `<div class="mrd-ref ${ref?'has':''}" data-drop="${path}" data-accept="${accept}"><span class="mrd-ref-name">${E(name||L('Ed.DropHere'))}</span>${accept==='sound'||accept==='handout'?`<input class="mrd-ref-src" data-path="${path}" data-src placeholder="${E(L('Ed.FilePath'))}" value="${E(src)}">`:''}${accept==='sound'||accept==='handout'?`<button type="button" data-act="pick" data-path="${path}" data-type="${accept==='sound'?'audio':'image'}" title="${E(L('Ed.Browse'))}"><i class="fa-solid fa-folder-open"></i></button>`:''}${test&&ref?`<button type="button" data-act="test" data-path="${path}" data-mode="${test}" title="${E(L('Ed.Test'))}"><i class="fa-solid fa-play"></i></button>`:''}${ref?`<button type="button" data-act="clear" data-path="${path}" title="${E(L('Ed.Clear'))}"><i class="fa-solid fa-xmark"></i></button>`:''}</div>`;
+  return `<div class="mrd-ref ${ref?'has':''}" data-drop="${path}" data-accept="${accept}"><span class="mrd-ref-name">${E(name||L('Ed.DropHere'))}</span>${accept==='sound'||accept==='handout'||accept==='image'?`<input class="mrd-ref-src" data-path="${path}" data-src placeholder="${E(L('Ed.FilePath'))}" value="${E(src)}">`:''}${accept==='sound'||accept==='handout'||accept==='image'?`<button type="button" data-act="pick" data-path="${path}" data-type="${accept==='sound'?'audio':'image'}" title="${E(L('Ed.Browse'))}"><i class="fa-solid fa-folder-open"></i></button>`:''}${test&&ref?`<button type="button" data-act="test" data-path="${path}" data-mode="${test}" title="${E(L('Ed.Test'))}"><i class="fa-solid fa-play"></i></button>`:''}${ref?`<button type="button" data-act="clear" data-path="${path}" title="${E(L('Ed.Clear'))}"><i class="fa-solid fa-xmark"></i></button>`:''}</div>`;
  }
  sceneTab(c,g){
   const others=this.configured.filter(x=>x.scene.id!==this.scene.id);
@@ -51,6 +54,7 @@ export class DirectionEditor extends ApplicationV2{
   <fieldset><legend>${E(L('Ed.Figures'))}</legend>${c.figures.map((f,i)=>`<div class="mrd-row"><input data-path="figures.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(f.label)}">${this.refField(`figures.${i}.ref`,'actor',f.ref)}<button type="button" data-act="del" data-list="figures" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`).join('')}<div class="mrd-dropzone" data-drop-add="figures" data-accept="actor">${E(L('Ed.DropActors'))}</div></fieldset>
   <fieldset><legend>${E(L('Ed.Handouts'))}</legend>${c.handouts.map((f,i)=>`<div class="mrd-row"><input data-path="handouts.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(f.label)}">${this.refField(`handouts.${i}.ref`,'handout',f.ref)}<button type="button" data-act="del" data-list="handouts" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`).join('')}<div class="mrd-dropzone" data-drop-add="handouts" data-accept="handout">${E(L('Ed.DropHandouts'))}</div></fieldset>
   <fieldset><legend>${E(L('Ed.Thumb'))}</legend><div class="mrd-row"><input data-path="thumb" value="${E(c.thumb)}" placeholder="${E(L('Ed.ThumbAuto'))}"><button type="button" data-act="pick" data-path="thumb" data-type="image"><i class="fa-solid fa-folder-open"></i></button></div></fieldset>
+  <fieldset class="wide mrd-images"><legend>${E(L('Ed.Images'))}</legend>${c.images.map((f,i)=>`<div class="mrd-row"><input data-path="images.${i}.label" placeholder="${E(L('Ed.Label'))}" value="${E(f.label)}">${this.refField(`images.${i}.ref`,'image',f.ref)}<select data-path="images.${i}.pos" title="${E(L('ImagePos'))}">${IMAGE_POS.map(p=>`<option value="${p}" ${f.pos===p?'selected':''}>${E(L('Pos_'+p))}</option>`).join('')}</select><button type="button" data-act="del" data-list="images" data-i="${i}"><i class="fa-solid fa-trash"></i></button></div>`).join('')}<div class="mrd-dropzone" data-drop-add="images" data-accept="image">${E(L('Ed.DropImages'))}</div><p class="mrd-hint">${E(L('Ed.ImagesHint'))}</p></fieldset>
   <fieldset class="wide"><legend>${E(L('Ed.Notes'))}</legend><textarea data-path="notes" rows="3">${E(c.notes)}</textarea></fieldset>
   <fieldset class="wide mrd-tools"><legend>${E(L('Ed.Tools'))}</legend><button type="button" data-act="auto"><i class="fa-solid fa-wand-magic-sparkles"></i> ${E(L('Ed.Auto'))}</button> ${others.length?`<select class="copy-from">${others.map(x=>`<option value="${x.scene.id}">${E(x.scene.name)}</option>`).join('')}</select><button type="button" data-act="copy"><i class="fa-solid fa-copy"></i> ${E(L('Ed.Copy'))}</button>`:''} <button type="button" data-act="unconfig" class="danger"><i class="fa-solid fa-eraser"></i> ${E(L('Ed.Unconfig'))}</button></fieldset></div>`;
  }
@@ -98,7 +102,7 @@ export class DirectionEditor extends ApplicationV2{
   const ref=refFromDrop(dragData(e),z.dataset.accept);if(!ref)return ui.notifications.warn(L('Ed.BadDrop'));
   if(z.dataset.dropAdd){const k=z.dataset.dropAdd;
    if(k==='g:effects')return this.commitGlobal(g=>g.effects.push({id:'e'+Date.now().toString(36),label:'',icon:'wave-square',sound:ref}));
-   return this.commit(c=>c[k].push(k==='cues'?{label:'',icon:'wave-square',sound:ref}:{ref,label:''}));}
+   return this.commit(c=>c[k].push(k==='cues'?{label:'',icon:'wave-square',sound:ref}:k==='images'?{ref,label:'',pos:'c'}:{ref,label:''}));}
   const p=z.dataset.drop;if(p.startsWith('g:'))return this.commitGlobal(g=>setPath(g,p.slice(2),ref));
   return this.commit(c=>setPath(c,p,ref));
  }

@@ -42,6 +42,7 @@ Nothing uses `game.system.id`: anything system-specific would go into a separate
     "ambient": "light"|"dim"|"dark"|null,
     "figures": [{"ref":REF,"label":""}],     // actors
     "handouts": [{"ref":REF,"label":""}],    // journals, pages, actors or images
+    "images": [{"ref":REF,"label":"","pos":"c|tl|tr|bl|br"}], // scene images: a tile in the centre or a quadrant of the visible area (core/images.mjs); flag mr-direccion.image = index
     "notes": "", "thumb": "path.webp",
     "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "ref": [x0,y0,x1,y1]|null, "refM": 2.1, "anchors": [[x,y],…]}   // fractions of the background; no mode = horizon
   }]

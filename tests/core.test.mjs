@@ -369,3 +369,12 @@ test('stageLayout: una figura colocada sobre un plano elevado usa la escala del 
  const sc={width:1600,height:900,grid:{size:100}},st={method:'manual',eye:.35,k:1,anchors:[[.75,.65],[.2,.65]],planes:[{quad:[[.65,.5],[.85,.5],[.9,.8],[.6,.8]],k:2}]};
  const [a,b]=stageLayout(sc,2,0,360,st);assert.ok(Math.abs(a.height/b.height-2)<.01,`${a.height} ${b.height}`);
 });
+import {imageRect,IMAGE_POS} from '../js/core/images.mjs';
+test('imágenes: centro y cuadrantes dentro del área visible, con su proporción',()=>{
+ const b={x:100,y:50,width:1600,height:900};
+ for(const p of IMAGE_POS){const r=imageRect(4/3,b,p);
+  assert.ok(r.x>=b.x&&r.y>=b.y&&r.x+r.width<=b.x+b.width+1&&r.y+r.height<=b.y+b.height+1,p);assert.ok(Math.abs(r.width/r.height-4/3)<.01,p);}
+ const c=imageRect(2,b,'c');assert.ok(Math.abs(c.x+c.width/2-(b.x+800))<=1&&Math.abs(c.y+c.height/2-(b.y+450))<=1);
+ const tl=imageRect(1,b,'tl'),br=imageRect(1,b,'br');assert.ok(tl.x+tl.width<=b.x+800&&tl.y+tl.height<=b.y+450&&br.x>=b.x+800&&br.y>=b.y+450);
+ assert.ok(imageRect(1,b,'raro').x===imageRect(1,b,'c').x);
+});

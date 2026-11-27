@@ -42,6 +42,7 @@ Nada usa `game.system.id`: lo específico de un sistema iría en un adaptador ap
     "ambient": "light"|"dim"|"dark"|null,
     "figures": [{"ref":REF,"label":""}],     // actores
     "handouts": [{"ref":REF,"label":""}],    // diarios, páginas, actores o imágenes
+    "images": [{"ref":REF,"label":"","pos":"c|tl|tr|bl|br"}], // imágenes de escena: baldosa en el centro o un cuadrante de lo visible (core/images.mjs); flag mr-direccion.image = índice
     "notes": "", "thumb": "ruta.webp",
     "stage": {"mode": "horizon|vanishing|none", "eye": 0.5, "vp": [x,y]|null, "ref": [x0,y0,x1,y1]|null, "refM": 2.1, "anchors": [[x,y],…]}   // fracciones del fondo; sin mode = horizon
   }]

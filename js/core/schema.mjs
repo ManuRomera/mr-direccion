@@ -1,3 +1,4 @@
+import {IMAGE_POS} from './images.mjs';
 import {stageMethod} from './perspective.mjs';
 /** Paquete de dirección: JSON versionado con validación y normalización. Lógica pura. */
 export const SCHEMA=1;
@@ -38,6 +39,7 @@ function sceneCfg(s,i,w,ids){
   ambient:AMBIENT_KEYS.includes(s.ambient)?s.ambient:null,
   figures:(Array.isArray(s.figures)?s.figures:[]).map(f=>({ref:normalizeRef(f?.ref??f),label:str(f?.label)})).filter(f=>f.ref),
   handouts:(Array.isArray(s.handouts)?s.handouts:[]).map(h=>({ref:normalizeRef(h?.ref??h),label:str(h?.label)})).filter(h=>h.ref),
+  images:(Array.isArray(s.images)?s.images:[]).map(h=>({ref:normalizeRef(h?.ref??h),label:str(h?.label),pos:IMAGE_POS.includes(h?.pos)?h.pos:'c'})).filter(h=>h.ref),
   notes:str(s.notes),thumb:str(s.thumb),
   stage:{method,mode:method==='none'?'none':method==='exit'?'vanishing':'horizon',fine:num(st.fine,1,.5,2),people:sil(st.people),eye:num(st.eye,.5,-3,1.5),
    vp:Array.isArray(st.vp)&&st.vp.length===2&&st.vp.every(Number.isFinite)?[num(st.vp[0],.5,-2,3),num(st.vp[1],.5,-3,1.5)]:null,

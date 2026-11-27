@@ -44,6 +44,7 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 | 🗂️ **Carpetas y escenas ocultas** | El menú agrupa por carpetas (la de la escena actual, resaltada y abierta) y deja **ocultar** escenas o carpetas que aún no hacen falta, con un ojo; se recuperan con «mostrar lo oculto». |
 | ↔️ **Barra horizontal o vertical** | Un botón la pasa a **vertical** para los márgenes izquierdo o derecho; se arrastra con el botón derecho y recuerda su sitio en cada orientación. |
 | 📖 **Leer escena** | Abre la lectura inicial (diario o página) con **pistas clicables** `@Dir[…]` que lanzan música, efectos o ambiente. |
+| 🖼️ **Imágenes de escena** | Para lo que pasa en la escena y no merece una escena propia: vincula imágenes a cada escena (páginas de imagen, diarios, actores o archivos) y desde la barra las pones en pantalla para todos como **baldosa**, en el **centro** o en uno de los **cuatro cuadrantes**. Se estiran por las esquinas, se mueven a otro cuadrante con un clic y se quitan con otro. |
 | 📺 **Mostrar a todos** | Activa la escena para los jugadores y arranca su música y su ambiente. |
 | 🎼 **Música sin huecos** | **Fundido cruzado** (3,5 s por defecto, configurable) entre pistas, también al repetir la misma. Bucles Ogg Opus. |
 | ⚡ **Asignar audio al vuelo** | Lo que aún no tiene audio sale translúcido: púlsalo y elige un sonido (con buscador y ▶ para oírlo) sin abrir el editor. |
@@ -71,6 +72,9 @@ Una **barra de dirección** que solo ve el GM, nacida en *MR · El Trono de la S
 <tr>
 <td width="50%"><img src="docs/img/suelo.webp" alt="Editor con un rectángulo de suelo dibujado en perspectiva sobre la imagen"><br><sub><b>Rectángulo de suelo</b> (recomendado): cuatro esquinas sobre algo rectangular del suelo y su ancho real; el horizonte y la escala salen solos y la silueta de prueba sigue al cursor.</sub></td>
 <td width="50%"><img src="docs/img/siluetas.webp" alt="Editor con dos siluetas de calibración y la silueta fantasma"><br><sub><b>Dos personas</b>: arrastra dos siluetas y estira sus cabezas hasta la altura de una persona en ese punto; el horizonte y la escala salen solos.</sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/img/imagenes.webp" alt="Menú Imágenes de la barra con una imagen puesta en el cuadrante de arriba a la derecha"><br><sub><b>Imágenes de escena</b>: cada imagen con sus cinco recuadros (centro y cuadrantes); aparece como baldosa para todos y se estira por las esquinas.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/altavoz.webp" alt="Aviso a la mesa al avanzar un reloj"><br><sub><b>Altavoz</b>: al avanzar un reloj, a los jugadores les sale su título, las casillas y una frase de sabor.</sub></td>
@@ -165,6 +169,7 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 | 🗂️ **Folders and hidden scenes** | The menu groups scenes by folder (the current scene's folder is highlighted and kept open) and lets you **hide** scenes or folders you don't need yet with an eye button; bring them back with “show hidden”. |
 | ↔️ **Horizontal or vertical bar** | One button turns it **vertical** for the left or right margin; drag it with the right button and it remembers its place in each orientation. |
 | 📖 **Read scene** | Opens the read-aloud text (journal or page) with **clickable cues** `@Dir[…]` that fire music, effects or ambience. |
+| 🖼️ **Scene images** | For what happens in a scene that doesn’t deserve a scene of its own: link images to each scene (image pages, journals, actors or files) and put them on screen for everyone from the bar as a **tile**, in the **centre** or in one of the **four quadrants**. Stretch them by the corners, move them to another quadrant with one click and remove them with another. |
 | 📺 **Show to everyone** | Activates the scene for the players and starts its music and ambience. |
 | 🎼 **Gapless music** | **Crossfade** (3.5 s by default, configurable) between tracks, even when replaying the same one. Ogg Opus loops. |
 | ⚡ **Assign audio on the fly** | Anything without audio shows translucent: press it and pick a sound (with search and ▶ preview) without opening the editor. |
@@ -192,6 +197,9 @@ A GM-only **direction bar**, born in *MR · The Throne of Thirst* and turned int
 <tr>
 <td width="50%"><img src="docs/img/suelo-en.webp" alt="Editor with a floor rectangle drawn in perspective over the image"><br><sub><b>Floor rectangle</b> (recommended): four corners on something rectangular on the floor and its real width; the horizon and scale come out on their own and the test silhouette follows the cursor.</sub></td>
 <td width="50%"><img src="docs/img/siluetas-en.webp" alt="Editor with two calibration silhouettes and the ghost silhouette"><br><sub><b>Two people</b>: drag two silhouettes and stretch their heads to a person’s height at that spot; the horizon and scale come out on their own.</sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/img/imagenes-en.webp" alt="The bar’s Images menu with one image placed in the top-right quadrant"><br><sub><b>Scene images</b>: each image with its five squares (centre and quadrants); it appears as a tile for everyone and stretches by its corners.</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/altavoz-en.webp" alt="Announcement to the table when a clock advances"><br><sub><b>Loudspeaker</b>: when a clock advances, players get its title, the segments and a flavour line.</sub></td>

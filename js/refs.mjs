@@ -42,3 +42,11 @@ export function ensureManaged(info,channel){
 }
 export const isPlaying=(ref,channel,scene)=>!!managedSound(soundInfo(ref,scene),channel)?.playing;
 export const labelOf=(ref,kind,scene)=>{const d=find(ref,kind,scene);return d?.name??(ref?.src?baseName(ref.src):'');};
+/** Ruta de la imagen de una ref: un archivo, una página de imagen, la primera imagen de un diario o el retrato de un actor. */
+export async function imageSrc(ref,scene=null){
+ if(!ref)return null;if(ref.src)return ref.src;
+ let d=find(ref,'journal',scene)??find(ref,'actor',scene);
+ if(d&&!d.pages&&!d.src&&!d.img&&d.uuid)d=await fromUuid(d.uuid).catch(()=>null);
+ if(!d)return null;
+ return d.src||d.pages?.find?.(p=>p.type==='image'&&p.src)?.src||d.img||null;
+}
