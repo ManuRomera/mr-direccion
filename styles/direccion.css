@@ -358,3 +358,9 @@
 #mr-direccion-bar .mrd-pos:focus-visible{outline:2px solid #f0d28f;outline-offset:2px}
 .mrd-editor .mrd-images .mrd-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(200px,2fr) auto auto;gap:6px;align-items:center}
 .mrd-editor .mrd-images select{width:auto}
+.mrd-editor .mrd-img-add{display:flex;gap:6px;align-items:stretch}.mrd-editor .mrd-img-add .mrd-dropzone{flex:1}
+.mrd-multipick .mrd-multibar{padding:6px 8px;border-top:1px solid var(--color-border,#0003)}
+.mrd-multipick .mrd-multibar .hint{margin:0 0 4px}
+.mrd-multipick .mrd-multirow{display:flex;gap:6px;align-items:center}.mrd-multipick .mrd-multirow output{flex:1;font-weight:600}
+.mrd-multipick .mrd-multirow button{flex:0 0 auto;width:auto}
+.mrd-multipick li.file.picked{outline:2px solid #caa66b;outline-offset:-2px;background:rgba(202,166,107,.22)}
